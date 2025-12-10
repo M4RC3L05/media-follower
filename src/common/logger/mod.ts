@@ -1,6 +1,7 @@
 import {
   type BaseHandler,
   ConsoleHandler,
+  type LevelName,
   Logger,
   type LogRecord,
 } from "@std/log";
@@ -31,9 +32,35 @@ const formatLogArg = (arg: unknown) => {
   return arg;
 };
 
+const levelToEmoji: Record<LevelName, string | undefined> = {
+  ERROR: "❌",
+  WARN: "⚠️",
+  INFO: "👀",
+  DEBUG: "🔍",
+  CRITICAL: "🚨",
+  NOTSET: undefined,
+};
+
 const logFormatter = (
   { args, datetime, levelName, loggerName, msg }: LogRecord,
 ) => {
+  if (Deno.env.get("ENV") !== "production") {
+    return `${datetime.toISOString()} [${loggerName}](${
+      [
+        levelToEmoji[levelName as LevelName]
+          ? levelToEmoji[levelName as LevelName]
+          : undefined,
+        levelName,
+      ].filter(Boolean).join(" ")
+    }): ${msg}${
+      args[0]
+        ? `\n${
+          Deno.inspect(formatLogArg(args[0]), { colors: true, depth: 1000 })
+        }`
+        : ""
+    }`;
+  }
+
   return JSON.stringify({
     datetime: datetime.toISOString(),
     level: levelName,
