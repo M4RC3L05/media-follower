@@ -1,10 +1,20 @@
-import { config } from "#src/common/config/mod.ts";
 import { DatabaseSync } from "node:sqlite";
 import type { SQLInputValue, StatementSync } from "node:sqlite";
 import type { IDatabase } from "./database.ts";
 
 export class CustomDatabase extends DatabaseSync implements IDatabase {
   #cache = new Map<string, StatementSync>();
+
+  constructor(path: string) {
+    super(path);
+
+    this.exec("pragma journal_mode = WAL");
+    this.exec("pragma busy_timeout = 5000");
+    this.exec("pragma foreign_keys = ON");
+    this.exec("pragma synchronous = NORMAL");
+    this.exec("pragma temp_store = MEMORY");
+    this.exec("pragma optimize = 0x10002");
+  }
 
   #ensureInCache(query: string) {
     if (!this.#cache.has(query)) {
@@ -71,16 +81,3 @@ export class CustomDatabase extends DatabaseSync implements IDatabase {
     this.close();
   }
 }
-
-export const makeDatabase = () => {
-  const db = new CustomDatabase(config().database.path);
-
-  db.exec("pragma journal_mode = WAL");
-  db.exec("pragma busy_timeout = 5000");
-  db.exec("pragma foreign_keys = ON");
-  db.exec("pragma synchronous = NORMAL");
-  db.exec("pragma temp_store = MEMORY");
-  db.exec("pragma optimize = 0x10002");
-
-  return db;
-};

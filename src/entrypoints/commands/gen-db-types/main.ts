@@ -1,10 +1,10 @@
 import { toPascalCase } from "@std/text";
-import { initConfig } from "#src/common/config/mod.ts";
-import { makeDatabase } from "../../../common/database/mod.ts";
+import { config, initConfig } from "#src/common/config/mod.ts";
+import { CustomDatabase } from "../../../common/database/mod.ts";
 
 initConfig();
 
-using db = makeDatabase();
+using db = new CustomDatabase(config().database.path);
 
 type TypeDef = {
   type: string;

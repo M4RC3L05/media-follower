@@ -1,7 +1,7 @@
 import z from "@zod/zod";
 import { delay } from "@std/async";
 import { parseArgs } from "@std/cli";
-import { initConfig } from "../../../common/config/mod.ts";
+import { config, initConfig } from "../../../common/config/mod.ts";
 import { makeLogger } from "../../../common/logger/mod.ts";
 import {
   bluRayComCountrySchema,
@@ -13,11 +13,11 @@ import { HttpFetch } from "../../../common/http/mod.ts";
 import { gracefulShutdown } from "../../../common/process/mod.ts";
 import { ItunesService } from "../../../common/services/itunes-service.ts";
 import { ReleaseSourceProvider } from "../../../common/database/enums/release-source-provider.ts";
-import { makeDatabase } from "../../../common/database/mod.ts";
 import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
 } from "../../../common/database/types.ts";
+import { CustomDatabase } from "../../../common/database/mod.ts";
 
 initConfig();
 
@@ -28,7 +28,7 @@ const { provider } = z.object({ provider: z.enum(ReleaseSourceProvider) })
 
 const now = new Date();
 const log = makeLogger("sync-releases");
-using db = makeDatabase();
+using db = new CustomDatabase(config().database.path);
 const bluRayComService = new BluRayComService({
   httpClient: new HttpFetch({ signal: shutdownSignal }),
 });
