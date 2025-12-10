@@ -1,0 +1,98 @@
+{
+  "name": "@m4rc3l05/media-follower",
+  "version": "0.0.0",
+  "exports": "./deno.json",
+  "tasks": {
+    "apps:rss-feed": {
+      "description": "Run rss feed app",
+      "command": "deno run -A src/entrypoints/apps/rss-feed/main.ts"
+    },
+    "apps:admin": {
+      "description": "Run rss feed app",
+      "command": "deno run -A src/entrypoints/apps/admin/main.ts"
+    },
+    "jobs:sync-release-sources": {
+      "description": "Run sync release source app",
+      "command": "deno run -A src/entrypoints/jobs/sync-release-sources/main.ts"
+    },
+    "jobs:sync-releases": {
+      "description": "Run sync release app",
+      "command": "deno run -A src/entrypoints/jobs/sync-releases/main.ts"
+    },
+    "dev:run-migrations": {
+      "description": "Run db migrations",
+      "command": "dbmate -u 'sqlite:./data/app.db' -d ./src/common/database/migrations -s ./src/common/database/schema.sql up && deno run -A src/entrypoints/commands/gen-db-types/main.ts"
+    },
+    "check:fmt": {
+      "description": "Run formatting checks",
+      "command": "deno fmt --check ."
+    },
+    "check:lint": {
+      "description": "Run lint checks",
+      "command": "deno lint ."
+    },
+    "check:check": {
+      "description": "Run check checks",
+      "command": "deno check ."
+    },
+    "checks": {
+      "description": "Run code checks",
+      "dependencies": [
+        "check:fmt",
+        "check:lint",
+        "check:check"
+      ]
+    }
+  },
+  "lint": {
+    "exclude": [
+      "src/common/test/data",
+      "src/common/database/schema.sql",
+      "src/common/database/types.ts"
+    ],
+    "rules": {
+      "include": [
+        "verbatim-module-syntax"
+      ],
+      "tags": [
+        "recommended",
+        "jsr"
+      ]
+    }
+  },
+  "fmt": {
+    "exclude": [
+      "src/common/test/data",
+      "src/common/database/schema.sql",
+      "src/common/database/types.ts"
+    ]
+  },
+  "unstable": [
+    "fmt-sql"
+  ],
+  "compilerOptions": {
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "minimumDependencyAge": "P7D",
+  "imports": {
+    "#src/": "./src/",
+    "@b-fuze/deno-dom": "jsr:@b-fuze/deno-dom@0.1.56",
+    "@std/async": "jsr:@std/async@1.0.15",
+    "@std/cache": "jsr:@std/cache@0.2.1",
+    "@std/cli": "jsr:@std/cli@1.0.24",
+    "@std/log": "jsr:@std/log@0.224.14",
+    "@std/text": "jsr:@std/text@1.0.16",
+    "@types/node": "npm:@types/node@24.2.0",
+    "@zod/zod": "jsr:@zod/zod@4.1.13",
+    "feed": "npm:feed@5.1.0",
+    "pino-std-serializers": "npm:pino-std-serializers@7.0.0"
+  }
+}

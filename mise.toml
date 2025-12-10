@@ -1,0 +1,4 @@
+[tools]
+sqlite = "3.49.1"
+deno = "2.5.6"
+dbmate = "2.28.0"
