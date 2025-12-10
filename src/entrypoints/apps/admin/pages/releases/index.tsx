@@ -1,14 +1,14 @@
-import { FunctionComponent } from "preact";
+import type { FunctionComponent } from "preact";
 import { Page } from "../page.tsx";
-import { DbReleasesTable } from "../../../../../common/database/types.ts";
+import type { DbReleasesTable } from "../../../../../common/database/types.ts";
 import { ReleaseSourceProvider } from "../../../../../common/database/enums/release-source-provider.ts";
 import { ReleaseType } from "../../../../../common/database/enums/release-type.ts";
 import {
-  BluRayComReleaseWithExtra,
+  type BluRayComReleaseWithExtra,
   bluRayComReleaseWithExtraSchema,
-  ItunesLookupAlbumModelWithExtra,
+  type ItunesLookupAlbumModelWithExtra,
   itunesLookupAlbumModelWithExtraSchema,
-  ItunesLookupSongModelWithExtra,
+  type ItunesLookupSongModelWithExtra,
   itunesLookupSongModelWithExtraSchema,
 } from "../../../../../common/services/service.ts";
 

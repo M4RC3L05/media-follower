@@ -9,13 +9,13 @@ import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
 } from "../../../common/database/types.ts";
-import {
+import type {
   IBlurayComService,
   IItunesService,
 } from "../../../common/services/service.ts";
 import { ReleaseType } from "../../../common/database/enums/release-type.ts";
 import { indexPage } from "./pages/index.tsx";
-import { IDatabase } from "../../../common/database/database.ts";
+import type { IDatabase } from "../../../common/database/database.ts";
 import { sourcesCreatePage, sourcesIndexPage } from "./pages/sources/mod.ts";
 import { releasesIndexPage } from "./pages/releases/mod.ts";
 
