@@ -56,7 +56,8 @@
       ],
       "tags": [
         "recommended",
-        "jsr"
+        "jsr",
+        "jsx"
       ]
     }
   },
@@ -79,7 +80,9 @@
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "jsx": "precompile",
+    "jsxImportSource": "preact"
   },
   "minimumDependencyAge": "P7D",
   "imports": {
@@ -93,6 +96,8 @@
     "@types/node": "npm:@types/node@24.2.0",
     "@zod/zod": "jsr:@zod/zod@4.1.13",
     "feed": "npm:feed@5.1.0",
-    "pino-std-serializers": "npm:pino-std-serializers@7.0.0"
+    "pino-std-serializers": "npm:pino-std-serializers@7.0.0",
+    "preact": "npm:preact@10.28.0",
+    "preact-render-to-string": "npm:preact-render-to-string@6.6.3"
   }
 }
