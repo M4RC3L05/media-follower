@@ -99,10 +99,14 @@ export class App {
           await Promise.all(
             releases.map((item) =>
               this.#props.database.sql<DbReleasesTable>`
-              insert or replace into releases
+              insert into releases
                 (id,         "type",       provider,         "releasedAt",       raw)
               values
                 (${item.id}, ${item.type}, ${item.provider}, ${item.releasedAt}, jsonb(${item.raw}))
+              on conflict (id, provider, "type")
+                do update set
+                  "releasedAt" = iif("releasedAt" is not null, "releasedAt", ${item.releasedAt}),
+                  raw = jsonb(${item.raw})
               returning *;
             `
             ),
