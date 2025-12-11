@@ -37,7 +37,11 @@ const usableRelease = <E extends ITunesLookupEntityType>(
     release.collectionCensoredName?.toLowerCase?.()
       ?.includes?.("DJ Mix".toLowerCase());
 
-  return !isCompilation && !isDjMix;
+  const isStreamable = release.wrapperType === "track"
+    ? (release as ItunesLookupSongModel).isStreamable
+    : true;
+
+  return !isCompilation && !isDjMix && isStreamable;
 };
 
 export class ItunesService implements IItunesService {
