@@ -1,6 +1,9 @@
 import { ReleaseSourceProvider } from "../database/enums/release-source-provider.ts";
 import { ReleaseType } from "../database/enums/release-type.ts";
-import { DbReleaseSourcesTable, DbReleasesTable } from "../database/types.ts";
+import type {
+  DbReleaseSourcesTable,
+  DbReleasesTable,
+} from "../database/types.ts";
 import {
   type ItunesLookupAlbumModelWithExtra,
   itunesLookupAlbumModelWithExtraSchema,

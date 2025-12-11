@@ -1,10 +1,8 @@
 import z from "@zod/zod";
-import { ItunesService } from "../../../common/services/itunes-service.ts";
 import {
   ReleaseSourceProvider,
 } from "../../../common/database/enums/release-source-provider.ts";
 import { pageToHtmlResponse } from "./pages/page.tsx";
-import { BluRayComService } from "../../../common/services/blu-ray-com-service.ts";
 import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
@@ -18,6 +16,8 @@ import { indexPage } from "./pages/index.tsx";
 import type { IDatabase } from "../../../common/database/database.ts";
 import { sourcesCreatePage, sourcesIndexPage } from "./pages/sources/mod.ts";
 import { releasesIndexPage } from "./pages/releases/mod.ts";
+import * as bluRayComMappers from "#src/common/mappers/blu-ray-com-mappers.ts";
+import * as itunesMappers from "#src/common/mappers/itunes-mappers.ts";
 
 export type AppProps = {
   blurayComService: IBlurayComService;
@@ -75,7 +75,7 @@ export class App {
               return Response.redirect(new URL("/sources/create", url));
             }
 
-            const mapped = BluRayComService.toReleaseSourcePersistance(
+            const mapped = bluRayComMappers.fromReleaseSourceToPersistance(
               selected,
             );
 
@@ -97,7 +97,9 @@ export class App {
               return Response.redirect(new URL("/sources/create", url));
             }
 
-            const mapped = ItunesService.toReleaseSourcePersistance(remote);
+            const mapped = itunesMappers.fromReleaseSourceToPersistance(
+              remote,
+            );
 
             this.#props.database.sql<DbReleaseSourcesTable>`
               insert or replace into release_sources
