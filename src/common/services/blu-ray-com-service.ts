@@ -46,7 +46,7 @@ export class BluRayComService implements IBlurayComService {
     });
   }
 
-  static toReleaseSourcePersistance(
+  fromReleaseSourceToPersistance(
     item: BluRayComCountry,
   ): DbReleaseSourcesTable {
     return {
@@ -56,7 +56,7 @@ export class BluRayComService implements IBlurayComService {
     };
   }
 
-  static toReleasePersistance(
+  fromReleaseToPersistance(
     item: BluRayComReleaseWithExtra,
   ): DbReleasesTable {
     return {
@@ -68,7 +68,7 @@ export class BluRayComService implements IBlurayComService {
     };
   }
 
-  static fromPersistanceToRelease(
+  fromPersistanceToRelease(
     row: DbReleasesTable,
   ): BluRayComReleaseWithExtra {
     const parsed = JSON.parse(row.raw);
@@ -76,7 +76,7 @@ export class BluRayComService implements IBlurayComService {
     return bluRayComReleaseWithExtraSchema.parse(parsed);
   }
 
-  static fromPersistanceToReleaseSurce(
+  fromPersistanceToReleaseSurce(
     row: DbReleaseSourcesTable,
   ): BluRayComCountry {
     const parsed = JSON.parse(row.raw);
