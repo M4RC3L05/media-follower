@@ -8,7 +8,7 @@ export const itunesLookupArtistModelSchema = z.object({
   artistName: z.string(),
   artistLinkUrl: z.url(),
   artistId: z.number(),
-  amgArtistId: z.number(),
+  amgArtistId: z.number().optional(),
   primaryGenreName: z.string(),
   primaryGenreId: z.number(),
 });
