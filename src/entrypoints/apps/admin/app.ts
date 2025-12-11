@@ -134,15 +134,7 @@ export class App {
         and (${provider ? 1 : null} is null or releases.provider = ${
         provider ?? null
       })
-        order by (
-          case 
-            when provider = ${ReleaseSourceProvider.ITUNES}
-              then releases.raw->>'releasedAt'
-            when provider = ${ReleaseSourceProvider.BLU_RAY_COM}
-              then releases.raw->>'releasedate'
-            else null
-          end
-        ) desc
+        order by "releasedAt" desc, "rowid" desc
         limit ${limit}
         offset ${page * limit}
       `;
