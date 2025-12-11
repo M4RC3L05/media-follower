@@ -34,7 +34,7 @@ const ReleaseDisplayItem: FunctionComponent<
     />
     <p>
       {releasedAt.toDateString()}
-      {releasedAt < new Date()
+      {releasedAt > new Date()
         ? (
           <>
             {" "}
