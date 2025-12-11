@@ -93,7 +93,6 @@
     "@std/cli": "jsr:@std/cli@1.0.24",
     "@std/log": "jsr:@std/log@0.224.14",
     "@std/text": "jsr:@std/text@1.0.16",
-    "@types/node": "npm:@types/node@24.2.0",
     "@zod/zod": "jsr:@zod/zod@4.1.13",
     "feed": "npm:feed@5.1.0",
     "pino-std-serializers": "npm:pino-std-serializers@7.0.0",

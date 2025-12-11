@@ -1,7 +1,7 @@
 export interface IHttpFetch {
   fetch<T>(
     path: Parameters<typeof fetch>[0],
-    init?: Parameters<typeof fetch>[1],
+    init?: RequestInit,
   ): Promise<T>;
   fetchText(
     path: Parameters<typeof fetch>[0],
@@ -9,7 +9,7 @@ export interface IHttpFetch {
   ): Promise<string>;
   fetchReadable(
     path: Parameters<typeof fetch>[0],
-    init?: Parameters<typeof fetch>[1],
+    init?: RequestInit,
   ): Promise<ReadableStream>;
 }
 
@@ -29,7 +29,7 @@ export class HttpFetch implements IHttpFetch {
 
   async #request(
     path: Parameters<typeof fetch>[0],
-    init?: Parameters<typeof fetch>[1],
+    init?: RequestInit,
   ): Promise<Response> {
     const signals: AbortSignal[] = [];
 
@@ -45,7 +45,7 @@ export class HttpFetch implements IHttpFetch {
 
   async fetch<T>(
     path: Parameters<typeof fetch>[0],
-    init?: Parameters<typeof fetch>[1],
+    init?: RequestInit,
   ): Promise<T> {
     const response = await this.#request(path, init);
 
@@ -58,7 +58,7 @@ export class HttpFetch implements IHttpFetch {
 
   async fetchText(
     path: Parameters<typeof fetch>[0],
-    init?: Parameters<typeof fetch>[1],
+    init?: RequestInit,
   ): Promise<string> {
     const response = await this.#request(path, init);
 
@@ -71,7 +71,7 @@ export class HttpFetch implements IHttpFetch {
 
   async fetchReadable(
     path: Parameters<typeof fetch>[0],
-    init?: Parameters<typeof fetch>[1],
+    init?: RequestInit,
   ): Promise<ReadableStream> {
     const response = await this.#request(path, init);
 

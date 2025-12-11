@@ -19,7 +19,6 @@
     "jsr:@std/regexp@^1.0.1": "1.0.1",
     "jsr:@std/text@1.0.16": "1.0.16",
     "jsr:@zod/zod@4.1.13": "4.1.13",
-    "npm:@types/node@24.2.0": "24.2.0",
     "npm:feed@5.1.0": "5.1.0",
     "npm:pino-std-serializers@7.0.0": "7.0.0",
     "npm:preact-render-to-string@6.6.3": "6.6.3_preact@10.28.0",
@@ -100,12 +99,6 @@
     }
   },
   "npm": {
-    "@types/node@24.2.0": {
-      "integrity": "sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==",
-      "dependencies": [
-        "undici-types"
-      ]
-    },
     "feed@5.1.0": {
       "integrity": "sha512-qGNhgYygnefSkAHHrNHqC7p3R8J0/xQDS/cYUud8er/qD9EFGWyCdUDfULHTJQN1d3H3WprzVwMc9MfB4J50Wg==",
       "dependencies": [
@@ -127,9 +120,6 @@
     "sax@1.4.3": {
       "integrity": "sha512-yqYn1JhPczigF94DMS+shiDMjDowYO6y9+wB/4WgO0Y19jWYk0lQ4tuG5KI7kj4FTp1wxPj5IFfcrz/s1c3jjQ=="
     },
-    "undici-types@7.10.0": {
-      "integrity": "sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag=="
-    },
     "xml-js@1.6.11": {
       "integrity": "sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==",
       "dependencies": [
@@ -147,7 +137,6 @@
       "jsr:@std/log@0.224.14",
       "jsr:@std/text@1.0.16",
       "jsr:@zod/zod@4.1.13",
-      "npm:@types/node@24.2.0",
       "npm:feed@5.1.0",
       "npm:pino-std-serializers@7.0.0",
       "npm:preact-render-to-string@6.6.3",
