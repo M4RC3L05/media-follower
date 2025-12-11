@@ -73,12 +73,12 @@ export class App {
               await this.#props.itunesService.lookupLatestReleasesByArtist(
                 String(parsed.artistId),
                 ITunesLookupEntityType.ALBUM,
-                30,
+                50,
               ),
               await this.#props.itunesService.lookupLatestReleasesByArtist(
                 String(parsed.artistId),
                 ITunesLookupEntityType.SONG,
-                30,
+                50,
               ),
             ]);
 
