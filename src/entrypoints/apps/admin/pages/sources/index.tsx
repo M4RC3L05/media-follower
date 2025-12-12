@@ -13,42 +13,19 @@ type IndexPageProps = {
   sources: DbReleaseSourcesTable[];
 };
 
-const ReleaseSourceProviderFilters = () => (
-  <div>
-    <h4>Filter by provider:</h4>
-    <a href="/sources">All</a> |{" "}
-    {Object.values(ReleaseSourceProvider).map((item, i, items) => (
-      <>
-        <a href={`?provider=${item}`}>{item}</a>
-        {i + 1 < items.length ? ` | ` : undefined}
-      </>
-    ))}
-  </div>
-);
-
 const SourceDisplayItem: FunctionComponent<
   { title: string; picture?: string; raw: string }
 > = ({ raw, title, picture }) => (
-  <div>
+  <article>
     <h3>{title}</h3>
     {picture
-      ? (
-        <img
-          style={{
-            maxWidth: "100%",
-            height: "auto",
-            aspectRatio: "1/1",
-            maxHeight: "256px",
-          }}
-          src={picture}
-        />
-      )
+      ? <img style={{ aspectRatio: "16/9" }} src={picture} />
       : undefined}
     <details>
       <summary>Raw:</summary>
       <pre>{raw}</pre>
     </details>
-  </div>
+  </article>
 );
 
 const ITunesDisplayItem: FunctionComponent<
@@ -108,12 +85,45 @@ const IndexPage: FunctionComponent<IndexPageProps> = ({ sources }) => (
       <title>Media Follower | Sources</title>
     </Page.Head>
     <Page.Body>
-      <a href="/">Back to home</a>
-      <ReleaseSourceProviderFilters />
-      <hr />
-      <h1>Sources</h1>
-      <a href="/sources/create">Add a new source</a>
-      {sources.map((item, i) => <SourceDisplayItems key={i} source={item} />)}
+      <header>
+        <h1>Sources</h1>
+        <nav>
+          <a href="/">Back to home</a>
+          <a href="/sources/create">Add a new source</a>
+        </nav>
+      </header>
+
+      <main>
+        <section
+          style={{
+            paddingTop: "2rem",
+            textAlign: "center",
+            position: "sticky",
+            top: 0,
+            background: "var(--bg)",
+            zIndex: 2,
+          }}
+        >
+          <h6 style={{ marginTop: 0, marginBottom: 0 }}>
+            Filter by provider: <a href="/sources" class="button">All</a> |{" "}
+            {Object.values(ReleaseSourceProvider).map((item, i, items) => (
+              <>
+                <a href={`?provider=${item}`} class="button">{item}</a>
+                {i + 1 < items.length ? ` | ` : undefined}
+              </>
+            ))}
+          </h6>
+        </section>
+
+        <section>
+          {sources.map((item, i) => (
+            <SourceDisplayItems
+              key={i}
+              source={item}
+            />
+          ))}
+        </section>
+      </main>
     </Page.Body>
   </Page>
 );

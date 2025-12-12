@@ -62,8 +62,13 @@ const CreatePage: FunctionComponent = () => (
       <title>Media follower | Create source</title>
     </Page.Head>
     <Page.Body>
-      <h1>Create Source</h1>
-      <CreateFormItems />
+      <header>
+        <h1>Create Source</h1>
+      </header>
+
+      <main>
+        <CreateFormItems />
+      </main>
     </Page.Body>
   </Page>
 );

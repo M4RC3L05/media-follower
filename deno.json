@@ -69,7 +69,8 @@
     ]
   },
   "unstable": [
-    "fmt-sql"
+    "fmt-sql",
+    "raw-imports"
   ],
   "compilerOptions": {
     "allowUnreachableCode": false,
@@ -97,6 +98,7 @@
     "feed": "npm:feed@5.1.0",
     "pino-std-serializers": "npm:pino-std-serializers@7.0.0",
     "preact": "npm:preact@10.28.0",
-    "preact-render-to-string": "npm:preact-render-to-string@6.6.3"
+    "preact-render-to-string": "npm:preact-render-to-string@6.6.3",
+    "simpledotcss": "npm:simpledotcss@2.3.7"
   }
 }

@@ -5,6 +5,7 @@ import {
   type VNode,
 } from "preact";
 import { renderToString } from "preact-render-to-string";
+import css from "simpledotcss/simple.min.css" with { type: "text" };
 
 export const Page: FunctionComponent & {
   Head: FunctionComponent;
@@ -30,6 +31,7 @@ const Head: FunctionComponent = ({ children }) => (
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style dangerouslySetInnerHTML={{ __html: css }}></style>
     {children}
   </head>
 );

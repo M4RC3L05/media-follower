@@ -21,17 +21,9 @@ type IndexPageProps = {
 const ReleaseDisplayItem: FunctionComponent<
   { image: string; title: string; releasedAt: Date; link: string; raw: string }
 > = ({ image, link, raw, releasedAt, title }) => (
-  <div>
+  <article>
     <h3>{title}</h3>
-    <img
-      style={{
-        maxWidth: "100%",
-        height: "auto",
-        aspectRatio: "1/1",
-        maxHeight: "256px",
-      }}
-      src={image}
-    />
+    <img style={{ aspectRatio: "16/9" }} src={image} />
     <p>
       {releasedAt.toDateString()}
       {releasedAt > new Date()
@@ -48,7 +40,7 @@ const ReleaseDisplayItem: FunctionComponent<
       <summary>Raw:</summary>
       <pre>{raw}</pre>
     </details>
-  </div>
+  </article>
 );
 
 const BluRayComReleaseDisplayItem: FunctionComponent<
@@ -143,35 +135,61 @@ const IndexPage: FunctionComponent<IndexPageProps> = (
         <title>Media Follower | Releases</title>
       </Page.Head>
       <Page.Body>
-        <a href="/">Back to home</a>
-        <h4>Filter by provider</h4>
-        <a href="/releases">All</a> |{" "}
-        {Object.values(ReleaseSourceProvider).map((value, i, items) => (
-          <>
-            <a href={`?provider=${value}`}>{value}</a>
-            {i < items.length - 1 ? " | " : ""}
-          </>
-        ))}
-        <hr />
-        <h4>Filter by type</h4>
-        <a href="/releases">All</a> |{" "}
-        {Object.values(ReleaseType).map((value, i, items) => (
-          <>
-            <a href={`?type=${value}`}>{value}</a>
-            {i < items.length - 1 ? " | " : ""}
-          </>
-        ))}
-        <hr />
-        <h1>Releases</h1>
-        <a href={prevPageLink.toString()}>Prev</a> |{" "}
-        <a href={nextPageLink.toString()}>Next</a>
-        <hr />
-        {releases.map((item, i) => (
-          <ReleaseDisplayItems
-            key={i}
-            release={item}
-          />
-        ))}
+        <header>
+          <h1>Releases</h1>
+          <nav>
+            <a href="/">Back to home</a>
+          </nav>
+        </header>
+
+        <main>
+          <section
+            style={{
+              paddingTop: "2rem",
+              textAlign: "left",
+              position: "sticky",
+              top: 0,
+              background: "var(--bg)",
+              zIndex: 2,
+            }}
+          >
+            <h6 style={{ marginTop: 0, marginBottom: 0 }}>
+              Filter by provider: <a href="/releases" class="button">All</a> |
+              {" "}
+              {Object.values(ReleaseSourceProvider).map((value, i, items) => (
+                <>
+                  <a href={`?provider=${value}`} class="button">{value}</a>
+                  {i < items.length - 1 ? " | " : ""}
+                </>
+              ))}
+            </h6>
+            <br />
+            <h6 style={{ marginTop: 0, marginBottom: 0 }}>
+              Filter by type: <a href="/releases" class="button">All</a> |{" "}
+              {Object.values(ReleaseType).map((value, i, items) => (
+                <>
+                  <a href={`?type=${value}`} class="button">{value}</a>
+                  {i < items.length - 1 ? " | " : ""}
+                </>
+              ))}
+            </h6>
+            <br />
+            <h6 style={{ marginTop: 0, marginBottom: 0 }}>
+              Pagination:{" "}
+              <a href={prevPageLink.toString()} class="button">Prev</a> |{" "}
+              <a href={nextPageLink.toString()} class="button">Next</a>
+            </h6>
+          </section>
+
+          <section>
+            {releases.map((item, i) => (
+              <ReleaseDisplayItems
+                key={i}
+                release={item}
+              />
+            ))}
+          </section>
+        </main>
       </Page.Body>
     </Page>
   );

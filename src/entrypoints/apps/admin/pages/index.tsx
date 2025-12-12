@@ -6,9 +6,13 @@ const IndexPage = () => (
       <title>Admin | Index</title>
     </Page.Head>
     <Page.Body>
-      <h1>Media Follower</h1>
-      <a href="/sources">Go to sources</a> |{" "}
-      <a href="/releases">Go to releases</a>
+      <header>
+        <h1>Media Follower</h1>
+        <nav>
+          <a href="/sources">Sources</a>
+          <a href="/releases">Releases</a>
+        </nav>
+      </header>
     </Page.Body>
   </Page>
 );

@@ -22,7 +22,8 @@
     "npm:feed@5.1.0": "5.1.0",
     "npm:pino-std-serializers@7.0.0": "7.0.0",
     "npm:preact-render-to-string@6.6.3": "6.6.3_preact@10.28.0",
-    "npm:preact@10.28.0": "10.28.0"
+    "npm:preact@10.28.0": "10.28.0",
+    "npm:simpledotcss@2.3.7": "2.3.7"
   },
   "jsr": {
     "@b-fuze/deno-dom@0.1.56": {
@@ -120,6 +121,9 @@
     "sax@1.4.3": {
       "integrity": "sha512-yqYn1JhPczigF94DMS+shiDMjDowYO6y9+wB/4WgO0Y19jWYk0lQ4tuG5KI7kj4FTp1wxPj5IFfcrz/s1c3jjQ=="
     },
+    "simpledotcss@2.3.7": {
+      "integrity": "sha512-Ag3TpigN7725AnvgwyGkErd50SuYmlDQRU+9LLNHUIK8T4DUEWPHut6GpD1ivxARrBd8eYGTL8vzKazVFYUpQg=="
+    },
     "xml-js@1.6.11": {
       "integrity": "sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==",
       "dependencies": [
@@ -140,7 +144,8 @@
       "npm:feed@5.1.0",
       "npm:pino-std-serializers@7.0.0",
       "npm:preact-render-to-string@6.6.3",
-      "npm:preact@10.28.0"
+      "npm:preact@10.28.0",
+      "npm:simpledotcss@2.3.7"
     ]
   }
 }
