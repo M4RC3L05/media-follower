@@ -163,7 +163,6 @@ const IndexPage: FunctionComponent<IndexPageProps> = (
                 </>
               ))}
             </h6>
-            <br />
             <h6 style={{ marginTop: 0, marginBottom: 0 }}>
               Filter by type: <a href="/releases" class="button">All</a> |{" "}
               {Object.values(ReleaseType).map((value, i, items) => (
@@ -173,7 +172,6 @@ const IndexPage: FunctionComponent<IndexPageProps> = (
                 </>
               ))}
             </h6>
-            <br />
             <h6 style={{ marginTop: 0, marginBottom: 0 }}>
               Pagination:{" "}
               <a href={prevPageLink.toString()} class="button">Prev</a> |{" "}
