@@ -128,6 +128,7 @@ export class BluRayComService implements IBlurayComService {
 
     let match;
 
+    // TODO: Replace with matchAll and for of.
     while ((match = regexp.exec(movieListScript)) !== null) {
       items.push(this.#toReleaseWithExtra(
         country,

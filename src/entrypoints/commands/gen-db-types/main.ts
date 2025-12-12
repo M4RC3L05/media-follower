@@ -68,6 +68,7 @@ const rg = /^create table\s*\"?(\S*)\"?\s*\(/gim;
 const text = Deno.readTextFileSync("src/common/database/schema.sql");
 let match;
 
+// TODO: Replace with matchAll and for of.
 while ((match = rg.exec(text)) !== null) {
   const table = match[1];
 
