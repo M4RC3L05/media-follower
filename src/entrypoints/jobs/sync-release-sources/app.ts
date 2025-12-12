@@ -1,21 +1,26 @@
 import { delay } from "@std/async";
 import type { DbReleaseSourcesTable } from "#src/common/database/types.ts";
-import {
-  type IItunesService,
-  itunesLookupArtistModelWithExtraSchema,
-} from "#src/common/services/service.ts";
-import * as itunesMappers from "#src/common/mappers/itunes-mappers.ts";
 import type { IDatabase } from "#src/common/database/database.ts";
-import type { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
 import { makeLogger } from "#src/common/logger/mod.ts";
+import type { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
 
 const log = makeLogger("sync-release-sources-app");
 
 type AppProps = {
-  itunesService: IItunesService;
+  service: {
+    fetchReleaseSource: (
+      source: DbReleaseSourcesTable,
+    ) => Promise<DbReleaseSourcesTable | undefined>;
+  };
   database: IDatabase;
-  provider: ReleaseSourceProvider.ITUNES;
+  provider: ReleaseSourceProvider;
   signal: AbortSignal;
+};
+
+const delayIf = async (cond: () => boolean, signal: AbortSignal) => {
+  if (!cond()) return;
+
+  await delay(5000, { signal }).catch(() => {});
 };
 
 export class App {
@@ -33,44 +38,47 @@ export class App {
       where provider = ${this.#props.provider}
     `;
 
-    for (const source of sources) {
+    for (const [index, source] of sources.entries()) {
       try {
         if (this.#props.signal.aborted) break;
 
-        log.info("Syncing source", { source });
+        log.info("Syncing source", { source: { id: source.id } });
 
-        const parsed = itunesLookupArtistModelWithExtraSchema.parse(
-          JSON.parse(source.raw),
-        );
-
-        const releaseSourceFetched = await this.#props.itunesService
-          .lookupArtistById(
-            parsed.artistId,
+        const releaseSourceFetched = await this.#props.service
+          .fetchReleaseSource(
+            source,
           );
 
         if (!releaseSourceFetched) {
-          await delay(5000, { signal: this.#props.signal }).catch(() => {});
+          await delayIf(
+            () => index < (sources.length - 1),
+            this.#props.signal,
+          );
           continue;
         }
 
-        const fetchedMapped = itunesMappers.fromReleaseSourceToPersistance(
-          releaseSourceFetched,
-        );
-
         this.#props.database.sql`
           update release_sources
-          set raw = jsonb(${fetchedMapped.raw})
+          set raw = jsonb(${releaseSourceFetched.raw})
           where id = ${source.id}
         `;
 
-        log.info("Synced source", { source });
-        await delay(5000, { signal: this.#props.signal }).catch(() => {});
+        log.info("Synced source", { source: { id: source.id } });
+
+        await delayIf(
+          () => index < (sources.length - 1),
+          this.#props.signal,
+        );
       } catch (error) {
         log.error("Could not sync release source successfully", {
-          releaseSource: source,
+          source: { id: source.id },
           error,
         });
-        await delay(5000, { signal: this.#props.signal }).catch(() => {});
+
+        await delayIf(
+          () => index < (sources.length - 1),
+          this.#props.signal,
+        );
       }
     }
 

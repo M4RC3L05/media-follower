@@ -1,29 +1,29 @@
 import type { IDatabase } from "#src/common/database/database.ts";
-import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
+import type { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
 import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
 } from "#src/common/database/types.ts";
 import { makeLogger } from "#src/common/logger/mod.ts";
-import {
-  bluRayComCountrySchema,
-  type IBlurayComService,
-  type IItunesService,
-  itunesLookupArtistModelWithExtraSchema,
-  ITunesLookupEntityType,
-} from "#src/common/services/service.ts";
-import * as bluRayComMappers from "#src/common/mappers/blu-ray-com-mappers.ts";
-import * as itunesMappers from "#src/common/mappers/itunes-mappers.ts";
-import { delay } from "@std/async/delay";
+import { delay } from "@std/async";
 
 const log = makeLogger("sync-releases-app");
 
 export type AppProps = {
   database: IDatabase;
   provider: ReleaseSourceProvider;
-  bluRayComService: IBlurayComService;
-  itunesService: IItunesService;
+  service: {
+    fetchReleasesFromSource: (
+      source: DbReleaseSourcesTable,
+    ) => Promise<Array<DbReleasesTable>>;
+  };
   signal: AbortSignal;
+};
+
+const delayIf = async (cond: () => boolean, signal: AbortSignal) => {
+  if (!cond()) return;
+
+  await delay(5000, { signal }).catch(() => {});
 };
 
 export class App {
@@ -36,92 +36,61 @@ export class App {
   async execute() {
     if (this.#props.signal.aborted) return;
 
-    const now = new Date();
     const sources = this.#props.database.sql<DbReleaseSourcesTable>`
       select *, json(raw) as raw from release_sources
       where provider = ${this.#props.provider}
     `;
 
-    for (const source of sources) {
+    for (const [index, source] of sources.entries()) {
       if (this.#props.signal.aborted) break;
 
       try {
-        log.info("Syncting releases from source", { source });
+        log.info("Syncting releases from source", {
+          source: { id: source.id },
+        });
 
-        let releases: (DbReleasesTable)[] = [];
+        const releases = await this.#props.service.fetchReleasesFromSource(
+          source,
+        );
 
-        switch (this.#props.provider) {
-          case ReleaseSourceProvider.BLU_RAY_COM: {
-            const parsed = bluRayComCountrySchema.parse(JSON.parse(source.raw));
-            const remote = await this.#props.bluRayComService
-              .getBlurayReleasesByCountryForMonth(
-                parsed.code,
-                now.getFullYear(),
-                now.getMonth() + 1,
-              );
-
-            releases = remote.map((item) =>
-              bluRayComMappers.fromReleaseToPersistance(item)
-            );
-            break;
-          }
-          case ReleaseSourceProvider.ITUNES: {
-            const parsed = itunesLookupArtistModelWithExtraSchema.parse(
-              JSON.parse(source.raw),
-            );
-            const [albums, songs] = await Promise.all([
-              await this.#props.itunesService.lookupLatestReleasesByArtist(
-                String(parsed.artistId),
-                ITunesLookupEntityType.ALBUM,
-                50,
-              ),
-              await this.#props.itunesService.lookupLatestReleasesByArtist(
-                String(parsed.artistId),
-                ITunesLookupEntityType.SONG,
-                50,
-              ),
-            ]);
-
-            releases.push(
-              ...albums.map((item) =>
-                itunesMappers.fromReleaseToPersistance(item)
-              ),
-            );
-            releases.push(
-              ...songs.map((item) =>
-                itunesMappers.fromReleaseToPersistance(item)
-              ),
-            );
-          }
+        if (releases.length <= 0) {
+          await delayIf(
+            () => index < (sources.length - 1),
+            this.#props.signal,
+          );
+          continue;
         }
 
-        await this.#props.database.transaction(async () => {
-          await Promise.all(
-            releases.map((item) =>
-              this.#props.database.sql<DbReleasesTable>`
+        await this.#props.database.transaction(() => {
+          releases.map((item) =>
+            this.#props.database.sql<DbReleasesTable>`
               insert into releases
                 (id,         "type",       provider,         "releasedAt",       raw)
               values
                 (${item.id}, ${item.type}, ${item.provider}, ${item.releasedAt}, jsonb(${item.raw}))
               on conflict (id, provider, "type")
-                do update set
-                  "releasedAt" = iif("releasedAt" is not null, "releasedAt", ${item.releasedAt}),
-                  raw = jsonb(${item.raw})
-              returning *;
+                do update
+                  set raw = jsonb(${item.raw})
             `
-            ),
           );
         });
 
         log.info(`Synced ${releases.length} releases`);
 
-        await delay(5000, { signal: this.#props.signal }).catch(() => {});
+        await delayIf(
+          () => index < (sources.length - 1),
+          this.#props.signal,
+        );
       } catch (error) {
         log.error("Could not sync releases for source successfully", {
-          source,
+          source: { id: source.id },
           error,
         });
-        await delay(5000, { signal: this.#props.signal }).catch(() => {});
+
+        await delayIf(
+          () => index < (sources.length - 1),
+          this.#props.signal,
+        );
       }
     }
 

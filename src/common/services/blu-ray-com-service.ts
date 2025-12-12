@@ -146,41 +146,22 @@ export class BluRayComService implements IBlurayComService {
     country: string,
     year: number,
     month: number,
+    type: ReleaseType.BLURAY | ReleaseType.DVD,
   ): Promise<BluRayComReleaseWithExtra[]> {
-    const [blurayTextContent, dvdTextContent] = await Promise.all([
-      await this.#props.httpClient.fetchText(
-        `https://www.blu-ray.com/movies/releasedates.php?year=${year}&month=${month}`,
-        {
-          headers: {
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
-            "Cookie": `country=${country}`,
-          },
+    const textContent = await this.#props.httpClient.fetchText(
+      type === ReleaseType.BLURAY
+        ? `https://www.blu-ray.com/movies/releasedates.php?year=${year}&month=${month}`
+        : `https://www.blu-ray.com/dvd/releasedates.php?year=${year}&month=${month}`,
+      {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+          "Cookie": `country=${country}`,
         },
-      ),
-      await this.#props.httpClient.fetchText(
-        `https://www.blu-ray.com/dvd/releasedates.php?year=${year}&month=${month}`,
-        {
-          headers: {
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
-            "Cookie": `country=${country}`,
-          },
-        },
-      ),
-    ]);
+      },
+    );
 
-    return [
-      ...this.#extractMovieListItems(
-        blurayTextContent,
-        ReleaseType.BLURAY,
-        country,
-      ),
-      ...this.#extractMovieListItems(
-        dvdTextContent,
-        ReleaseType.DVD,
-        country,
-      ),
-    ];
+    return this.#extractMovieListItems(textContent, type, country)
+      .map((item) => bluRayComReleaseWithExtraSchema.parse(item));
   }
 }

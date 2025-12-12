@@ -6,4 +6,5 @@ export interface IDatabase {
     ...parameters: (SQLInputValue | SQLInputValue[])[]
   ): T[];
   transaction<T>(fn: () => T | Promise<T>): Promise<T>;
+  exec(sql: string): void;
 }

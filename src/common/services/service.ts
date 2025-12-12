@@ -236,8 +236,13 @@ export interface IBlurayComService {
     country: string,
     year: number,
     month: number,
+    type: ReleaseType.BLURAY | ReleaseType.DVD,
   ): Promise<BluRayComReleaseWithExtra[]>;
 }
+
+export type ProviderReleaseSources =
+  | BluRayComCountry
+  | ItunesLookupArtistModelWithExtra;
 
 export type ProviderRelease =
   | ItunesLookupAlbumModelWithExtra

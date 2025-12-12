@@ -51,7 +51,7 @@ const releaseToFeedItem = (release: DbReleasesTable): Item => {
           return {
             date: parsed.releaseDate,
             link: parsed.trackViewUrl,
-            title: parsed.trackName,
+            title: `${parsed.artistName} - ${parsed.trackName}`,
             id: `${release.provider}@${release.type}@${parsed.trackId}`,
             image: parsed.artworkUrl100
               .split("/")
@@ -69,7 +69,7 @@ const releaseToFeedItem = (release: DbReleasesTable): Item => {
           return {
             date: parsed.releaseDate,
             link: parsed.collectionViewUrl,
-            title: parsed.collectionName,
+            title: `${parsed.artistName} - ${parsed.collectionName}`,
             id: `${release.provider}@${release.type}@${parsed.collectionId}`,
             image: parsed.artworkUrl100
               .split("/")

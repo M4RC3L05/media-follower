@@ -18,7 +18,7 @@ export const fromReleaseSourceToPersistance = (
   item: ItunesLookupArtistModel,
 ): DbReleaseSourcesTable => {
   return {
-    id: crypto.randomUUID(),
+    id: String(item.artistId),
     provider: ReleaseSourceProvider.ITUNES,
     raw: JSON.stringify(item),
   };

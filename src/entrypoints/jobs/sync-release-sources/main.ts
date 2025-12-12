@@ -7,6 +7,8 @@ import { gracefulShutdown } from "#src/common/process/mod.ts";
 import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
 import { CustomDatabase } from "#src/common/database/mod.ts";
 import { App } from "#src/entrypoints/jobs/sync-release-sources/app.ts";
+import { itunesMappers } from "../../../common/mappers/mod.ts";
+import { itunesLookupArtistModelWithExtraSchema } from "../../../common/services/service.ts";
 
 initConfig();
 
@@ -22,7 +24,21 @@ const itunesService = new ItunesService({
   httpClient: new HttpFetch({ signal: shutdownSignal }),
 });
 
-await new App({ database: db, itunesService, provider, signal: shutdownSignal })
+await new App({
+  database: db,
+  service: {
+    fetchReleaseSource: async (source) => {
+      const parsed = itunesLookupArtistModelWithExtraSchema.parse(source.raw);
+      const fetched = await itunesService.lookupArtistById(parsed.artistId);
+
+      if (!fetched) return;
+
+      return itunesMappers.fromReleaseSourceToPersistance(fetched);
+    },
+  },
+  provider,
+  signal: shutdownSignal,
+})
   .execute();
 
 await done();
