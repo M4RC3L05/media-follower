@@ -36,16 +36,26 @@ export class App {
     const url = new URL(request.url);
 
     if (request.method === "GET" && url.pathname === "/sources") {
-      const { provider } = z.object({
+      const { provider, limit, page } = z.object({
         provider: z.enum(ReleaseSourceProvider).optional(),
+        page: z.string().optional().pipe(z.coerce.number()).pipe(
+          z.number().min(0),
+        ).default(0),
+        limit: z.string().optional().pipe(z.coerce.number()).pipe(
+          z.number().min(0),
+        ).default(10),
       }).parse(Object.fromEntries(url.searchParams.entries()));
 
       const sources = this.#props.database.sql<DbReleaseSourcesTable>`
         select *, json(raw) as raw from release_sources
         where ${provider ? 1 : null} is null or provider = ${provider ?? null}
+        limit ${limit}
+        offset ${page * limit}
       `;
 
-      return pageToHtmlResponse(sourcesIndexPage({ sources }));
+      return pageToHtmlResponse(
+        sourcesIndexPage({ sources, url, paginatio: { page, limit } }),
+      );
     }
 
     if (url.pathname === "/sources/create") {
