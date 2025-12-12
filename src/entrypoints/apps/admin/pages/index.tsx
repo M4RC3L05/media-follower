@@ -1,4 +1,4 @@
-import { Page } from "./page.tsx";
+import { Page } from "#src/entrypoints/apps/admin/pages/page.tsx";
 
 const IndexPage = () => (
   <Page>

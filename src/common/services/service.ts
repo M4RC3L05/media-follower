@@ -1,6 +1,6 @@
 import z from "@zod/zod";
-import { ReleaseType } from "../database/enums/release-type.ts";
-import { ReleaseSourceProvider } from "../database/enums/release-source-provider.ts";
+import { ReleaseType } from "#src/common/database/enums/release-type.ts";
+import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
 
 export const itunesLookupArtistModelSchema = z.object({
   wrapperType: z.literal("artist"),

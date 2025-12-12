@@ -1,17 +1,17 @@
-import type { IDatabase } from "../../../common/database/database.ts";
-import { ReleaseSourceProvider } from "../../../common/database/enums/release-source-provider.ts";
+import type { IDatabase } from "#src/common/database/database.ts";
+import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
 import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
-} from "../../../common/database/types.ts";
-import { makeLogger } from "../../../common/logger/mod.ts";
+} from "#src/common/database/types.ts";
+import { makeLogger } from "#src/common/logger/mod.ts";
 import {
   bluRayComCountrySchema,
   type IBlurayComService,
   type IItunesService,
   itunesLookupArtistModelWithExtraSchema,
   ITunesLookupEntityType,
-} from "../../../common/services/service.ts";
+} from "#src/common/services/service.ts";
 import * as bluRayComMappers from "#src/common/mappers/blu-ray-com-mappers.ts";
 import * as itunesMappers from "#src/common/mappers/itunes-mappers.ts";
 import { delay } from "@std/async/delay";

@@ -1,6 +1,6 @@
 import type { FunctionComponent } from "preact";
-import { ReleaseSourceProvider } from "../../../../../common/database/enums/release-source-provider.ts";
-import { Page } from "../page.tsx";
+import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
+import { Page } from "#src/entrypoints/apps/admin/pages/page.tsx";
 
 const BluRayComSourceCreateForm = () => (
   <>

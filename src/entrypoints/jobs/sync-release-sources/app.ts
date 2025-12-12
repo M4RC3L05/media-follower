@@ -1,13 +1,13 @@
 import { delay } from "@std/async";
-import type { DbReleaseSourcesTable } from "../../../common/database/types.ts";
+import type { DbReleaseSourcesTable } from "#src/common/database/types.ts";
 import {
   type IItunesService,
   itunesLookupArtistModelWithExtraSchema,
-} from "../../../common/services/service.ts";
+} from "#src/common/services/service.ts";
 import * as itunesMappers from "#src/common/mappers/itunes-mappers.ts";
-import type { IDatabase } from "../../../common/database/database.ts";
-import type { ReleaseSourceProvider } from "../../../common/database/enums/release-source-provider.ts";
-import { makeLogger } from "../../../common/logger/mod.ts";
+import type { IDatabase } from "#src/common/database/database.ts";
+import type { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
+import { makeLogger } from "#src/common/logger/mod.ts";
 
 const log = makeLogger("sync-release-sources-app");
 

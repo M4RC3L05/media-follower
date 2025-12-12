@@ -7,14 +7,14 @@ import {
   type BluRayComReleaseWithExtra,
   bluRayComReleaseWithExtraSchema,
   type IBlurayComService,
-} from "./service.ts";
-import type { IHttpFetch } from "../http/mod.ts";
+} from "#src/common/services/service.ts";
+import type { IHttpFetch } from "#src/common/http/mod.ts";
 import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
-} from "../database/types.ts";
-import { ReleaseSourceProvider } from "../database/enums/release-source-provider.ts";
-import { ReleaseType } from "../database/enums/release-type.ts";
+} from "#src/common/database/types.ts";
+import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
+import { ReleaseType } from "#src/common/database/enums/release-type.ts";
 
 type BluRayComServiceProps = {
   httpClient: IHttpFetch;

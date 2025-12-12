@@ -1,6 +1,6 @@
 import type { FunctionComponent } from "preact";
 import type { DbReleaseSourcesTable } from "#src/common/database/types.ts";
-import { Page } from "../page.tsx";
+import { Page } from "#src/entrypoints/apps/admin/pages/page.tsx";
 import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
 import {
   type BluRayComCountry,

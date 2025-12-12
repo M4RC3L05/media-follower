@@ -1,14 +1,14 @@
-import { config, initConfig } from "../../../common/config/mod.ts";
-import { HttpFetch } from "../../../common/http/mod.ts";
-import { ItunesService } from "../../../common/services/itunes-service.ts";
-import { gracefulShutdown } from "../../../common/process/mod.ts";
-import { pageToHtmlResponse } from "./pages/page.tsx";
-import { BluRayComService } from "../../../common/services/blu-ray-com-service.ts";
-import { CustomDatabase } from "../../../common/database/mod.ts";
+import { config, initConfig } from "#src/common/config/mod.ts";
+import { HttpFetch } from "#src/common/http/mod.ts";
+import { ItunesService } from "#src/common/services/itunes-service.ts";
+import { gracefulShutdown } from "#src/common/process/mod.ts";
+import { pageToHtmlResponse } from "#src/entrypoints/apps/admin/pages/page.tsx";
+import { BluRayComService } from "#src/common/services/blu-ray-com-service.ts";
+import { CustomDatabase } from "#src/common/database/mod.ts";
 import { Server } from "#src/common/server/mod.ts";
-import { errorPage } from "./pages/error.tsx";
-import { App } from "./app.ts";
-import { makeLogger } from "../../../common/logger/mod.ts";
+import { errorPage } from "#src/entrypoints/apps/admin/pages/error.tsx";
+import { App } from "#src/entrypoints/apps/admin/app.ts";
+import { makeLogger } from "#src/common/logger/mod.ts";
 
 initConfig();
 

@@ -1,8 +1,8 @@
 import type { FunctionComponent } from "preact";
-import { Page } from "../page.tsx";
-import type { DbReleasesTable } from "../../../../../common/database/types.ts";
-import { ReleaseSourceProvider } from "../../../../../common/database/enums/release-source-provider.ts";
-import { ReleaseType } from "../../../../../common/database/enums/release-type.ts";
+import { Page } from "#src/entrypoints/apps/admin/pages/page.tsx";
+import type { DbReleasesTable } from "#src/common/database/types.ts";
+import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
+import { ReleaseType } from "#src/common/database/enums/release-type.ts";
 import {
   type BluRayComReleaseWithExtra,
   bluRayComReleaseWithExtraSchema,
@@ -10,7 +10,7 @@ import {
   itunesLookupAlbumModelWithExtraSchema,
   type ItunesLookupSongModelWithExtra,
   itunesLookupSongModelWithExtraSchema,
-} from "../../../../../common/services/service.ts";
+} from "#src/common/services/service.ts";
 
 type IndexPageProps = {
   releases: DbReleasesTable[];

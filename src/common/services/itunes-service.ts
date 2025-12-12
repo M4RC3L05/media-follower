@@ -15,8 +15,8 @@ import {
   type ItunesLookupTypeWithExtra,
   type ItunesResponseModel,
 } from "#src/common/services/service.ts";
-import { ReleaseSourceProvider } from "../database/enums/release-source-provider.ts";
-import { ReleaseType } from "../database/enums/release-type.ts";
+import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
+import { ReleaseType } from "#src/common/database/enums/release-type.ts";
 
 export type ItunesServiceProps = {
   httpClient: IHttpFetch;

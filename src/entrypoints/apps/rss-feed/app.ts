@@ -1,15 +1,15 @@
 import z from "@zod/zod";
 import { Feed, type Item } from "feed";
 import type { IServerApp } from "#src/common/server/mod.ts";
-import type { IDatabase } from "../../../common/database/database.ts";
-import { ReleaseType } from "../../../common/database/enums/release-type.ts";
-import type { DbReleasesTable } from "../../../common/database/types.ts";
-import { ReleaseSourceProvider } from "../../../common/database/enums/release-source-provider.ts";
+import type { IDatabase } from "#src/common/database/database.ts";
+import { ReleaseType } from "#src/common/database/enums/release-type.ts";
+import type { DbReleasesTable } from "#src/common/database/types.ts";
+import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
 import {
   bluRayComReleaseWithExtraSchema,
   itunesLookupAlbumModelWithExtraSchema,
   itunesLookupSongModelWithExtraSchema,
-} from "../../../common/services/service.ts";
+} from "#src/common/services/service.ts";
 
 type AppProps = {
   database: IDatabase;

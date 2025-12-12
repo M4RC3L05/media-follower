@@ -1,6 +1,6 @@
 import { toPascalCase } from "@std/text";
 import { config, initConfig } from "#src/common/config/mod.ts";
-import { CustomDatabase } from "../../../common/database/mod.ts";
+import { CustomDatabase } from "#src/common/database/mod.ts";
 
 initConfig();
 

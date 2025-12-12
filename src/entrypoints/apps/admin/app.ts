@@ -1,21 +1,24 @@
 import z from "@zod/zod";
 import {
   ReleaseSourceProvider,
-} from "../../../common/database/enums/release-source-provider.ts";
-import { pageToHtmlResponse } from "./pages/page.tsx";
+} from "#src/common/database/enums/release-source-provider.ts";
+import { pageToHtmlResponse } from "#src/entrypoints/apps/admin/pages/page.tsx";
 import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
-} from "../../../common/database/types.ts";
+} from "#src/common/database/types.ts";
 import type {
   IBlurayComService,
   IItunesService,
-} from "../../../common/services/service.ts";
-import { ReleaseType } from "../../../common/database/enums/release-type.ts";
-import { indexPage } from "./pages/index.tsx";
-import type { IDatabase } from "../../../common/database/database.ts";
-import { sourcesCreatePage, sourcesIndexPage } from "./pages/sources/mod.ts";
-import { releasesIndexPage } from "./pages/releases/mod.ts";
+} from "#src/common/services/service.ts";
+import { ReleaseType } from "#src/common/database/enums/release-type.ts";
+import { indexPage } from "#src/entrypoints/apps/admin/pages/index.tsx";
+import type { IDatabase } from "#src/common/database/database.ts";
+import {
+  sourcesCreatePage,
+  sourcesIndexPage,
+} from "#src/entrypoints/apps/admin/pages/sources/mod.ts";
+import { releasesIndexPage } from "#src/entrypoints/apps/admin/pages/releases/mod.ts";
 import * as bluRayComMappers from "#src/common/mappers/blu-ray-com-mappers.ts";
 import * as itunesMappers from "#src/common/mappers/itunes-mappers.ts";
 

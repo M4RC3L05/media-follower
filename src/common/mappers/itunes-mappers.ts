@@ -1,9 +1,9 @@
-import { ReleaseSourceProvider } from "../database/enums/release-source-provider.ts";
-import { ReleaseType } from "../database/enums/release-type.ts";
+import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
+import { ReleaseType } from "#src/common/database/enums/release-type.ts";
 import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
-} from "../database/types.ts";
+} from "#src/common/database/types.ts";
 import {
   type ItunesLookupAlbumModelWithExtra,
   itunesLookupAlbumModelWithExtraSchema,
@@ -12,7 +12,7 @@ import {
   type ItunesLookupSongModel,
   type ItunesLookupSongModelWithExtra,
   itunesLookupSongModelWithExtraSchema,
-} from "../services/service.ts";
+} from "#src/common/services/service.ts";
 
 export const fromReleaseSourceToPersistance = (
   item: ItunesLookupArtistModel,

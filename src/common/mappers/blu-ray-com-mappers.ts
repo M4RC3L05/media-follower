@@ -1,14 +1,14 @@
-import { ReleaseSourceProvider } from "../database/enums/release-source-provider.ts";
+import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
 import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
-} from "../database/types.ts";
+} from "#src/common/database/types.ts";
 import {
   type BluRayComCountry,
   bluRayComCountrySchema,
   type BluRayComReleaseWithExtra,
   bluRayComReleaseWithExtraSchema,
-} from "../services/service.ts";
+} from "#src/common/services/service.ts";
 
 export const fromReleaseToPersistance = (
   item: BluRayComReleaseWithExtra,
