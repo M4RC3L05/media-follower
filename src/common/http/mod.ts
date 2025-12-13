@@ -35,7 +35,7 @@ export class HttpFetch implements IHttpFetch {
 
     if (init?.signal) signals.push(init.signal);
     if (this.#props?.signal) signals.push(this.#props.signal);
-    signals.push(AbortSignal.timeout(this.#props?.timeout ?? 5000));
+    signals.push(AbortSignal.timeout(this.#props?.timeout ?? 15_000));
 
     return await fetch(path, {
       ...init,
