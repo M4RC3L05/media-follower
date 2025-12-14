@@ -5,10 +5,10 @@ import { pageToHtmlResponse } from "#src/entrypoints/apps/admin/pages/page.tsx";
 import { CustomDatabase } from "#src/common/database/mod.ts";
 import { Server } from "#src/common/server/mod.ts";
 import { errorPage } from "#src/entrypoints/apps/admin/pages/error.tsx";
-import { App } from "#src/entrypoints/apps/admin/app.ts";
 import { makeLogger } from "#src/common/logger/mod.ts";
-import { EInputProvider } from "../../../common/database/enums/mod.ts";
-import { providerFactory } from "../../../common/providers/provider.ts";
+import { EInputProvider } from "#src/common/database/enums/mod.ts";
+import { providerFactory } from "#src/common/providers/provider.ts";
+import { App } from "./app.ts";
 
 initConfig();
 

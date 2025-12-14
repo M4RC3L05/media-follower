@@ -1,4 +1,4 @@
-import { makeLogger } from "#src/common/logger/mod.ts";
+import { makeLogger } from "../logger/mod.ts";
 
 export const gracefulShutdown = () => {
   const log = makeLogger("gracefull-shutdown");

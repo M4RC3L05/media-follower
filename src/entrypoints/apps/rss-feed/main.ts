@@ -1,11 +1,11 @@
 import { config, initConfig } from "#src/common/config/mod.ts";
 import { gracefulShutdown } from "#src/common/process/mod.ts";
-import { App } from "#src/entrypoints/apps/rss-feed/app.ts";
 import { Server } from "#src/common/server/mod.ts";
 import { CustomDatabase } from "#src/common/database/mod.ts";
-import { EInputProvider } from "../../../common/database/enums/mod.ts";
-import { providerFactory } from "../../../common/providers/provider.ts";
-import { HttpFetch } from "../../../common/http/mod.ts";
+import { EInputProvider } from "#src/common/database/enums/mod.ts";
+import { providerFactory } from "#src/common/providers/provider.ts";
+import { HttpFetch } from "#src/common/http/mod.ts";
+import { App } from "./app.ts";
 
 initConfig();
 

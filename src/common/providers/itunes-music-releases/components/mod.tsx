@@ -1,5 +1,8 @@
-import { InputListItem, InputListItemProps } from "./input-list-item.tsx";
-import { OutputListItem, OutputListItemProps } from "./output-list-item.tsx";
+import { InputListItem, type InputListItemProps } from "./input-list-item.tsx";
+import {
+  OutputListItem,
+  type OutputListItemProps,
+} from "./output-list-item.tsx";
 
 export const inputListItem = (props: InputListItemProps) => (
   <InputListItem {...props} />

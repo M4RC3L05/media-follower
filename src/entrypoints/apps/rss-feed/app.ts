@@ -1,8 +1,8 @@
 import z from "@zod/zod";
 import type { IServerApp } from "#src/common/server/mod.ts";
 import type { IDatabase } from "#src/common/database/database.ts";
-import { EInputProvider } from "../../../common/database/enums/input-provider.ts";
-import { IProviderFeed } from "../../../common/providers/interfaces.ts";
+import { EInputProvider } from "#src/common/database/enums/input-provider.ts";
+import type { IProviderFeed } from "#src/common/providers/interfaces.ts";
 
 type AppProps = {
   database: IDatabase;

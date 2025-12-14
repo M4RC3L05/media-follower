@@ -1,7 +1,7 @@
-import { FunctionComponent } from "preact";
-import { Output } from "../types.ts";
-import { DbOutputsTable } from "../../../database/types.ts";
-import { EInputProvider } from "../../../database/enums/mod.ts";
+import type { FunctionComponent } from "preact";
+import type { Output } from "../types.ts";
+import type { DbOutputsTable } from "#src/common/database/types.ts";
+import { EInputProvider } from "#src/common/database/enums/mod.ts";
 
 export type OutputListItemProps = {
   output: Output;

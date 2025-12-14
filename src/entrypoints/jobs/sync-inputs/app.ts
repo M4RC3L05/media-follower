@@ -1,8 +1,8 @@
 import { delay } from "@std/async";
 import type { IDatabase } from "#src/common/database/database.ts";
 import { makeLogger } from "#src/common/logger/mod.ts";
-import { IProvider } from "../../../common/providers/interfaces.ts";
-import { DbInputsTable } from "../../../common/database/types.ts";
+import type { IProvider } from "#src/common/providers/interfaces.ts";
+import type { DbInputsTable } from "#src/common/database/types.ts";
 
 const log = makeLogger("sync-release-sources-app");
 

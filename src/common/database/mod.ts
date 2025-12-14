@@ -1,6 +1,6 @@
 import { DatabaseSync } from "node:sqlite";
 import type { SQLInputValue, StatementSync } from "node:sqlite";
-import type { IDatabase } from "#src/common/database/database.ts";
+import type { IDatabase } from "./database.ts";
 
 export class CustomDatabase extends DatabaseSync implements IDatabase {
   #cache = new Map<string, StatementSync>();

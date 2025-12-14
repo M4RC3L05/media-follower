@@ -1,7 +1,7 @@
-import { VNode } from "preact";
-import { EInputProvider } from "../database/enums/mod.ts";
-import { DbInputsTable, DbOutputsTable } from "../database/types.ts";
-import { Feed } from "feed";
+import type { VNode } from "preact";
+import type { EInputProvider } from "../database/enums/mod.ts";
+import type { DbInputsTable, DbOutputsTable } from "../database/types.ts";
+import type { Feed } from "feed";
 
 export interface IProvider<
   T extends EInputProvider = EInputProvider,

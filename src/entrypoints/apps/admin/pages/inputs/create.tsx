@@ -1,6 +1,6 @@
 import type { FunctionComponent } from "preact";
-import { EInputProvider } from "../../../../../common/database/enums/input-provider.ts";
-import { Page } from "#src/entrypoints/apps/admin/pages/page.tsx";
+import { EInputProvider } from "#src/common/database/enums/input-provider.ts";
+import { Page } from "../page.tsx";
 
 const CreatePage: FunctionComponent = () => (
   <Page>

@@ -1,6 +1,6 @@
-import { FunctionComponent } from "preact";
-import { ITunesLookupEntityType, Output } from "../types.ts";
-import { EInputProvider } from "../../../database/enums/input-provider.ts";
+import type { FunctionComponent } from "preact";
+import { ITunesLookupEntityType, type Output } from "../types.ts";
+import { EInputProvider } from "#src/common/database/enums/input-provider.ts";
 
 export type OutputListItemProps = {
   output: Output;

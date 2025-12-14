@@ -1,6 +1,6 @@
-import { FunctionComponent } from "preact";
-import { Input } from "../types.ts";
-import { EInputProvider } from "../../../database/enums/mod.ts";
+import type { FunctionComponent } from "preact";
+import type { Input } from "../types.ts";
+import { EInputProvider } from "#src/common/database/enums/mod.ts";
 
 export type InputListItemProps = { input: Input };
 

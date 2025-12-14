@@ -1,6 +1,6 @@
-import { IDatabase } from "../database/database.ts";
+import type { IDatabase } from "../database/database.ts";
 import { EInputProvider } from "../database/enums/input-provider.ts";
-import { IHttpFetch } from "../http/mod.ts";
+import type { IHttpFetch } from "../http/mod.ts";
 import { BluRayComPhysicalReleasesProvider } from "./blu-ray-com-physical-releases/provider.ts";
 import { ItunesMusicReleasesProvider } from "./itunes-music-releases/provider.ts";
 

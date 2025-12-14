@@ -1,27 +1,30 @@
-import {
+import type {
   IProvider,
   IProviderFeedGetOutputsFeedProps,
   IProviderRepositoryQueryOutputsProps,
 } from "../interfaces.ts";
-import { DbInputsTable, DbOutputsTable } from "../../database/types.ts";
-import { IHttpFetch } from "../../http/mod.ts";
-import { IDatabase } from "../../database/database.ts";
+import type {
+  DbInputsTable,
+  DbOutputsTable,
+} from "#src/common/database/types.ts";
+import type { IHttpFetch } from "#src/common/http/mod.ts";
+import type { IDatabase } from "#src/common/database/database.ts";
 import {
-  Input,
+  type Input,
   ITunesLookupEntityType,
-  ItunesMusicReleasesInput,
+  type ItunesMusicReleasesInput,
   itunesMusicReleasesInputSchema,
   itunesMusicReleasesInputWithExtraSchema,
-  ItunesMusicReleasesOutput,
+  type ItunesMusicReleasesOutput,
   itunesMusicReleasesOutputAlbumSchema,
-  ItunesMusicReleasesOutputSong,
+  type ItunesMusicReleasesOutputSong,
   itunesMusicReleasesOutputSongSchema,
-  ItunesResponseModel,
-  Output,
+  type ItunesResponseModel,
+  type Output,
 } from "./types.ts";
-import { EInputProvider } from "../../database/enums/input-provider.ts";
+import { EInputProvider } from "#src/common/database/enums/input-provider.ts";
 import { inputListItem, outputListItem } from "./components/mod.tsx";
-import { VNode } from "preact";
+import type { VNode } from "preact";
 import z from "@zod/zod";
 import { Feed } from "feed";
 
@@ -181,6 +184,7 @@ export class ItunesMusicReleasesProvider
     return [...songs, ...albums];
   }
 
+  // deno-lint-ignore require-await
   async queryOutputs(
     { pagination, queries }: IProviderRepositoryQueryOutputsProps,
   ): Promise<DbOutputsTable[]> {

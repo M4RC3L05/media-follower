@@ -1,8 +1,8 @@
 import type { FunctionComponent } from "preact";
 import { Page } from "#src/entrypoints/apps/admin/pages/page.tsx";
-import { EInputProvider } from "../../../../../common/database/enums/input-provider.ts";
-import { IProviderRender } from "../../../../../common/providers/interfaces.ts";
-import { DbInputsTable } from "../../../../../common/database/types.ts";
+import { EInputProvider } from "#src/common/database/enums/input-provider.ts";
+import type { IProviderRender } from "#src/common/providers/interfaces.ts";
+import type { DbInputsTable } from "#src/common/database/types.ts";
 
 type IndexPageProps = {
   sources: DbInputsTable[];

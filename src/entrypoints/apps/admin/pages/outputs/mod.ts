@@ -1,1 +1,1 @@
-export * from "#src/entrypoints/apps/admin/pages/outputs/index.tsx";
+export * from "./index.tsx";

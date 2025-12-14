@@ -1,16 +1,17 @@
 import z from "@zod/zod";
-import {
-  EInputProvider,
-} from "../../../common/database/enums/input-provider.ts";
+import { EInputProvider } from "#src/common/database/enums/input-provider.ts";
 import { pageToHtmlResponse } from "#src/entrypoints/apps/admin/pages/page.tsx";
 import { indexPage } from "#src/entrypoints/apps/admin/pages/index.tsx";
 import type { IDatabase } from "#src/common/database/database.ts";
-import { IProvider } from "../../../common/providers/interfaces.ts";
-import {
+import type { IProvider } from "#src/common/providers/interfaces.ts";
+import type {
   DbInputsTable,
   DbOutputsTable,
-} from "../../../common/database/types.ts";
-import { inputPages, outputPages } from "./pages/mod.ts";
+} from "#src/common/database/types.ts";
+import {
+  inputPages,
+  outputPages,
+} from "#src/entrypoints/apps/admin/pages/mod.ts";
 
 export type AppProps = {
   providers: Record<EInputProvider, IProvider>;

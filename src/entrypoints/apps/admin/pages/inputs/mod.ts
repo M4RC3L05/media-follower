@@ -1,2 +1,2 @@
-export * from "#src/entrypoints/apps/admin/pages/inputs/index.tsx";
-export * from "#src/entrypoints/apps/admin/pages/inputs/create.tsx";
+export * from "./index.tsx";
+export * from "./create.tsx";

@@ -1,4 +1,4 @@
-import { Page } from "#src/entrypoints/apps/admin/pages/page.tsx";
+import { Page } from "./page.tsx";
 
 const ErrorPage = () => (
   <Page>
