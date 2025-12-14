@@ -1,18 +1,16 @@
 /* GENERATED FILE CONTENT DO NOT EDIT */
 
-import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
-import { ReleaseType } from "#src/common/database/enums/release-type.ts";
+import { EInputProvider } from "#src/common/database/enums/mod.ts";
 
-export type DbReleaseSourcesTable = {
+export type DbInputsTable = {
   id: string;
-  provider: ReleaseSourceProvider;
+  provider: EInputProvider;
   raw: string;
 };
 
-export type DbReleasesTable = {
+export type DbOutputsTable = {
   id: string;
-  provider: ReleaseSourceProvider;
-  type: ReleaseType;
-  releasedAt: string;
+  input_id: string;
+  provider: EInputProvider;
   raw: string;
 };

@@ -1,31 +1,46 @@
 import z from "@zod/zod";
 import {
-  ReleaseSourceProvider,
-} from "#src/common/database/enums/release-source-provider.ts";
+  EInputProvider,
+} from "../../../common/database/enums/input-provider.ts";
 import { pageToHtmlResponse } from "#src/entrypoints/apps/admin/pages/page.tsx";
-import type {
-  DbReleaseSourcesTable,
-  DbReleasesTable,
-} from "#src/common/database/types.ts";
-import type {
-  IBlurayComService,
-  IItunesService,
-} from "#src/common/services/service.ts";
-import { ReleaseType } from "#src/common/database/enums/release-type.ts";
 import { indexPage } from "#src/entrypoints/apps/admin/pages/index.tsx";
 import type { IDatabase } from "#src/common/database/database.ts";
+import { IProvider } from "../../../common/providers/interfaces.ts";
 import {
-  sourcesCreatePage,
-  sourcesIndexPage,
-} from "#src/entrypoints/apps/admin/pages/sources/mod.ts";
-import { releasesIndexPage } from "#src/entrypoints/apps/admin/pages/releases/mod.ts";
-import * as bluRayComMappers from "#src/common/mappers/blu-ray-com-mappers.ts";
-import * as itunesMappers from "#src/common/mappers/itunes-mappers.ts";
+  DbInputsTable,
+  DbOutputsTable,
+} from "../../../common/database/types.ts";
+import { inputPages, outputPages } from "./pages/mod.ts";
 
 export type AppProps = {
-  blurayComService: IBlurayComService;
-  itunesService: IItunesService;
+  providers: Record<EInputProvider, IProvider>;
   database: IDatabase;
+};
+
+const getOutputs = (
+  { limit, page, provider, database }: {
+    provider: EInputProvider | undefined;
+    limit: number;
+    page: number;
+    database: IDatabase;
+  },
+) => {
+  return database.sql<DbOutputsTable>`
+    select id, input_id, provider, json(outputs.raw) as raw
+    from outputs
+    where (${provider ? 1 : null} is null or provider = ${provider ?? null})
+    order by (
+      case
+        when provider = ${EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE}
+          then outputs.raw->>'releasedate'
+        when provider = ${EInputProvider.ITUNES_MUSIC_RELEASE}
+          then outputs.raw->>'releaseDate'
+        else "rowid"
+      end
+    ) desc, "rowid" desc
+    limit ${limit}
+    offset ${page * limit}
+  `;
 };
 
 export class App {
@@ -38,9 +53,9 @@ export class App {
   fetch = async (request: Request) => {
     const url = new URL(request.url);
 
-    if (request.method === "GET" && url.pathname === "/sources") {
+    if (request.method === "GET" && url.pathname === "/inputs") {
       const { provider, limit, page } = z.object({
-        provider: z.enum(ReleaseSourceProvider).optional(),
+        provider: z.enum(EInputProvider).optional(),
         page: z.string().optional().pipe(z.coerce.number()).pipe(
           z.number().min(0),
         ).default(0),
@@ -49,88 +64,56 @@ export class App {
         ).default(10),
       }).parse(Object.fromEntries(url.searchParams.entries()));
 
-      const sources = this.#props.database.sql<DbReleaseSourcesTable>`
-        select *, json(raw) as raw from release_sources
+      const sources = this.#props.database.sql<DbInputsTable>`
+        select *, json(raw) as raw from inputs
         where ${provider ? 1 : null} is null or provider = ${provider ?? null}
         limit ${limit}
         offset ${page * limit}
       `;
 
       return pageToHtmlResponse(
-        sourcesIndexPage({ sources, url, paginatio: { page, limit } }),
+        inputPages.indexPage({
+          sources,
+          providers: this.#props.providers,
+          url,
+          paginatio: { page, limit },
+        }),
       );
     }
 
-    if (url.pathname === "/sources/create") {
+    if (url.pathname === "/inputs/create") {
       if (request.method === "GET") {
-        return pageToHtmlResponse(sourcesCreatePage());
+        return pageToHtmlResponse(inputPages.createPage());
       }
 
       if (request.method === "POST") {
         const formData = await request.formData();
-        const data = z.discriminatedUnion("provider", [
-          z.object({
-            provider: z.literal(ReleaseSourceProvider.BLU_RAY_COM),
-            country: z.string().min(1),
-          }),
-          z.object({
-            provider: z.literal(ReleaseSourceProvider.ITUNES),
-            artistId: z.string().min(1).pipe(z.coerce.number()),
-          }),
-        ]).parse(Object.fromEntries(formData.entries()));
+        const data = z.object({
+          provider: z.enum(EInputProvider),
+          term: z.string().min(1),
+        }).parse(Object.fromEntries(formData.entries()));
 
-        switch (data.provider) {
-          case ReleaseSourceProvider.BLU_RAY_COM: {
-            const remote = await this.#props.blurayComService.getCountries();
-            const selected = remote.find((item) => item.code === data.country);
+        const provider = this.#props.providers[data.provider];
+        const input = await provider.lookupInput(data.term);
 
-            if (!selected) {
-              return Response.redirect(new URL("/sources/create", url));
-            }
+        if (!input) return Response.redirect(new URL("/inputs", url));
 
-            const mapped = bluRayComMappers.fromReleaseSourceToPersistance(
-              selected,
-            );
+        const dbObj = provider.fromInputToPersistence(input);
 
-            this.#props.database.sql<DbReleaseSourcesTable>`
-              insert or replace into release_sources
-                (id, provider, raw)
-              values
-                (${mapped.id}, ${mapped.provider}, jsonb(${mapped.raw}))
-            `;
+        this.#props.database.sql`
+          insert or replace into inputs
+            (id, provider, raw)
+          values
+            (${dbObj.id}, ${dbObj.provider}, jsonb(${dbObj.raw}))
+        `;
 
-            return Response.redirect(new URL("/sources", url));
-          }
-          case ReleaseSourceProvider.ITUNES: {
-            const remote = await this.#props.itunesService.lookupArtistById(
-              data.artistId,
-            );
-
-            if (!remote) {
-              return Response.redirect(new URL("/sources/create", url));
-            }
-
-            const mapped = itunesMappers.fromReleaseSourceToPersistance(
-              remote,
-            );
-
-            this.#props.database.sql<DbReleaseSourcesTable>`
-              insert or replace into release_sources
-                (id, provider, raw)
-              values
-                (${mapped.id}, ${mapped.provider}, jsonb(${mapped.raw}))
-            `;
-
-            return Response.redirect(new URL("/sources", url));
-          }
-        }
+        return Response.redirect(new URL("/inputs", url));
       }
     }
 
-    if (request.method === "GET" && url.pathname === "/releases") {
-      const { provider, type, page, limit } = z.object({
-        provider: z.enum(ReleaseSourceProvider).optional(),
-        type: z.enum(ReleaseType).optional(),
+    if (request.method === "GET" && url.pathname === "/outputs") {
+      const { provider, page, limit } = z.object({
+        provider: z.enum(EInputProvider).optional(),
         page: z.string().optional().pipe(z.coerce.number()).pipe(
           z.number().min(0),
         ).default(0),
@@ -139,22 +122,17 @@ export class App {
         ).default(10),
       }).parse(Object.fromEntries(url.searchParams.entries()));
 
-      const releases = this.#props.database.sql<DbReleasesTable>`
-        select *, json(releases.raw) as raw
-        from releases
-        where
-            (${type ? 1 : null} is null or releases.type = ${type ?? null})
-        and (${provider ? 1 : null} is null or releases.provider = ${
-        provider ?? null
-      })
-        order by "releasedAt" desc, "rowid" desc
-        limit ${limit}
-        offset ${page * limit}
-      `;
+      const outputs = provider
+        ? await this.#props.providers[provider].queryOutputs({
+          pagination: { limit, page },
+          queries: Object.fromEntries(url.searchParams.entries()),
+        })
+        : getOutputs({ limit, database: this.#props.database, page, provider });
 
       return pageToHtmlResponse(
-        releasesIndexPage({
-          releases,
+        outputPages.indexPage({
+          outputs,
+          providers: this.#props.providers,
           url,
           paginatio: { page, limit },
         }),

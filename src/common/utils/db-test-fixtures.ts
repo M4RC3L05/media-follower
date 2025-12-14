@@ -1,5 +1,5 @@
 import type { IDatabase } from "#src/common/database/database.ts";
-import { ReleaseSourceProvider } from "#src/common/database/enums/release-source-provider.ts";
+import { EInputProvider } from "../database/enums/input-provider.ts";
 import type {
   DbReleaseSourcesTable,
   DbReleasesTable,
@@ -148,9 +148,9 @@ export const loadReleaseSource = (
   db: IDatabase,
   data?: DeepPartial<DbReleaseSourcesTable>,
 ) => {
-  const provider = data?.provider ?? ReleaseSourceProvider.BLU_RAY_COM;
+  const provider = data?.provider ?? EInputProvider.BLU_RAY_COM;
   const raw = data?.raw ??
-    (provider === ReleaseSourceProvider.BLU_RAY_COM
+    (provider === EInputProvider.BLU_RAY_COM
       ? JSON.stringify(generateReleaseSourceBluRayComCountry())
       : JSON.stringify(generateReleaseSourceItunesArtist()));
 
@@ -174,13 +174,13 @@ export const loadReleaseSource = (
 export const generateRelease = (
   data?: DeepPartial<DbReleasesTable>,
 ): DbReleasesTable => {
-  const provider = data?.provider ?? ReleaseSourceProvider.BLU_RAY_COM;
+  const provider = data?.provider ?? EInputProvider.BLU_RAY_COM;
   const type = data?.type ??
-    (provider === ReleaseSourceProvider.BLU_RAY_COM
+    (provider === EInputProvider.BLU_RAY_COM
       ? ReleaseType.BLURAY
       : ReleaseType.ALBUM);
   const raw = data?.raw ??
-    (provider === ReleaseSourceProvider.BLU_RAY_COM
+    (provider === EInputProvider.BLU_RAY_COM
       ? JSON.stringify(generateReleaseBluRayCom())
       : type === ReleaseType.ALBUM
       ? JSON.stringify(generateReleaseAlbumItunes())

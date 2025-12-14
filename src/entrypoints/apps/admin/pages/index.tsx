@@ -9,8 +9,8 @@ const IndexPage = () => (
       <header>
         <h1>Media Follower</h1>
         <nav>
-          <a href="/sources">Sources</a>
-          <a href="/releases">Releases</a>
+          <a href="/inputs">Go to inputs</a>
+          <a href="/outputs">Go to outputs</a>
         </nav>
       </header>
     </Page.Body>

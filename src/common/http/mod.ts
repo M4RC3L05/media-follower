@@ -49,7 +49,9 @@ export class HttpFetch implements IHttpFetch {
   ): Promise<T> {
     const response = await this.#request(path, init);
 
-    if (!response.ok) throw new Error("Request failed");
+    if (!response.ok) {
+      throw new Error("Request failed", { cause: await response.json() });
+    }
 
     const data: T = await response.json();
 
@@ -62,7 +64,9 @@ export class HttpFetch implements IHttpFetch {
   ): Promise<string> {
     const response = await this.#request(path, init);
 
-    if (!response.ok) throw new Error("Request failed");
+    if (!response.ok) {
+      throw new Error("Request failed", { cause: await response.text() });
+    }
 
     const data = await response.text();
 

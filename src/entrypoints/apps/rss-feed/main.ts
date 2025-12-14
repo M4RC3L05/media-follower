@@ -3,14 +3,30 @@ import { gracefulShutdown } from "#src/common/process/mod.ts";
 import { App } from "#src/entrypoints/apps/rss-feed/app.ts";
 import { Server } from "#src/common/server/mod.ts";
 import { CustomDatabase } from "#src/common/database/mod.ts";
+import { EInputProvider } from "../../../common/database/enums/mod.ts";
+import { providerFactory } from "../../../common/providers/provider.ts";
+import { HttpFetch } from "../../../common/http/mod.ts";
 
 initConfig();
 
-const { promise: shutdownPromise } = gracefulShutdown();
+const { promise: shutdownPromise, signal: shutdownSignal } = gracefulShutdown();
 
-using db = new CustomDatabase(config().database.path);
+using database = new CustomDatabase(config().database.path);
+const httpClient = new HttpFetch({ signal: shutdownSignal });
 await using _server = new Server({
-  app: new App({ database: db }),
+  app: new App({
+    database,
+    providers: {
+      [EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE]: providerFactory(
+        EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE,
+        { database, httpClient },
+      ),
+      [EInputProvider.ITUNES_MUSIC_RELEASE]: providerFactory(
+        EInputProvider.ITUNES_MUSIC_RELEASE,
+        { database, httpClient },
+      ),
+    },
+  }),
   hostname: config().apps.rssFeed.host,
   port: config().apps.rssFeed.port,
 });

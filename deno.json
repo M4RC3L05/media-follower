@@ -11,13 +11,13 @@
       "description": "Run rss feed app",
       "command": "deno run -A src/entrypoints/apps/admin/main.ts"
     },
-    "jobs:sync-release-sources": {
+    "jobs:sync-inputs": {
       "description": "Run sync release source app",
-      "command": "deno run -A src/entrypoints/jobs/sync-release-sources/main.ts"
+      "command": "deno run -A src/entrypoints/jobs/sync-inputs/main.ts"
     },
-    "jobs:sync-releases": {
+    "jobs:fetch-outputs": {
       "description": "Run sync release app",
-      "command": "deno run -A src/entrypoints/jobs/sync-releases/main.ts"
+      "command": "deno run -A src/entrypoints/jobs/fetch-outputs/main.ts"
     },
     "dev:run-migrations": {
       "description": "Run db migrations",

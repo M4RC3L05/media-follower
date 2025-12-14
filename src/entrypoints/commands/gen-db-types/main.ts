@@ -21,23 +21,19 @@ const sqliteToTsType: Record<string, TypeDef> = {
 };
 
 const tableOverrides: Record<string, Record<string, TypeDef>> = {
-  release_sources: {
+  inputs: {
     provider: {
-      namedImportPath: "#src/common/database/enums/release-source-provider.ts",
-      type: "ReleaseSourceProvider",
+      namedImportPath: "#src/common/database/enums/mod.ts",
+      type: "EInputProvider",
     },
     raw: {
       type: "string",
     },
   },
-  releases: {
+  outputs: {
     provider: {
-      namedImportPath: "#src/common/database/enums/release-source-provider.ts",
-      type: "ReleaseSourceProvider",
-    },
-    type: {
-      namedImportPath: "#src/common/database/enums/release-type.ts",
-      type: "ReleaseType",
+      namedImportPath: "#src/common/database/enums/mod.ts",
+      type: "EInputProvider",
     },
     raw: {
       type: "string",
