@@ -16,8 +16,10 @@ CREATE TABLE outputs (
 CREATE INDEX idx_outputs_provider ON outputs(provider);
 CREATE INDEX idx_outputs_input_id ON outputs(input_id);
 CREATE INDEX idx_outputs_provider_input_id ON outputs(provider, input_id);
+CREATE INDEX idx_outputs_id ON outputs(id);
 -- Dbmate schema migrations
 INSERT INTO "schema_migrations" (version) VALUES
   ('20251206205917'),
   ('20251206205918'),
-  ('20251214193125');
+  ('20251214193125'),
+  ('20251214200313');
