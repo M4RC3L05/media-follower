@@ -17,9 +17,21 @@ CREATE INDEX idx_outputs_provider ON outputs(provider);
 CREATE INDEX idx_outputs_input_id ON outputs(input_id);
 CREATE INDEX idx_outputs_provider_input_id ON outputs(provider, input_id);
 CREATE INDEX idx_outputs_id ON outputs(id);
+CREATE INDEX idx_outputs_imr_provider_input_id_raw_wrapper_raw_collection_id ON outputs(
+  provider,
+  input_id,
+  raw ->> 'wrapperType',
+  raw ->> 'collectionId'
+);
+CREATE INDEX idx_outputs_imr_provider_raw_release_date_raw_wrapper_type ON outputs(
+  provider,
+  raw ->> 'releaseDate',
+  raw ->> 'wrapperType'
+);
 -- Dbmate schema migrations
 INSERT INTO "schema_migrations" (version) VALUES
   ('20251206205917'),
   ('20251206205918'),
   ('20251214193125'),
-  ('20251214200313');
+  ('20251214200313'),
+  ('20251214234705');
