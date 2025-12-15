@@ -1,8 +1,9 @@
 import type { IDatabase } from "../database/database.ts";
 import { EInputProvider } from "../database/enums/input-provider.ts";
 import type { IHttpFetch } from "../http/mod.ts";
-import { BluRayComPhysicalReleasesProvider } from "./blu-ray-com-physical-releases/provider.ts";
-import { ItunesMusicReleasesProvider } from "./itunes-music-releases/provider.ts";
+import { BluRayComPhysicalReleasesProvider } from "./blu-ray-com-physical-releases/mod.ts";
+import { ItunesMusicReleasesProvider } from "./itunes-music-releases/mod.ts";
+import { SteamGamesFreePromosProvider } from "./steam-games-free-promos/mod.ts";
 
 type ProviderFactoryProps = { database: IDatabase; httpClient: IHttpFetch };
 
@@ -21,6 +22,12 @@ export const providerFactory = <P extends EInputProvider>(
       return new ItunesMusicReleasesProvider({
         database: props.database,
         httpClient: props.httpClient,
+      });
+    }
+    case EInputProvider.STEAM_GAMES_FREE_PROMOS: {
+      return new SteamGamesFreePromosProvider({
+        httpClient: props.httpClient,
+        database: props.database,
       });
     }
   }

@@ -25,6 +25,10 @@ await using _server = new Server({
         EInputProvider.ITUNES_MUSIC_RELEASE,
         { database, httpClient },
       ),
+      [EInputProvider.STEAM_GAMES_FREE_PROMOS]: providerFactory(
+        EInputProvider.STEAM_GAMES_FREE_PROMOS,
+        { database, httpClient },
+      ),
     },
   }),
   hostname: config().apps.rssFeed.host,

@@ -9,6 +9,7 @@
     "jsr:@std/async@^1.0.15": "1.0.15",
     "jsr:@std/cache@0.2.1": "0.2.1",
     "jsr:@std/cli@1.0.24": "1.0.24",
+    "jsr:@std/collections@1.1.3": "1.1.3",
     "jsr:@std/data-structures@^1.0.9": "1.0.9",
     "jsr:@std/encoding@1": "1.0.10",
     "jsr:@std/fmt@1": "1.0.8",
@@ -65,6 +66,9 @@
       "dependencies": [
         "jsr:@std/internal"
       ]
+    },
+    "@std/collections@1.1.3": {
+      "integrity": "bf8b0818886df6a32b64c7d3b037a425111f28278d69fd0995aeb62777c986b0"
     },
     "@std/data-structures@1.0.9": {
       "integrity": "033d6e17e64bf1f84a614e647c1b015fa2576ae3312305821e1a4cb20674bb4d"
@@ -166,6 +170,7 @@
       "jsr:@std/async@1.0.15",
       "jsr:@std/cache@0.2.1",
       "jsr:@std/cli@1.0.24",
+      "jsr:@std/collections@1.1.3",
       "jsr:@std/log@0.224.14",
       "jsr:@std/testing@1.0.16",
       "jsr:@std/text@1.0.16",

@@ -97,6 +97,7 @@
     "@std/async": "jsr:@std/async@1.0.15",
     "@std/cache": "jsr:@std/cache@0.2.1",
     "@std/cli": "jsr:@std/cli@1.0.24",
+    "@std/collections": "jsr:@std/collections@1.1.3",
     "@std/log": "jsr:@std/log@0.224.14",
     "@std/testing": "jsr:@std/testing@1.0.16",
     "@std/text": "jsr:@std/text@1.0.16",
