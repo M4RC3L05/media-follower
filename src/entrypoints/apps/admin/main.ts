@@ -57,6 +57,7 @@ await using _server = new Server({
         message: error instanceof HttpError ? error.message : undefined,
       }),
       error instanceof HttpError ? error.status : 500,
+      error instanceof HttpError ? error.headers : undefined,
     );
   },
   app: new App({
