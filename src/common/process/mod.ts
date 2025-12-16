@@ -29,7 +29,7 @@ export const gracefulShutdown = () => {
   globalThis.addEventListener("unhandledrejection", (e) => {
     e.preventDefault();
 
-    log.error("Unhandled rejection captured", { reason: e.reason });
+    log.error({ reason: e.reason }, "Unhandled rejection captured");
 
     exitCode = 1;
 
@@ -39,14 +39,14 @@ export const gracefulShutdown = () => {
   globalThis.addEventListener("error", (e) => {
     e.preventDefault();
 
-    log.error("Unhandled error captured", { error: e.error });
+    log.error({ error: e.error }, "Unhandled error captured");
 
     exitCode = 1;
 
     abort();
   });
 
-  globalThis.addEventListener("beforeunload", () => {
+  globalThis.addEventListener("unload", () => {
     abort();
 
     log.info(`Existing process with status "${exitCode}"`);

@@ -15,7 +15,7 @@ initConfig();
 const { promise: shutdownPromise, signal: shutdownSignal } = gracefulShutdown();
 
 const log = makeLogger("admin-app");
-log.critical;
+
 using database = new CustomDatabase(config().database.path);
 const httpClient = new HttpFetch({ signal: shutdownSignal });
 
@@ -26,7 +26,7 @@ await using _server = new Server({
     log.info(`Serving on http://${host}:${port}`);
   },
   onError: (error) => {
-    log.error("Something went wrong", { error });
+    log.error({ error }, "Something went wrong");
 
     return pageToHtmlResponse(errorPage(), 500);
   },

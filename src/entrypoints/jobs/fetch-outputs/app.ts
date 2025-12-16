@@ -37,7 +37,7 @@ export class App {
       if (this.#props.signal.aborted) break;
 
       try {
-        log.info("Syncting outputs from input", { input: dbInput });
+        log.info({ input: dbInput }, "Syncting outputs from input");
 
         const input = this.#props.provider.fromPersistenceToInput(
           dbInput,
@@ -77,10 +77,10 @@ export class App {
           this.#props.signal,
         );
       } catch (error) {
-        log.error("Could not sync outputs for input successfully", {
+        log.error({
           input: dbInput,
           error,
-        });
+        }, "Could not sync outputs for input successfully");
 
         await delayIf(
           () => index < (dbInputs.length - 1),

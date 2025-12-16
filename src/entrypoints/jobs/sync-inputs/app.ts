@@ -37,7 +37,7 @@ export class App {
       try {
         if (this.#props.signal.aborted) break;
 
-        log.info("Syncing source", { input: dbInput });
+        log.info({ input: dbInput }, "Syncing source");
 
         const releaseSourceFetched = await this.#props.provider.fetchInput(
           dbInput,
@@ -61,17 +61,17 @@ export class App {
           where id = ${dbInput.id}
         `;
 
-        log.info("Synced input", { input: dbInput });
+        log.info({ input: dbInput }, "Synced input");
 
         await delayIf(
           () => index < (dbInputs.length - 1),
           this.#props.signal,
         );
       } catch (error) {
-        log.error("Could not sync input successfully", {
+        log.error({
           input: dbInput,
           error,
-        });
+        }, "Could not sync input successfully");
 
         await delayIf(
           () => index < (dbInputs.length - 1),

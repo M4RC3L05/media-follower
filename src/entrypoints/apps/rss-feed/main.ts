@@ -6,14 +6,28 @@ import { EInputProvider } from "#src/common/database/enums/mod.ts";
 import { providerFactory } from "#src/common/providers/provider.ts";
 import { HttpFetch } from "#src/common/http/mod.ts";
 import { App } from "./app.ts";
+import { makeLogger } from "../../../common/logger/mod.ts";
 
 initConfig();
 
+const log = makeLogger("rss-feed");
+log.child({ foo: "bar", name: "biz" }).info("oioioioioioi");
 const { promise: shutdownPromise, signal: shutdownSignal } = gracefulShutdown();
 
 using database = new CustomDatabase(config().database.path);
 const httpClient = new HttpFetch({ signal: shutdownSignal });
 await using _server = new Server({
+  onListen: (host, port) => {
+    log.info(`Serving on http://${host}:${port}`);
+  },
+  onError: (error) => {
+    log.error({ error }, "Something went wrong");
+
+    return new Response("Internal server error", {
+      status: 500,
+      headers: { "content-type": "text/plain" },
+    });
+  },
   app: new App({
     database,
     providers: {

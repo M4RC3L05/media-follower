@@ -23,6 +23,10 @@
       "description": "Run db migrations",
       "command": "dbmate -u 'sqlite:./data/app.db' -d ./src/common/database/migrations -s ./src/common/database/schema.sql up && deno run -A src/entrypoints/commands/gen-db-types/main.ts"
     },
+    "dev:pretty-logs": {
+      "description": "Pretty print logs",
+      "command": "deno x pino-pretty"
+    },
     "test": {
       "description": "Run tests",
       "command": "ENV=test NODE_ENV=test DATABASE_PATH=':memory:' deno test --allow-env --allow-read=. --no-check --trace-leaks --parallel"
@@ -103,7 +107,7 @@
     "@std/text": "jsr:@std/text@1.0.16",
     "@zod/zod": "jsr:@zod/zod@4.1.13",
     "feed": "npm:feed@5.1.0",
-    "pino-std-serializers": "npm:pino-std-serializers@7.0.0",
+    "pino": "npm:pino@10.1.0",
     "preact": "npm:preact@10.28.0",
     "preact-render-to-string": "npm:preact-render-to-string@6.6.3",
     "simpledotcss": "npm:simpledotcss@2.3.7"
