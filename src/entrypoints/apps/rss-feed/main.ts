@@ -6,7 +6,7 @@ import { EInputProvider } from "#src/common/database/enums/mod.ts";
 import { providerFactory } from "#src/common/providers/provider.ts";
 import { HttpFetch } from "#src/common/http/mod.ts";
 import { App } from "./app.ts";
-import { makeLogger } from "../../../common/logger/mod.ts";
+import { makeLogger } from "#src/common/logger/mod.ts";
 
 initConfig();
 

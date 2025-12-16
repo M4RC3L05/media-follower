@@ -104,6 +104,7 @@
     "@std/collections": "jsr:@std/collections@1.1.3",
     "@std/crypto": "jsr:@std/crypto@1.0.5",
     "@std/encoding": "jsr:@std/encoding@1.0.10",
+    "@std/http": "jsr:@std/http@1.0.22",
     "@std/log": "jsr:@std/log@0.224.14",
     "@std/msgpack": "jsr:@std/msgpack@1.0.3",
     "@std/testing": "jsr:@std/testing@1.0.16",
