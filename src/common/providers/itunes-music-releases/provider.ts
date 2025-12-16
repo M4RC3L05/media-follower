@@ -186,20 +186,12 @@ export class ItunesMusicReleasesProvider
 
   // deno-lint-ignore require-await
   async queryOutputs(
-    { pagination, queries }: IProviderRepositoryQueryOutputsProps,
+    { pagination }: IProviderRepositoryQueryOutputsProps,
   ): Promise<DbOutputsTable[]> {
-    const { type } = z.object({
-      type: z.enum(ITunesLookupEntityType).optional(),
-    })
-      .parse(queries ?? {});
-
     return this.#props.database.sql<DbOutputsTable>`
         select id, input_id, provider, json(outputs.raw) as raw
         from outputs
         where provider = ${EInputProvider.ITUNES_MUSIC_RELEASE}
-        and   (${type ?? null} is null or outputs.raw->>'wrapperType' = ${
-      type === ITunesLookupEntityType.ALBUM ? "collection" : "track"
-    })
         order by outputs.raw->>'releaseDate' desc, "rowid" desc
         limit ${pagination.limit}
         offset ${pagination.page * pagination.limit}

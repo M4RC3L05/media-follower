@@ -168,20 +168,12 @@ export class BluRayComPhysicalReleasesProvider
 
   // deno-lint-ignore require-await
   async queryOutputs(
-    { pagination, queries }: IProviderRepositoryQueryOutputsProps,
+    { pagination }: IProviderRepositoryQueryOutputsProps,
   ): Promise<DbOutputsTable[]> {
-    const { type } = z.object({
-      type: z.enum(EBLuRayComPhysicalReleaseType).optional(),
-    })
-      .parse(queries ?? {});
-
     return this.#props.database.sql<DbOutputsTable>`
       select id, input_id, provider, json(outputs.raw) as raw
       from outputs
       where provider = ${EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE}
-      and   (${type ?? null} is null or outputs.raw->'extra'->>'type' = ${
-      type ?? null
-    })
       order by outputs.raw->>'releasedate' desc, "rowid" desc
       limit ${pagination.limit}
       offset ${pagination.page * pagination.limit}
