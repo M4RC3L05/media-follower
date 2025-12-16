@@ -16,11 +16,8 @@ export const OutputListItem: FunctionComponent<OutputListItemProps> = (
   return (
     <article>
       <h3>{title}</h3>
-      <div style={{ textAlign: "center" }}>
-        <img
-          style={{ aspectRatio: "9/16", maxWidth: "256px" }}
-          src={output.extra.artworkUrl}
-        />
+      <div>
+        <img src={output.extra.artworkUrl} />
         <p>
           {output.releasedate.toDateString()}
           {output.releasedate > new Date()

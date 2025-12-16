@@ -12,6 +12,10 @@ import {
   inputPages,
   outputPages,
 } from "#src/entrypoints/apps/admin/pages/mod.ts";
+import css from "simpledotcss/simple.min.css" with { type: "text" };
+import mainCss from "./static/main.css" with { type: "text" };
+
+const bundledCss = `${css}${mainCss}`;
 
 export type AppProps = {
   providers: Record<EInputProvider, IProvider>;
@@ -53,6 +57,13 @@ export class App {
 
   fetch = async (request: Request) => {
     const url = new URL(request.url);
+
+    if (request.method === "GET" && url.pathname === "/public/styles.css") {
+      return new Response(bundledCss, {
+        status: 200,
+        headers: { "content-type": "text/css" },
+      });
+    }
 
     if (request.method === "GET" && url.pathname === "/inputs") {
       const { provider, limit, page } = z.object({

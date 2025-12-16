@@ -32,6 +32,7 @@
     "jsr:@std/text@1.0.16": "1.0.16",
     "jsr:@zod/zod@4.1.13": "4.1.13",
     "npm:feed@5.1.0": "5.1.0",
+    "npm:nosecone@1.0.0-beta.15": "1.0.0-beta.15",
     "npm:pino@10.1.0": "10.1.0",
     "npm:preact-render-to-string@6.6.3": "6.6.3_preact@10.28.0",
     "npm:preact@10.28.0": "10.28.0",
@@ -159,6 +160,9 @@
         "xml-js"
       ]
     },
+    "nosecone@1.0.0-beta.15": {
+      "integrity": "sha512-e3D16yrYQKu+qtILUNEoopdhloAjBcjpREwi2XSyi9tt6Tupk+rPEh/omydf9OJqkBZaM05hyFcBpBJbYvndIg=="
+    },
     "on-exit-leak-free@2.1.2": {
       "integrity": "sha512-0eJJY6hXLGf1udHwfNftBqH+g73EU4B504nZeKpz1sYRKafAghwxEJunB2O7rDZkL4PGfsMVnTXZ2EjibbqcsA=="
     },
@@ -254,6 +258,7 @@
       "jsr:@std/text@1.0.16",
       "jsr:@zod/zod@4.1.13",
       "npm:feed@5.1.0",
+      "npm:nosecone@1.0.0-beta.15",
       "npm:pino@10.1.0",
       "npm:preact-render-to-string@6.6.3",
       "npm:preact@10.28.0",

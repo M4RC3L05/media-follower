@@ -13,22 +13,24 @@ const CreatePage: FunctionComponent = () => (
       </header>
 
       <main>
-        <form method="post" action="/inputs/create">
-          <select name="provider" id="provider">
-            {Object.values(EInputProvider).map((item) => (
-              <option value={item}>
-                {item.replaceAll("-", " ")}
-              </option>
-            ))}
-          </select>
+        <section>
+          <form method="post" action="/inputs/create">
+            <select name="provider" id="provider">
+              {Object.values(EInputProvider).map((item) => (
+                <option value={item}>
+                  {item.replaceAll("-", " ")}
+                </option>
+              ))}
+            </select>
 
-          <div>
-            <label for="term">Term:</label>
-            <input id="term" name="term" />
-          </div>
+            <div>
+              <label for="term">Term:</label>
+              <input id="term" name="term" />
+            </div>
 
-          <button type="submit">Create</button>
-        </form>
+            <button type="submit">Create</button>
+          </form>
+        </section>
       </main>
     </Page.Body>
   </Page>

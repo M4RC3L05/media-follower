@@ -14,10 +14,7 @@ export const OutputListItem: FunctionComponent<OutputListItemProps> = (
   return (
     <article>
       <h3>{title}</h3>
-      <img
-        style={{ aspectRatio: "16/9", maxWidth: "256px" }}
-        src={output.image}
-      />
+      <img src={output.image} />
       <p>{output.promoType}</p>
       <p>
         From {output.startDate.toDateString()} to{" "}

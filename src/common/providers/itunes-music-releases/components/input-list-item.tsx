@@ -9,11 +9,8 @@ export const InputListItem: FunctionComponent<InputListItemProps> = (
 ) => (
   <article>
     <h3>[{EInputProvider.ITUNES_MUSIC_RELEASE}] - {input.artistName}</h3>
-    <div style={{ textAlign: "center" }}>
-      <img
-        style={{ aspectRatio: "1/1", maxWidth: "256px" }}
-        src={input.extra.artistImage}
-      />
+    <div>
+      <img src={input.extra.artistImage} />
     </div>
     <details>
       <summary>Raw:</summary>

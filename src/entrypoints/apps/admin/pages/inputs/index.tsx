@@ -35,17 +35,8 @@ const IndexPage: FunctionComponent<IndexPageProps> = (
         </header>
 
         <main>
-          <section
-            style={{
-              paddingTop: "2rem",
-              textAlign: "left",
-              position: "sticky",
-              top: 0,
-              background: "var(--bg)",
-              zIndex: 2,
-            }}
-          >
-            <h6 style={{ marginTop: 0, marginBottom: 0, textAlign: "center" }}>
+          <section class="filters-section">
+            <h6 class="filters-section__item">
               Filter by provider:<br />
               <a href="/inputs" class="button">All</a> |{" "}
               {Object.values(EInputProvider).map((item, i, items) => (
@@ -55,7 +46,7 @@ const IndexPage: FunctionComponent<IndexPageProps> = (
                 </>
               ))}
             </h6>
-            <h6 style={{ marginTop: 0, marginBottom: 0, textAlign: "center" }}>
+            <h6 class="filters-section__item">
               Pagination:<br />
               <a href={prevPageLink.toString()} class="button">Prev</a> |{" "}
               <a href={nextPageLink.toString()} class="button">Next</a>

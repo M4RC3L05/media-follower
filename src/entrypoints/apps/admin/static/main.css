@@ -1,0 +1,24 @@
+main {
+  padding-top: 0;
+}
+
+.filters-section {
+  margin-top: 0;
+  padding-top: 2rem !important;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 2;
+}
+
+.filters-section__item {
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.filters-section__item .button {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
