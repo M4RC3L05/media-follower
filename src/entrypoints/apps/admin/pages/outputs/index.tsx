@@ -44,9 +44,9 @@ const IndexPage: FunctionComponent<IndexPageProps> = (
               zIndex: 2,
             }}
           >
-            <h6 style={{ marginTop: 0, marginBottom: 0 }}>
-              Filter by provider: <a href="/outputs" class="button">All</a> |
-              {" "}
+            <h6 style={{ marginTop: 0, marginBottom: 0, textAlign: "center" }}>
+              Filter by provider:<br />
+              <a href="/outputs" class="button">All</a> |{" "}
               {Object.values(EInputProvider).map((value, i, items) => (
                 <>
                   <a href={`?provider=${value}`} class="button">{value}</a>
@@ -54,8 +54,8 @@ const IndexPage: FunctionComponent<IndexPageProps> = (
                 </>
               ))}
             </h6>
-            <h6 style={{ marginTop: 0, marginBottom: 0 }}>
-              Pagination:{" "}
+            <h6 style={{ marginTop: 0, marginBottom: 0, textAlign: "center" }}>
+              Pagination:<br />
               <a href={prevPageLink.toString()} class="button">Prev</a> |{" "}
               <a href={nextPageLink.toString()} class="button">Next</a>
             </h6>
