@@ -5,7 +5,7 @@ import { AbstractRouteHandler } from "./route-handler.ts";
 import { EInputProvider } from "#src/common/database/enums/mod.ts";
 
 export class InputsCreateRouteHandler extends AbstractRouteHandler {
-  static override PATH = "/inputs";
+  static override PATH = "/inputs/create";
 
   override GET(_request: Request): Response | Promise<Response> {
     return pageToHtmlResponse(inputPages.createPage());

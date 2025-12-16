@@ -6,7 +6,7 @@ import { EInputProvider } from "#src/common/database/enums/mod.ts";
 import type { DbInputsTable } from "#src/common/database/types.ts";
 
 export class InputsRouteHandler extends AbstractRouteHandler {
-  static override PATH = "/inputs/create";
+  static override PATH = "/inputs";
 
   override GET(request: Request): Response | Promise<Response> {
     const url = new URL(request.url);
