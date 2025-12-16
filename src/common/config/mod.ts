@@ -14,6 +14,19 @@ const configSchema = z.object({
   database: z.object({
     path: z.string().min(1),
   }),
+  crypto: z.object({
+    pbkdf2: z.object({
+      iterations: z.union([
+        z.number().min(1),
+        z.string().pipe(z.coerce.number()).pipe(z.number().min(1)),
+      ]),
+      hashFunction: z.enum(["SHA-256", "SHA-384", "SHA-512"]),
+      saltLength: z.union([
+        z.number().min(1),
+        z.string().pipe(z.coerce.number()).pipe(z.number().min(1)),
+      ]),
+    }),
+  }),
 });
 
 export type ProjectConfig = z.infer<typeof configSchema>;
@@ -34,6 +47,13 @@ export const initConfig = () => {
     },
     database: {
       path: Deno.env.get("DATABASE_PATH") ?? "./data/app.db",
+    },
+    crypto: {
+      pbkdf2: {
+        iterations: Deno.env.get("CRYPTO_PBKDF2_ITERATIONS") ?? 800_000,
+        hashFunction: Deno.env.get("CRYPTO_PBKDF2_HASH_FUNCTION") ?? "SHA-512",
+        saltLength: Deno.env.get("CRYPTO_PBKDF2_SALT_LENGTH") ?? 16,
+      },
     },
   });
 };

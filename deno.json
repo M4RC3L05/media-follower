@@ -29,7 +29,7 @@
     },
     "test": {
       "description": "Run tests",
-      "command": "ENV=test NODE_ENV=test DATABASE_PATH=':memory:' deno test --allow-env --allow-read=. --no-check --trace-leaks --parallel"
+      "command": "ENV=test NODE_ENV=test DATABASE_PATH=':memory:' CRYPTO_PBKDF2_ITERATIONS=1 CRYPTO_PBKDF2_HASH_FUNCTION=SHA-256 CRYPTO_PBKDF2_SALT_LENGTH=1 deno test --allow-env --allow-read=. --no-check --trace-leaks --parallel"
     },
     "check:fmt": {
       "description": "Run formatting checks",
@@ -102,11 +102,15 @@
     "@std/cache": "jsr:@std/cache@0.2.1",
     "@std/cli": "jsr:@std/cli@1.0.24",
     "@std/collections": "jsr:@std/collections@1.1.3",
+    "@std/crypto": "jsr:@std/crypto@1.0.5",
+    "@std/encoding": "jsr:@std/encoding@1.0.10",
     "@std/log": "jsr:@std/log@0.224.14",
+    "@std/msgpack": "jsr:@std/msgpack@1.0.3",
     "@std/testing": "jsr:@std/testing@1.0.16",
     "@std/text": "jsr:@std/text@1.0.16",
     "@zod/zod": "jsr:@zod/zod@4.1.13",
     "feed": "npm:feed@5.1.0",
+    "hash-wasm": "npm:hash-wasm@4.12.0",
     "pino": "npm:pino@10.1.0",
     "preact": "npm:preact@10.28.0",
     "preact-render-to-string": "npm:preact-render-to-string@6.6.3",
