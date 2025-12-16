@@ -29,21 +29,23 @@ export const OutputListItem: FunctionComponent<OutputListItemProps> = (
           ? ITunesLookupEntityType.ALBUM
           : ITunesLookupEntityType.SONG}] {output.artistName} - {title}
       </h3>
-      <img
-        style={{ aspectRatio: "1/1", maxWidth: "256px" }}
-        src={image}
-      />
-      <p>
-        {output.releaseDate.toDateString()}
-        {output.releaseDate > new Date()
-          ? (
-            <>
-              {" "}
-              <em>(To be released)</em>
-            </>
-          )
-          : undefined}
-      </p>
+      <div style={{ textAlign: "center" }}>
+        <img
+          style={{ aspectRatio: "1/1", maxWidth: "256px", width: "100%" }}
+          src={image}
+        />
+        <p>
+          {output.releaseDate.toDateString()}
+          {output.releaseDate > new Date()
+            ? (
+              <>
+                {" "}
+                <em>(To be released)</em>
+              </>
+            )
+            : undefined}
+        </p>
+      </div>
       <a target="_blank" href={link}>View on source</a>
       <details>
         <summary>Raw:</summary>
