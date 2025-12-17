@@ -1,3 +1,4 @@
+import { routes } from "../router.ts";
 import { Page } from "./page.tsx";
 
 const IndexPage = () => (
@@ -11,6 +12,9 @@ const IndexPage = () => (
         <nav>
           <a href="/inputs">Go to inputs</a>
           <a href="/outputs">Go to outputs</a>
+          <form method="post" action={routes.auth.logout.href()}>
+            <input type="submit" value="Logout" />
+          </form>
         </nav>
       </header>
     </Page.Body>

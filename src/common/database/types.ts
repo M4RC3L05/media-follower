@@ -14,3 +14,9 @@ export type DbOutputsTable = {
   provider: EInputProvider;
   raw: string;
 };
+
+export type DbUsersTable = {
+  id: string;
+  username: string;
+  password: string;
+};

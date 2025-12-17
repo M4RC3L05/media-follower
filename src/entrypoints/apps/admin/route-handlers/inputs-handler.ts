@@ -6,6 +6,8 @@ import type { RequestContext } from "@remix-run/fetch-router";
 import type { DbInputsTable } from "#src/common/database/types.ts";
 import type { IDatabase } from "#src/common/database/database.ts";
 import type { IProvider } from "#src/common/providers/interfaces.ts";
+import { createRedirectResponse } from "@remix-run/response/redirect";
+import { routes } from "../router.ts";
 
 type InputsIndexProps = {
   database: IDatabase;
@@ -51,7 +53,7 @@ type InputsCreatePostProps = {
 
 export const inputsCreatePost = (props: InputsCreatePostProps) =>
 async (
-  { formData, url }: RequestContext,
+  { formData }: RequestContext,
 ) => {
   const data = z.object({
     provider: z.enum(EInputProvider),
@@ -61,7 +63,7 @@ async (
   const provider = props.providers[data.provider];
   const input = await provider.lookupInput(data.term);
 
-  if (!input) return Response.redirect(new URL("/inputs", url));
+  if (!input) return createRedirectResponse(routes.inputs.create.index.href());
 
   const dbObj = provider.fromInputToPersistence(input);
 
@@ -72,5 +74,5 @@ async (
       (${dbObj.id}, ${dbObj.provider}, jsonb(${dbObj.raw}))
   `;
 
-  return Response.redirect(new URL("/inputs", url));
+  return createRedirectResponse(routes.inputs.index.href());
 };

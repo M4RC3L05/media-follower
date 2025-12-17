@@ -14,6 +14,9 @@ const configSchema = z.object({
   database: z.object({
     path: z.string().min(1),
   }),
+  session: z.object({
+    secret: z.string().min(1),
+  }),
   crypto: z.object({
     pbkdf2: z.object({
       iterations: z.union([
@@ -47,6 +50,9 @@ export const initConfig = () => {
     },
     database: {
       path: Deno.env.get("DATABASE_PATH") ?? "./data/app.db",
+    },
+    session: {
+      secret: Deno.env.get("SESSION_SECRET") ?? "foobar",
     },
     crypto: {
       pbkdf2: {

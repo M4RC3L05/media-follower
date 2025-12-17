@@ -1,4 +1,4 @@
-import { createRouter, form, get, route } from "@remix-run/fetch-router";
+import { createRouter, form, get, post, route } from "@remix-run/fetch-router";
 import { createCookieSessionStorage } from "@remix-run/session/cookie-storage";
 import { createCookie } from "@remix-run/cookie";
 import { session } from "@remix-run/session-middleware";
@@ -14,6 +14,15 @@ import {
 import type { IDatabase } from "#src/common/database/database.ts";
 import type { EInputProvider } from "#src/common/database/enums/mod.ts";
 import type { IProvider } from "#src/common/providers/interfaces.ts";
+import {
+  loginHandlerGet,
+  loginHandlerPost,
+  logoutHandler,
+  registerHandlerGet,
+  registerHandlerPost,
+} from "./route-handlers/auth-handler.ts";
+import { config } from "../../../common/config/mod.ts";
+import { checkAuth, notAuth } from "./middlewares/mod.tsx";
 
 export const routes = route({
   home: get("/"),
@@ -23,16 +32,12 @@ export const routes = route({
     create: form("/inputs/create"),
   },
   outputs: get("/outputs"),
+  auth: {
+    login: form("/auth/login"),
+    register: form("/auth/register"),
+    logout: post("/auth/logout"),
+  },
 });
-
-const sessionCookie = createCookie("__sid", {
-  secrets: ["s3cr3t"],
-  httpOnly: true,
-  secure: Deno.env.get("ENV") === "production",
-  sameSite: "Strict",
-});
-
-const sessionStorage = createCookieSessionStorage();
 
 type MakeRouterProps = {
   database: IDatabase;
@@ -40,19 +45,45 @@ type MakeRouterProps = {
 };
 
 export const makeRouter = (props: MakeRouterProps) => {
+  const sessionCookie = createCookie("__sid", {
+    secrets: [config().session.secret],
+    httpOnly: true,
+    secure: Deno.env.get("ENV") === "production",
+    sameSite: "Strict",
+  });
+
+  const sessionStorage = createCookieSessionStorage();
+
   const router = createRouter({
     middleware: [session(sessionCookie, sessionStorage), formData()],
   });
 
   router.map(routes, {
     public: publicIndex,
-    home: indexHandler,
+    auth: {
+      login: {
+        middleware: [notAuth],
+        actions: {
+          action: loginHandlerPost({ database: props.database }),
+          index: loginHandlerGet,
+        },
+      },
+      register: {
+        middleware: [notAuth],
+        actions: {
+          index: registerHandlerGet,
+          action: registerHandlerPost({ database: props.database }),
+        },
+      },
+      logout: { middleware: [checkAuth], action: logoutHandler },
+    },
+    home: { action: indexHandler, middleware: [checkAuth] },
     outputs: {
-      middleware: [],
+      middleware: [checkAuth],
       action: outputsIndex(props),
     },
     inputs: {
-      middleware: [],
+      middleware: [checkAuth],
       actions: {
         create: {
           action: inputsCreatePost(props),

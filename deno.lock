@@ -39,6 +39,7 @@
     "npm:@remix-run/cookie@0.5.0": "0.5.0_@remix-run+headers@0.17.2",
     "npm:@remix-run/fetch-router@0.13.0": "0.13.0_@remix-run+headers@0.18.0_@remix-run+route-pattern@0.15.3_@remix-run+session@0.4.1",
     "npm:@remix-run/form-data-middleware@0.1.1": "0.1.1_@remix-run+fetch-router@0.13.0__@remix-run+headers@0.18.0__@remix-run+route-pattern@0.15.3__@remix-run+session@0.4.1_@remix-run+form-data-parser@0.14.0_@remix-run+session@0.4.1",
+    "npm:@remix-run/response@0.2.0": "0.2.0_@remix-run+headers@0.18.0_@remix-run+html-template@0.3.0_@remix-run+mime@0.1.0",
     "npm:@remix-run/session-middleware@0.1.1": "0.1.1_@remix-run+cookie@0.5.0__@remix-run+headers@0.17.2_@remix-run+fetch-router@0.13.0__@remix-run+headers@0.18.0__@remix-run+route-pattern@0.15.3__@remix-run+session@0.4.1_@remix-run+session@0.4.1",
     "npm:@remix-run/session@~0.4.1": "0.4.1",
     "npm:feed@5.1.0": "5.1.0",
@@ -212,10 +213,24 @@
     "@remix-run/headers@0.18.0": {
       "integrity": "sha512-5V/doLOF1IBuMhV+USa/ImUzpql4SQ0VBbNKbRHvrwRK59GYGVqtcwpVzgdFb5QEa2vIedq4JdOy7FIesZUpIw=="
     },
+    "@remix-run/html-template@0.3.0": {
+      "integrity": "sha512-aAMx68udtIk0fmCpCXHYscVeCDsRVEmEgh4XvtusPr3vkHu3jn4gx5oAxgsPXPdDmmD/d75SYyI0m/F+aLz5iQ=="
+    },
+    "@remix-run/mime@0.1.0": {
+      "integrity": "sha512-SUuIhuzaFdPPF8hPJ2qneILnP3Nxc96jvuz6QAhXDeqenXsCNUdduF+6J2PILdzme0t3dVZcHARfcgYPTaOWdg=="
+    },
     "@remix-run/multipart-parser@0.13.0": {
       "integrity": "sha512-EMEnc4YOzOnw62BmdTqvlmvzUCYDsQ1fpca6Xtvn8oV5GHXMYJoB3ocQyA+KNAa3j8QzKyNomifUXJ9OVrGEXA==",
       "dependencies": [
         "@remix-run/headers@0.15.0"
+      ]
+    },
+    "@remix-run/response@0.2.0_@remix-run+headers@0.18.0_@remix-run+html-template@0.3.0_@remix-run+mime@0.1.0": {
+      "integrity": "sha512-oo5LA6On7OO2uJxjjYOsvEHvc5MnBdQavZoiuT2a9HiwKRNpc8Y3D85oqHjtJJBNtgg+Ug1JN3H0RILezpAYTg==",
+      "dependencies": [
+        "@remix-run/headers@0.18.0",
+        "@remix-run/html-template",
+        "@remix-run/mime"
       ]
     },
     "@remix-run/route-pattern@0.15.3": {
@@ -341,6 +356,7 @@
       "npm:@remix-run/cookie@0.5.0",
       "npm:@remix-run/fetch-router@0.13.0",
       "npm:@remix-run/form-data-middleware@0.1.1",
+      "npm:@remix-run/response@0.2.0",
       "npm:@remix-run/session-middleware@0.1.1",
       "npm:@remix-run/session@~0.4.1",
       "npm:feed@5.1.0",

@@ -28,10 +28,17 @@ CREATE INDEX idx_outputs_imr_provider_raw_release_date_raw_wrapper_type ON outpu
   raw ->> 'releaseDate',
   raw ->> 'wrapperType'
 );
+CREATE TABLE users(
+  id text NOT NULL PRIMARY KEY,
+  username text NOT NULL,
+  "password" text NOT NULL
+) strict,
+without rowid;
 -- Dbmate schema migrations
 INSERT INTO "schema_migrations" (version) VALUES
   ('20251206205917'),
   ('20251206205918'),
   ('20251214193125'),
   ('20251214200313'),
-  ('20251214234705');
+  ('20251214234705'),
+  ('20251217011210');
