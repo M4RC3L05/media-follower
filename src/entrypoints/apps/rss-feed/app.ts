@@ -16,9 +16,18 @@ export class App implements IServerApp {
     this.#props = props;
   }
 
-  fetch = (request: Request) => {
+  fetch = async (request: Request) => {
     const parsedUrl = URL.parse(request.url)!;
     const queries = Object.fromEntries(parsedUrl.searchParams.entries());
+
+    if (parsedUrl.pathname === "/favicon.ico") {
+      const favicon = await Deno.open(
+        "src/entrypoints/apps/rss-feed/public/favicon.ico",
+        { read: true, write: false },
+      );
+
+      return new Response(favicon.readable);
+    }
 
     const { provider } = z.object({ provider: z.enum(EInputProvider) }).parse(
       queries,

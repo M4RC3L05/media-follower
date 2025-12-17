@@ -11,7 +11,7 @@ import { makeLogger } from "#src/common/logger/mod.ts";
 initConfig();
 
 const log = makeLogger("rss-feed");
-log.child({ foo: "bar", name: "biz" }).info("oioioioioioi");
+
 const { promise: shutdownPromise, signal: shutdownSignal } = gracefulShutdown();
 
 using database = new CustomDatabase(config().database.path);

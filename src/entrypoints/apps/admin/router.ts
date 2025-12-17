@@ -3,6 +3,7 @@ import { createCookieSessionStorage } from "@remix-run/session/cookie-storage";
 import { createCookie } from "@remix-run/cookie";
 import { session } from "@remix-run/session-middleware";
 import { formData } from "@remix-run/form-data-middleware";
+import { staticFiles } from "@remix-run/static-middleware";
 import { publicIndex } from "./route-handlers/public-handler.ts";
 import { indexHandler } from "./route-handlers/index-handler.ts";
 import { outputsIndex } from "./route-handlers/outputs-handler.ts";
@@ -21,7 +22,7 @@ import {
   registerHandlerGet,
   registerHandlerPost,
 } from "./route-handlers/auth-handler.ts";
-import { config } from "../../../common/config/mod.ts";
+import { config } from "#src/common/config/mod.ts";
 import { checkAuth, notAuth } from "./middlewares/mod.tsx";
 
 export const routes = route({
@@ -55,7 +56,11 @@ export const makeRouter = (props: MakeRouterProps) => {
   const sessionStorage = createCookieSessionStorage();
 
   const router = createRouter({
-    middleware: [session(sessionCookie, sessionStorage), formData()],
+    middleware: [
+      staticFiles("src/entrypoints/apps/admin/public"),
+      session(sessionCookie, sessionStorage),
+      formData(),
+    ],
   });
 
   router.map(routes, {
