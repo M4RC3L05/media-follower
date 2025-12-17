@@ -53,7 +53,6 @@ export const inputsCreatePost = (props: InputsCreatePostProps) =>
 async (
   { formData, url }: RequestContext,
 ) => {
-  console.log(formData?.entries());
   const data = z.object({
     provider: z.enum(EInputProvider),
     term: z.string().min(1),
