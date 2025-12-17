@@ -1,10 +1,16 @@
+import type { RequestContext } from "@remix-run/fetch-router";
+import { EInputProvider } from "#src/common/database/enums/mod.ts";
+import type { IProvider } from "#src/common/providers/interfaces.ts";
+import type { IDatabase } from "#src/common/database/database.ts";
+import type { DbOutputsTable } from "#src/common/database/types.ts";
 import z from "@zod/zod";
 import { pageToHtmlResponse } from "../pages/page.tsx";
-import { AbstractRouteHandler } from "./route-handler.ts";
-import { EInputProvider } from "#src/common/database/enums/mod.ts";
-import type { DbOutputsTable } from "#src/common/database/types.ts";
-import type { IDatabase } from "#src/common/database/database.ts";
 import { outputPages } from "../pages/mod.ts";
+
+type OutputsIndexProps = {
+  database: IDatabase;
+  providers: Record<EInputProvider, IProvider>;
+};
 
 const getOutputs = (
   { limit, page, provider, database }: {
@@ -32,11 +38,8 @@ const getOutputs = (
   `;
 };
 
-export class OutputsRouteHandler extends AbstractRouteHandler {
-  static override PATH = "/outputs";
-
-  override async GET(request: Request): Promise<Response> {
-    const url = new URL(request.url);
+export const outputsIndex =
+  (props: OutputsIndexProps) => async ({ url }: RequestContext) => {
     const { provider, page, limit } = z.object({
       provider: z.enum(EInputProvider).optional(),
       page: z.string().optional().pipe(z.coerce.number()).pipe(
@@ -48,19 +51,18 @@ export class OutputsRouteHandler extends AbstractRouteHandler {
     }).parse(Object.fromEntries(url.searchParams.entries()));
 
     const outputs = provider
-      ? await this.props.providers[provider].queryOutputs({
+      ? await props.providers[provider].queryOutputs({
         pagination: { limit, page },
         queries: Object.fromEntries(url.searchParams.entries()),
       })
-      : getOutputs({ limit, database: this.props.database, page, provider });
+      : getOutputs({ limit, database: props.database, page, provider });
 
     return pageToHtmlResponse(
       outputPages.indexPage({
         outputs,
-        providers: this.props.providers,
+        providers: props.providers,
         url,
         paginatio: { page, limit },
       }),
     );
-  }
-}
+  };
