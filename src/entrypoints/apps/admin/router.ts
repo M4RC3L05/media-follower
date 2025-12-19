@@ -24,6 +24,7 @@ import {
 } from "./route-handlers/auth-handler.ts";
 import { config } from "#src/common/config/mod.ts";
 import { checkAuth, notAuth } from "./middlewares/mod.tsx";
+import { HttpError } from "../../../common/errors/mod.ts";
 
 export const routes = route({
   home: get("/"),
@@ -97,6 +98,10 @@ export const makeRouter = (props: MakeRouterProps) => {
         index: inputsIndex(props),
       },
     },
+  });
+
+  router.route("ANY", "*", () => {
+    throw new HttpError("Page not found", 404);
   });
 
   return router;
