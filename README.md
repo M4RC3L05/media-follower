@@ -1,8 +1,5 @@
 # Media follower
 
-A self host solution to watch for source releaes.
+A self host solution to watch for source.
 
-Available sources:
-
-- Itunes (album & songs)
-- blu-ray.com (bluray & 4k, & dvd)
+Check src/common/providers for the available inputs and outputs.

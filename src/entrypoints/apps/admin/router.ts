@@ -24,7 +24,7 @@ import {
 } from "./route-handlers/auth-handler.ts";
 import { config } from "#src/common/config/mod.ts";
 import { checkAuth, notAuth } from "./middlewares/mod.tsx";
-import { HttpError } from "../../../common/errors/mod.ts";
+import { HttpError } from "#src/common/errors/mod.ts";
 
 export const routes = route({
   home: get("/"),
