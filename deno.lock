@@ -46,7 +46,7 @@
     "npm:feed@5.1.0": "5.1.0",
     "npm:nosecone@1.0.0-beta.15": "1.0.0-beta.15",
     "npm:pino@10.1.0": "10.1.0",
-    "npm:preact-render-to-string@6.6.3": "6.6.3_preact@10.28.0",
+    "npm:preact-render-to-string@6.6.4": "6.6.4_preact@10.28.0",
     "npm:preact@10.28.0": "10.28.0",
     "npm:simpledotcss@2.3.7": "2.3.7"
   },
@@ -312,8 +312,8 @@
       ],
       "bin": true
     },
-    "preact-render-to-string@6.6.3_preact@10.28.0": {
-      "integrity": "sha512-7oHG7jzjriqsFPkSPiPnzrQ0GcxFm6wOkYWNdStK5Ks9YlWSQQXKGBRAX4nKDdqX7HAQuRvI4pZNZMycK4WwDw==",
+    "preact-render-to-string@6.6.4_preact@10.28.0": {
+      "integrity": "sha512-Bn6eQZ5SQ5loVEcC/mZmKT7HzO5Z/+vYzxfE/W2N468oSoNMJVdFGApF0GyXq0lDthuyXKTmtZ8k20NpYjr6Rw==",
       "dependencies": [
         "preact"
       ]
@@ -387,7 +387,7 @@
       "npm:feed@5.1.0",
       "npm:nosecone@1.0.0-beta.15",
       "npm:pino@10.1.0",
-      "npm:preact-render-to-string@6.6.3",
+      "npm:preact-render-to-string@6.6.4",
       "npm:preact@10.28.0",
       "npm:simpledotcss@2.3.7"
     ]
