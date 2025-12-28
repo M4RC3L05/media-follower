@@ -248,6 +248,13 @@ export class BluRayComPhysicalReleasesProvider
     return bluRayComPhysicalReleaseInputSchema.parse(parsed);
   }
 
+  fromOutputToJsonPatchPersistance(
+    row: DbInputsTable,
+    item: Output,
+  ): DbOutputsTable {
+    return this.fromOutputToPersistence(row, item);
+  }
+
   fromOutputToPersistence(row: DbInputsTable, item: Output): DbOutputsTable {
     return {
       id: String(item.id),

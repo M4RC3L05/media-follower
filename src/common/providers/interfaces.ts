@@ -30,6 +30,7 @@ export interface IProviderRender {
 export interface IProviderMapper<I, O> {
   fromInputToPersistence(item: I): DbInputsTable;
   fromPersistenceToInput(row: DbInputsTable): I;
+  fromOutputToJsonPatchPersistance(row: DbInputsTable, item: O): DbOutputsTable;
   fromOutputToPersistence(row: DbInputsTable, item: O): DbOutputsTable;
   fromPersistenceToOutput(row: DbOutputsTable): O;
 }

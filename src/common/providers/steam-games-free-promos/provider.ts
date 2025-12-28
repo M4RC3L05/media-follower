@@ -167,6 +167,13 @@ export class SteamGamesFreePromosProvider implements
     });
   }
 
+  fromOutputToJsonPatchPersistance(
+    row: DbInputsTable,
+    item: Output,
+  ): DbOutputsTable {
+    return this.fromOutputToPersistence(row, item);
+  }
+
   fromInputToPersistence(item: Input): DbInputsTable {
     return {
       id: item.url,

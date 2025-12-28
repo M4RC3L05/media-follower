@@ -189,13 +189,13 @@ export class ItunesMusicReleasesProvider
     { pagination }: IProviderRepositoryQueryOutputsProps,
   ): Promise<DbOutputsTable[]> {
     return this.#props.database.sql<DbOutputsTable>`
-        select id, input_id, provider, json(outputs.raw) as raw
-        from outputs
-        where provider = ${EInputProvider.ITUNES_MUSIC_RELEASE}
-        order by outputs.raw->>'releaseDate' desc, "rowid" desc
-        limit ${pagination.limit}
-        offset ${pagination.page * pagination.limit}
-      `;
+      select id, input_id, provider, json(outputs.raw) as raw
+      from outputs
+      where provider = ${EInputProvider.ITUNES_MUSIC_RELEASE}
+      order by outputs.raw->>'releaseDate' desc, "rowid" desc
+      limit ${pagination.limit}
+      offset ${pagination.page * pagination.limit}
+    `;
   }
 
   getOutputsFeed({ queries }: IProviderFeedGetOutputsFeedProps): Feed {
@@ -311,6 +311,22 @@ export class ItunesMusicReleasesProvider
     const parsed = JSON.parse(row.raw);
 
     return itunesMusicReleasesInputWithExtraSchema.parse(parsed);
+  }
+
+  fromOutputToJsonPatchPersistance(
+    row: DbInputsTable,
+    item: Output,
+  ): DbOutputsTable {
+    const id = item.wrapperType === "collection"
+      ? item.collectionId
+      : item.trackId;
+
+    return {
+      id: String(id),
+      input_id: row.id,
+      provider: row.provider,
+      raw: JSON.stringify({ ...item, releaseDate: undefined }),
+    };
   }
 
   fromOutputToPersistence(row: DbInputsTable, item: Output): DbOutputsTable {

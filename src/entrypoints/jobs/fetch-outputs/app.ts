@@ -52,12 +52,16 @@ export class App {
           continue;
         }
 
-        const toDb = releases.map((item) =>
-          this.#props.provider.fromOutputToPersistence(dbInput, item)
-        );
+        const toDb = releases.map((item) => ({
+          toDb: this.#props.provider.fromOutputToPersistence(dbInput, item),
+          toJsonPatchDb: this.#props.provider.fromOutputToJsonPatchPersistance(
+            dbInput,
+            item,
+          ),
+        }));
 
         await this.#props.database.transaction(() => {
-          toDb.map((item) =>
+          toDb.map(({ toDb: item, toJsonPatchDb: jsonPatch }) =>
             this.#props.database.sql`
               insert into outputs
                 (id,         input_id,      provider,            raw)
@@ -65,7 +69,7 @@ export class App {
                 (${item.id}, ${item.input_id}, ${item.provider}, jsonb(${item.raw}))
               on conflict (id, input_id, provider)
                 do update
-                  set raw = jsonb(${item.raw})
+                  set raw = jsonb_patch(raw, jsonb(${jsonPatch.raw}))
             `
           );
         });
