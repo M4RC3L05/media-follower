@@ -1,6 +1,6 @@
 {
   "name": "@m4rc3l05/media-follower",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "exports": "./deno.json",
   "tasks": {
     "apps:rss-feed": {
