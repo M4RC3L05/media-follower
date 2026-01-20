@@ -45,26 +45,27 @@ const Body: FunctionComponent = ({ children }) => (
 
 Page.Body = Body;
 
+const secureHeaders = nosecone({
+  ...defaults,
+  crossOriginEmbedderPolicy: { policy: "credentialless" },
+  contentSecurityPolicy: {
+    directives: {
+      ...defaults.contentSecurityPolicy.directives,
+      imgSrc: [
+        "'self'",
+        "https://*.mzstatic.com",
+        "https://images.blu-ray.com",
+        "https://*.steamstatic.com",
+      ],
+    },
+  },
+});
+
 export const pageToHtmlResponse = (
   page: VNode,
   status?: number,
   headers?: Headers,
 ) => {
-  const secureHeaders = nosecone({
-    ...defaults,
-    crossOriginEmbedderPolicy: { policy: "credentialless" },
-    contentSecurityPolicy: {
-      directives: {
-        ...defaults.contentSecurityPolicy.directives,
-        imgSrc: [
-          "'self'",
-          "https://*.mzstatic.com",
-          "https://images.blu-ray.com",
-          "https://*.steamstatic.com",
-        ],
-      },
-    },
-  });
   const innerHeaders = new Headers(headers);
   innerHeaders.set("content-type", "text/html");
 
