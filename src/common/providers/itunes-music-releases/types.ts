@@ -68,7 +68,7 @@ export const itunesMusicReleasesOutputSongSchema = z.object({
   collectionCensoredName: z.string(),
   trackCensoredName: z.string(),
   collectionArtistName: z.string().optional(),
-  artistViewUrl: z.string(),
+  artistViewUrl: z.string().optional(),
   collectionViewUrl: z.string(),
   trackViewUrl: z.string(),
   previewUrl: z.string().optional(),
