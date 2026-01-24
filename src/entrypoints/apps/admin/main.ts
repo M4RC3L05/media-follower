@@ -9,7 +9,7 @@ import { makeLogger } from "#src/common/logger/mod.ts";
 import { EInputProvider } from "#src/common/database/enums/mod.ts";
 import { providerFactory } from "#src/common/providers/provider.ts";
 import { HttpError } from "#src/common/errors/mod.ts";
-import { makeRouter } from "./router.ts";
+import { App } from "./app.ts";
 
 initConfig();
 
@@ -20,24 +20,28 @@ const log = makeLogger("admin-app");
 using database = new CustomDatabase(config().database.path);
 const httpClient = new HttpFetch({ signal: shutdownSignal });
 
+const onError = (error: unknown) => {
+  log.error({ error }, "Something went wrong");
+
+  return pageToHtmlResponse(
+    errorPage({
+      message: error instanceof HttpError ? error.message : undefined,
+    }),
+    error instanceof HttpError ? error.status : 500,
+    error instanceof HttpError ? error.headers : undefined,
+  );
+};
+
 await using _server = new Server({
   hostname: config().apps.admin.host,
   port: config().apps.admin.port,
   onListen: (host, port) => {
     log.info(`Serving on http://${host}:${port}`);
   },
-  onError: (error) => {
-    log.error({ error }, "Something went wrong");
-
-    return pageToHtmlResponse(
-      errorPage({
-        message: error instanceof HttpError ? error.message : undefined,
-      }),
-      error instanceof HttpError ? error.status : 500,
-      error instanceof HttpError ? error.headers : undefined,
-    );
-  },
-  app: makeRouter({
+  onError,
+  app: new App({
+    onError,
+    database,
     providers: {
       [EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE]: providerFactory(
         EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE,
@@ -52,7 +56,6 @@ await using _server = new Server({
         { database, httpClient },
       ),
     },
-    database,
   }),
 });
 

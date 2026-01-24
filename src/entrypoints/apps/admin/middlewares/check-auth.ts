@@ -1,12 +1,20 @@
-import { createRedirectResponse } from "@remix-run/response/redirect";
-import { routes } from "../router.ts";
-import type { NextFunction, RequestContext } from "@remix-run/fetch-router";
+import type { Session, SessionData } from "@hono/session";
 
-export const checkAuth = (ctx: RequestContext, next: NextFunction) => {
-  const authUserId = ctx.session.get("uid") as string;
+type CheckAuthPorps = {
+  session: Session<SessionData>;
+};
 
-  if (!authUserId) {
-    return createRedirectResponse(routes.auth.login.index.href());
+export const checkAuth = async (
+  props: CheckAuthPorps,
+  next: () => Promise<void> | void,
+) => {
+  const session = await props.session.get();
+
+  if (!session?.uid) {
+    return new Response(null, {
+      status: 302,
+      headers: { location: "/auth/login" },
+    });
   }
 
   return next();

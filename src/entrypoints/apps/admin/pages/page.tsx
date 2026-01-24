@@ -5,7 +5,6 @@ import {
   type VNode,
 } from "preact";
 import { renderToString } from "preact-render-to-string";
-import { defaults, nosecone } from "nosecone";
 
 export const Page: FunctionComponent & {
   Head: FunctionComponent;
@@ -45,22 +44,6 @@ const Body: FunctionComponent = ({ children }) => (
 
 Page.Body = Body;
 
-const secureHeaders = nosecone({
-  ...defaults,
-  crossOriginEmbedderPolicy: { policy: "credentialless" },
-  contentSecurityPolicy: {
-    directives: {
-      ...defaults.contentSecurityPolicy.directives,
-      imgSrc: [
-        "'self'",
-        "https://*.mzstatic.com",
-        "https://images.blu-ray.com",
-        "https://*.steamstatic.com",
-      ],
-    },
-  },
-});
-
 export const pageToHtmlResponse = (
   page: VNode,
   status?: number,
@@ -71,9 +54,6 @@ export const pageToHtmlResponse = (
 
   return new Response(`<!DOCTYPE html>${renderToString(page)}`, {
     status: status ?? 200,
-    headers: {
-      ...Object.fromEntries(secureHeaders.entries()),
-      ...Object.fromEntries(innerHeaders.entries()),
-    },
+    headers: innerHeaders,
   });
 };

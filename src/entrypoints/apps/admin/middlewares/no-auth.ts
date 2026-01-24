@@ -1,13 +1,18 @@
-import type { NextFunction, RequestContext } from "@remix-run/fetch-router";
-import { createRedirectResponse } from "@remix-run/response/redirect";
-import { routes } from "../router.ts";
+import type { Session, SessionData } from "@hono/session";
 
-export const notAuth = (ctx: RequestContext, next: NextFunction) => {
-  const authUserId = ctx.session.get("uid") as string;
+type NoAuthProps = {
+  session: Session<SessionData>;
+};
 
-  if (!authUserId) {
+export const notAuth = async (
+  props: NoAuthProps,
+  next: () => Promise<void> | void,
+) => {
+  const session = await props.session.get();
+
+  if (!session?.uid) {
     return next();
   }
 
-  return createRedirectResponse(routes.home.href());
+  return new Response(null, { status: 302, headers: { location: "/" } });
 };

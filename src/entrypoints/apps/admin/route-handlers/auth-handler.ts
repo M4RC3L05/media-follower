@@ -1,93 +1,117 @@
-import type { RequestContext } from "@remix-run/fetch-router";
 import type { IDatabase } from "#src/common/database/database.ts";
 import { authPages } from "../pages/mod.ts";
 import { pageToHtmlResponse } from "../pages/page.tsx";
 import z from "@zod/zod";
 import type { DbUsersTable } from "#src/common/database/types.ts";
-import { routes } from "../router.ts";
 import * as passwordCrypto from "#src/common/crypto/mod.ts";
-import { createRedirectResponse } from "@remix-run/response/redirect";
+import type { Session, SessionData } from "@hono/session";
 
 export const loginHandlerGet = () => pageToHtmlResponse(authPages.loginPage());
 
 type LoginHandlerPostProps = {
   database: IDatabase;
+  formData: FormData;
+  session: Session<SessionData>;
 };
 
-export const loginHandlerPost =
-  (props: LoginHandlerPostProps) => async (ctx: RequestContext) => {
-    const { username, password } = z.object({
-      username: z.string(),
-      password: z.string(),
-    }).parse(
-      Object.fromEntries(ctx.formData!.entries()),
-    );
+export const loginHandlerPost = async (props: LoginHandlerPostProps) => {
+  const { username, password } = z.object({
+    username: z.string(),
+    password: z.string(),
+  }).parse(
+    Object.fromEntries(props.formData.entries()),
+  );
 
-    const [user] = props.database.sql<DbUsersTable>`
-      select * from users
-      where username = ${username}
-    `;
+  const [user] = props.database.sql<DbUsersTable>`
+    select * from users
+    where username = ${username}
+  `;
 
-    if (!user) {
-      return createRedirectResponse(routes.auth.login.index.href());
-    }
+  if (!user) {
+    return new Response(null, {
+      status: 302,
+      headers: { location: "/auth/login" },
+    });
+  }
 
-    const isValid = await passwordCrypto.verify(password, user.password);
+  const isValid = await passwordCrypto.verify(password, user.password);
 
-    if (!isValid) {
-      return createRedirectResponse(routes.auth.login.index.href());
-    }
+  if (!isValid) {
+    return new Response(null, {
+      status: 302,
+      headers: { location: "/auth/login" },
+    });
+  }
 
-    ctx.session.regenerateId();
-    ctx.session.set("uid", user.id);
+  await props.session.update({ uid: user.id });
 
-    return createRedirectResponse(routes.home.href());
-  };
+  return new Response(null, {
+    status: 302,
+    headers: { location: "/" },
+  });
+};
 
 export const registerHandlerGet = () =>
   pageToHtmlResponse(authPages.registerPage());
 
 type RegisterHandlerPostProps = {
   database: IDatabase;
+  session: Session<SessionData>;
+  formData: FormData;
 };
 
-export const registerHandlerPost =
-  (props: RegisterHandlerPostProps) => async (ctx: RequestContext) => {
-    const { username, password } = z.object({
-      username: z.string(),
-      password: z.string(),
-    }).parse(
-      Object.fromEntries(ctx.formData!.entries()),
-    );
+export const registerHandlerPost = async (props: RegisterHandlerPostProps) => {
+  const { username, password } = z.object({
+    username: z.string(),
+    password: z.string(),
+  }).parse(
+    Object.fromEntries(props.formData!.entries()),
+  );
 
-    const [user] = props.database.sql<DbUsersTable>`
-      select * from users
-      where username = ${username}
-    `;
+  const [user] = props.database.sql<DbUsersTable>`
+    select * from users
+    where username = ${username}
+  `;
 
-    if (user) {
-      return createRedirectResponse(routes.auth.login.index.href());
-    }
+  if (user) {
+    return new Response(null, {
+      status: 302,
+      headers: { location: "/auth/login" },
+    });
+  }
 
-    const [createdUser] = props.database.sql<DbUsersTable>`
-      insert into users
-        (id, username, password)
-      values
-        (${crypto.randomUUID()}, ${username}, ${await passwordCrypto.hash(
-      password,
-    )})
-      returning *;
-    `;
+  const [createdUser] = props.database.sql<DbUsersTable>`
+    insert into users
+      (id, username, password)
+    values
+      (${crypto.randomUUID()}, ${username}, ${await passwordCrypto.hash(
+    password,
+  )})
+    returning *;
+  `;
 
-    if (!createdUser) {
-      return createRedirectResponse(routes.auth.register.index.href());
-    }
+  if (!createdUser) {
+    return new Response(null, {
+      status: 302,
+      headers: { location: "/auth/register" },
+    });
+  }
 
-    return createRedirectResponse(routes.auth.login.index.href());
-  };
+  return new Response(null, {
+    status: 302,
+    headers: { location: "/auth/login" },
+  });
+};
 
-export const logoutHandler = (ctx: RequestContext) => {
-  ctx.session.destroy();
+type LogoutHandlerProps = {
+  session: Session<SessionData>;
+};
 
-  return createRedirectResponse(routes.auth.login.index.href());
+export const logoutHandler = (props: LogoutHandlerProps) => {
+  props.session.delete();
+
+  return new Response(null, {
+    status: 302,
+    headers: { location: "/auth/login" },
+  });
 };

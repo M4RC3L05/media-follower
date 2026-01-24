@@ -1,6 +1,5 @@
 import type { FunctionComponent } from "preact";
 import { Page } from "../../pages/page.tsx";
-import { routes } from "../../router.ts";
 
 const LoginPage: FunctionComponent = () => {
   return (
@@ -12,13 +11,13 @@ const LoginPage: FunctionComponent = () => {
         <header>
           <h1>Login</h1>
           <nav>
-            <a href={routes.auth.register.index.href()}>Go to register</a>
+            <a href="/auth/register">Go to register</a>
           </nav>
         </header>
 
         <main>
           <section>
-            <form method="post" action={routes.auth.login.action.href()}>
+            <form method="post" action="/auth/login">
               <div>
                 <label for="username">Username</label>
                 <input name="username" id="username" />

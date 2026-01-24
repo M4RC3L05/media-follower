@@ -3,6 +3,7 @@ import type { IServerApp } from "#src/common/server/mod.ts";
 import type { IDatabase } from "#src/common/database/database.ts";
 import { EInputProvider } from "#src/common/database/enums/input-provider.ts";
 import type { IProviderFeed } from "#src/common/providers/interfaces.ts";
+import favicon from "#src/common/assets/favicon.ico" with { type: "bytes" };
 
 type AppProps = {
   database: IDatabase;
@@ -16,17 +17,14 @@ export class App implements IServerApp {
     this.#props = props;
   }
 
-  fetch = async (request: Request) => {
+  fetch = (request: Request) => {
     const parsedUrl = URL.parse(request.url)!;
     const queries = Object.fromEntries(parsedUrl.searchParams.entries());
 
     if (parsedUrl.pathname === "/favicon.ico") {
-      const favicon = await Deno.open(
-        "src/entrypoints/apps/rss-feed/public/favicon.ico",
-        { read: true, write: false },
-      );
-
-      return new Response(favicon.readable);
+      return new Response(favicon, {
+        headers: { "content-type": "image/x-icon" },
+      });
     }
 
     const { provider } = z.object({ provider: z.enum(EInputProvider) }).parse(

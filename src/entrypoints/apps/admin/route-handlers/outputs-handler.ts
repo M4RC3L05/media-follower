@@ -1,4 +1,3 @@
-import type { RequestContext } from "@remix-run/fetch-router";
 import { EInputProvider } from "#src/common/database/enums/mod.ts";
 import type { IProvider } from "#src/common/providers/interfaces.ts";
 import type { IDatabase } from "#src/common/database/database.ts";
@@ -8,6 +7,7 @@ import { pageToHtmlResponse } from "../pages/page.tsx";
 import { outputPages } from "../pages/mod.ts";
 
 type OutputsIndexProps = {
+  url: URL;
   database: IDatabase;
   providers: Record<EInputProvider, IProvider>;
 };
@@ -38,31 +38,30 @@ const getOutputs = (
   `;
 };
 
-export const outputsIndex =
-  (props: OutputsIndexProps) => async ({ url }: RequestContext) => {
-    const { provider, page, limit } = z.object({
-      provider: z.enum(EInputProvider).optional(),
-      page: z.string().optional().pipe(z.coerce.number()).pipe(
-        z.number().min(0),
-      ).default(0),
-      limit: z.string().optional().pipe(z.coerce.number()).pipe(
-        z.number().min(0),
-      ).default(10),
-    }).parse(Object.fromEntries(url.searchParams.entries()));
+export const outputsIndex = async (props: OutputsIndexProps) => {
+  const { provider, page, limit } = z.object({
+    provider: z.enum(EInputProvider).optional(),
+    page: z.string().optional().pipe(z.coerce.number()).pipe(
+      z.number().min(0),
+    ).default(0),
+    limit: z.string().optional().pipe(z.coerce.number()).pipe(
+      z.number().min(0),
+    ).default(10),
+  }).parse(Object.fromEntries(props.url.searchParams.entries()));
 
-    const outputs = provider
-      ? await props.providers[provider].queryOutputs({
-        pagination: { limit, page },
-        queries: Object.fromEntries(url.searchParams.entries()),
-      })
-      : getOutputs({ limit, database: props.database, page, provider });
+  const outputs = provider
+    ? await props.providers[provider].queryOutputs({
+      pagination: { limit, page },
+      queries: Object.fromEntries(props.url.searchParams.entries()),
+    })
+    : getOutputs({ limit, database: props.database, page, provider });
 
-    return pageToHtmlResponse(
-      outputPages.indexPage({
-        outputs,
-        providers: props.providers,
-        url,
-        paginatio: { page, limit },
-      }),
-    );
-  };
+  return pageToHtmlResponse(
+    outputPages.indexPage({
+      outputs,
+      providers: props.providers,
+      url: props.url,
+      paginatio: { page, limit },
+    }),
+  );
+};

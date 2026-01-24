@@ -1,7 +1,6 @@
 import type { FunctionComponent } from "preact";
 import { EInputProvider } from "#src/common/database/enums/input-provider.ts";
 import { Page } from "../page.tsx";
-import { routes } from "../../router.ts";
 
 const CreatePage: FunctionComponent = () => (
   <Page>
@@ -15,7 +14,7 @@ const CreatePage: FunctionComponent = () => (
 
       <main>
         <section>
-          <form method="post" action={routes.inputs.create.action.href()}>
+          <form method="post" action="/inputs/create">
             <select name="provider" id="provider">
               {Object.values(EInputProvider).map((item) => (
                 <option value={item}>
