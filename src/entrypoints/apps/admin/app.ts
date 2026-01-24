@@ -66,7 +66,6 @@ export class App implements IServerApp {
           manifestSrc: ["'self'"],
           mediaSrc: ["'self'"],
           objectSrc: ["'none'"],
-          sandbox: ["allow-same-origin", "allow-forms"],
           scriptSrc: ["'self'"],
           scriptSrcAttr: ["'none'"],
           scriptSrcElem: ["'self'"],
