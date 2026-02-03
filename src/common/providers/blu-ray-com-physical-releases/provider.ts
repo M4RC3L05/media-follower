@@ -170,14 +170,14 @@ export class BluRayComPhysicalReleasesProvider
   async queryOutputs(
     { pagination }: IProviderRepositoryQueryOutputsProps,
   ): Promise<DbOutputsTable[]> {
-    return this.#props.database.sql<DbOutputsTable>`
+    return this.#props.database.sql.all`
       select id, input_id, provider, json(outputs.raw) as raw
       from outputs
       where provider = ${EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE}
       order by outputs.raw->>'releasedate' desc, "rowid" desc
       limit ${pagination.limit}
       offset ${pagination.page * pagination.limit}
-    `;
+    ` as DbOutputsTable[];
   }
 
   getOutputsFeed({ queries }: IProviderFeedGetOutputsFeedProps): Feed {
@@ -187,7 +187,7 @@ export class BluRayComPhysicalReleasesProvider
     })
       .parse(queries ?? {});
 
-    const rows = this.#props.database.sql<DbOutputsTable>`
+    const rows = this.#props.database.sql.all`
         select id, input_id, provider, json(outputs.raw) as raw
         from outputs
         where provider = ${EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE}
@@ -198,7 +198,7 @@ export class BluRayComPhysicalReleasesProvider
         and outputs.raw->>'releasedate' <= strftime('%Y-%m-%dT%H:%M:%fZ' , 'now')
         order by outputs.raw->>'releasedate' desc, "rowid" desc
         limit 200
-      `;
+      ` as DbOutputsTable[];
 
     const prefix = [EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE, type, country]
       .filter(

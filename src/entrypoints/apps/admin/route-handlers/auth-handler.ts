@@ -22,10 +22,10 @@ export const loginHandlerPost = async (props: LoginHandlerPostProps) => {
     Object.fromEntries(props.formData.entries()),
   );
 
-  const [user] = props.database.sql<DbUsersTable>`
+  const [user] = props.database.sql.all`
     select * from users
     where username = ${username}
-  `;
+  ` as DbUsersTable[];
 
   if (!user) {
     return new Response(null, {
@@ -68,10 +68,10 @@ export const registerHandlerPost = async (props: RegisterHandlerPostProps) => {
     Object.fromEntries(props.formData!.entries()),
   );
 
-  const [user] = props.database.sql<DbUsersTable>`
+  const [user] = props.database.sql.all`
     select * from users
     where username = ${username}
-  `;
+  ` as DbUsersTable[];
 
   if (user) {
     return new Response(null, {
@@ -80,7 +80,7 @@ export const registerHandlerPost = async (props: RegisterHandlerPostProps) => {
     });
   }
 
-  const [createdUser] = props.database.sql<DbUsersTable>`
+  const [createdUser] = props.database.sql.all`
     insert into users
       (id, username, password)
     values
@@ -88,7 +88,7 @@ export const registerHandlerPost = async (props: RegisterHandlerPostProps) => {
     password,
   )})
     returning *;
-  `;
+  ` as DbUsersTable[];
 
   if (!createdUser) {
     return new Response(null, {

@@ -23,12 +23,12 @@ export const inputsIndex = (props: InputsIndexProps) => {
     ).default(10),
   }).parse(Object.fromEntries(props.url.searchParams.entries()));
 
-  const sources = props.database.sql<DbInputsTable>`
+  const sources = props.database.sql.all`
     select *, json(raw) as raw from inputs
     where ${provider ? 1 : null} is null or provider = ${provider ?? null}
     limit ${limit}
     offset ${page * limit}
-  `;
+  ` as DbInputsTable[];
 
   return pageToHtmlResponse(
     inputPages.indexPage({
@@ -67,7 +67,7 @@ export const inputsCreatePost = async (props: InputsCreatePostProps) => {
 
   const dbObj = provider.fromInputToPersistence(input);
 
-  props.database.sql`
+  props.database.sql.run`
     insert or replace into inputs
       (id, provider, raw)
     values

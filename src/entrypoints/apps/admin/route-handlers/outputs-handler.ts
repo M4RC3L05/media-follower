@@ -20,7 +20,7 @@ const getOutputs = (
     database: IDatabase;
   },
 ) => {
-  return database.sql<DbOutputsTable>`
+  return database.sql.all`
     select id, input_id, provider, json(outputs.raw) as raw
     from outputs
     where (${provider ? 1 : null} is null or provider = ${provider ?? null})
@@ -35,7 +35,7 @@ const getOutputs = (
     ) desc, "rowid" desc
     limit ${limit}
     offset ${page * limit}
-  `;
+  ` as DbOutputsTable[];
 };
 
 export const outputsIndex = async (props: OutputsIndexProps) => {

@@ -188,14 +188,14 @@ export class ItunesMusicReleasesProvider
   async queryOutputs(
     { pagination }: IProviderRepositoryQueryOutputsProps,
   ): Promise<DbOutputsTable[]> {
-    return this.#props.database.sql<DbOutputsTable>`
+    return this.#props.database.sql.all`
       select id, input_id, provider, json(outputs.raw) as raw
       from outputs
       where provider = ${EInputProvider.ITUNES_MUSIC_RELEASE}
       order by outputs.raw->>'releaseDate' desc, "rowid" desc
       limit ${pagination.limit}
       offset ${pagination.page * pagination.limit}
-    `;
+    ` as DbOutputsTable[];
   }
 
   getOutputsFeed({ queries }: IProviderFeedGetOutputsFeedProps): Feed {
@@ -204,7 +204,7 @@ export class ItunesMusicReleasesProvider
     })
       .parse(queries ?? {});
 
-    const rows = this.#props.database.sql<DbOutputsTable>`
+    const rows = this.#props.database.sql.all`
       select
         outputs.id as id,
         outputs.input_id as input_id,
@@ -238,7 +238,7 @@ export class ItunesMusicReleasesProvider
       )
       order by outputs.raw->>'releaseDate' desc, outputs."rowid" desc
       limit 200
-    `;
+    ` as DbOutputsTable[];
 
     const prefix = [EInputProvider.ITUNES_MUSIC_RELEASE, type].filter(Boolean);
 

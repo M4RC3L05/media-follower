@@ -28,10 +28,10 @@ export class App {
   async execute() {
     if (this.#props.signal.aborted) return;
 
-    const dbInputs = this.#props.database.sql<DbInputsTable>`
+    const dbInputs = this.#props.database.sql.all`
       select id, provider, json(raw) as raw from inputs
       where provider = ${this.#props.provider.provider}
-    `;
+    ` as DbInputsTable[];
 
     for (const [index, dbInput] of dbInputs.entries()) {
       try {
@@ -55,7 +55,7 @@ export class App {
           releaseSourceFetched,
         );
 
-        this.#props.database.sql`
+        this.#props.database.sql.run`
           update inputs
           set raw = jsonb(${db.raw})
           where id = ${dbInput.id}
@@ -81,6 +81,6 @@ export class App {
     }
 
     // Truncate wal file as to not grow to mutch
-    this.#props.database.sql`PRAGMA wal_checkpoint(TRUNCATE);`;
+    this.#props.database.sql.all`PRAGMA wal_checkpoint(TRUNCATE);`;
   }
 }

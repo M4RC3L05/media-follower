@@ -28,10 +28,10 @@ export class App {
   async execute() {
     if (this.#props.signal.aborted) return;
 
-    const dbInputs = this.#props.database.sql<DbInputsTable>`
+    const dbInputs = this.#props.database.sql.all`
       select id, provider, json(raw) as raw from inputs
       where provider = ${this.#props.provider.provider}
-    `;
+    ` as DbInputsTable[];
 
     for (const [index, dbInput] of dbInputs.entries()) {
       if (this.#props.signal.aborted) break;
@@ -62,7 +62,7 @@ export class App {
 
         await this.#props.database.transaction(() => {
           toDb.map(({ toDb: item, toJsonPatchDb: jsonPatch }) =>
-            this.#props.database.sql`
+            this.#props.database.sql.run`
               insert into outputs
                 (id,         input_id,      provider,            raw)
               values
@@ -94,6 +94,6 @@ export class App {
     }
 
     // Truncate wal file as to not grow to mutch
-    this.#props.database.sql`PRAGMA wal_checkpoint(TRUNCATE);`;
+    this.#props.database.sql.run`PRAGMA wal_checkpoint(TRUNCATE);`;
   }
 }

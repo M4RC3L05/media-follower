@@ -15,6 +15,6 @@ export const runMigrations = async (db: IDatabase) => {
       import.meta.url,
     );
 
-    db.exec(await Deno.readTextFile(filePath));
+    db.sql.run`${await Deno.readTextFile(filePath)}`;
   }
 };

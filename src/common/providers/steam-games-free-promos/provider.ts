@@ -105,24 +105,24 @@ export class SteamGamesFreePromosProvider implements
   async queryOutputs(
     { pagination }: IProviderRepositoryQueryOutputsProps,
   ): Promise<DbOutputsTable[]> {
-    return this.#props.database.sql<DbOutputsTable>`
+    return this.#props.database.sql.all`
       select id, input_id, provider, json(raw) as raw
       from outputs
       where provider = ${EInputProvider.STEAM_GAMES_FREE_PROMOS}
       order by raw->>'startDate' desc
       limit ${pagination.limit}
       offset ${pagination.page * pagination.limit}
-    `;
+    ` as DbOutputsTable[];
   }
 
   getOutputsFeed(_props: IProviderFeedGetOutputsFeedProps): Feed {
-    const rows = this.#props.database.sql<DbOutputsTable>`
+    const rows = this.#props.database.sql.all`
       select id, input_id, provider, json(raw) as raw
       from outputs
       where provider = ${EInputProvider.STEAM_GAMES_FREE_PROMOS}
       order by raw->>'startDate' desc
       limit 200
-    `;
+    ` as DbOutputsTable[];
 
     const prefix = [EInputProvider.STEAM_GAMES_FREE_PROMOS].filter(Boolean);
 
