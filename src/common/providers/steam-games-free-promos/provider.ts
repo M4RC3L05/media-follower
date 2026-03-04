@@ -55,6 +55,8 @@ export class SteamGamesFreePromosProvider implements
   async fetchOutputs(input: Input): Promise<Output[]> {
     const txtHtml = await this.#props.httpClient.fetchText(input.url, {
       headers: {
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache",
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       },
