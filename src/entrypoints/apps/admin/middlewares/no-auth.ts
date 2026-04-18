@@ -10,7 +10,7 @@ export const notAuth = async (
 ) => {
   const session = await props.session.get();
 
-  if (!session?.uid) {
+  if (!session?.["uid"]) {
     return next();
   }
 

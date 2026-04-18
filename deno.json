@@ -76,21 +76,31 @@
       "src/common/database/types.ts"
     ]
   },
-  "unstable": [
-    "raw-imports"
-  ],
+  "lock": { "frozen": true },
+  "unstable": ["raw-imports", "npm-lazy-caching"],
   "compilerOptions": {
-    "allowUnreachableCode": false,
+    "jsx": "precompile",
+    "jsxImportSource": "preact",
+
+    "strict": true,
     "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
     "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "jsx": "precompile",
-    "jsxImportSource": "preact"
+    "strictBindCallApply": true,
+    "strictBuiltinIteratorReturn": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true
   },
   "minimumDependencyAge": "P7D",
   "imports": {

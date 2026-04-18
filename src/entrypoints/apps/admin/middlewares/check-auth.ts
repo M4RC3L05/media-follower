@@ -10,7 +10,7 @@ export const checkAuth = async (
 ) => {
   const session = await props.session.get();
 
-  if (!session?.uid) {
+  if (!session?.["uid"]) {
     return new Response(null, {
       status: 302,
       headers: { location: "/auth/login" },
