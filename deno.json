@@ -107,13 +107,13 @@
     "@std/msgpack": "jsr:@std/msgpack@1.0.3",
     "@std/testing": "jsr:@std/testing@1.0.17",
     "@std/text": "jsr:@std/text@1.0.17",
-    "@types/node": "npm:@types/node@25.3.0",
+    "@types/node": "npm:@types/node@25.6.0",
     "@zod/zod": "jsr:@zod/zod@4.3.6",
     "feed": "npm:feed@5.2.0",
     "hono": "npm:hono@4.12.2",
     "pino": "npm:pino@10.3.1",
-    "preact": "npm:preact@10.28.4",
-    "preact-render-to-string": "npm:preact-render-to-string@6.6.6",
+    "preact": "npm:preact@10.29.1",
+    "preact-render-to-string": "npm:preact-render-to-string@6.6.7",
     "simpledotcss": "npm:simpledotcss@2.3.7"
   }
 }
