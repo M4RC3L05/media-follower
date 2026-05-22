@@ -11,3 +11,9 @@ provider and generate a rss/atom/json feed for the inputs by provider.
 Apps to sync inputs and fetch outputs from inputs also exists.
 
 Check src/common/providers for the available inputs and outputs.
+
+# Release new version
+
+```sh
+deno bump-version <bump name> && git add . && git commit -sm "Release v$(jq -r '.version' deno.json)" && git tag -sm "Release v$(jq -r '.version' deno.json)" -a "v$(jq -r '.version' deno.json)"
+```
