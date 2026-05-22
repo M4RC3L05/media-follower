@@ -23,8 +23,9 @@ export const steamGamesFreePromosOutputSchema = z.object({
   startDate: z.union([
     z.string().pipe(z.coerce.date()).pipe(z.date()),
     z.date(),
-  ]),
-  endDate: z.union([z.string().pipe(z.coerce.date()).pipe(z.date()), z.date()]),
+  ]).default(new Date()),
+  endDate: z.union([z.string().pipe(z.coerce.date()).pipe(z.date()), z.date()])
+    .default(new Date()),
 });
 
 export type SteamGamesFreePromosOutput = z.infer<

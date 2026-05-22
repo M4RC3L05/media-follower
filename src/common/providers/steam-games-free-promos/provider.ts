@@ -171,7 +171,16 @@ export class SteamGamesFreePromosProvider implements
     row: DbInputsTable,
     item: Output,
   ): DbOutputsTable {
-    return this.fromOutputToPersistence(row, item);
+    return {
+      id: String(item.id),
+      input_id: row.id,
+      provider: row.provider,
+      raw: JSON.stringify({
+        ...item,
+        startDate: undefined,
+        endDate: undefined,
+      }),
+    };
   }
 
   fromInputToPersistence(item: Input): DbInputsTable {
