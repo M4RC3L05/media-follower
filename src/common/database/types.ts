@@ -2,6 +2,9 @@
 
 import { EInputProvider } from "#src/common/database/enums/mod.ts";
 
+export type DbSchemaMigrationsTable = {
+};
+
 export type DbInputsTable = {
   id: string;
   provider: EInputProvider;
