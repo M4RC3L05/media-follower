@@ -131,6 +131,9 @@ export class SteamGamesFreePromosProvider implements
       select id, input_id, provider, json(raw) as raw
       from outputs
       where provider = ${EInputProvider.STEAM_GAMES_FREE_PROMOS}
+      -- Only released items
+      and raw->>'startDate' is not null
+      and raw->>'endDate' is not null
       order by raw->>'startDate' desc
       limit 200
     ` as DbOutputsTable[];
@@ -154,14 +157,15 @@ export class SteamGamesFreePromosProvider implements
 
     for (const output of outputs) {
       feed.addItem({
-        date: output.startDate,
+        date: output.startDate!,
         link: output.link,
         title: output.name,
         id:
           `${EInputProvider.STEAM_GAMES_FREE_PROMOS}@${output.promoType}@${output.id}`,
         image: output.image,
-        description:
-          `<p>${output.name} (${output.promoType})</p><p>From: ${output.startDate.toDateString()} to ${output.endDate.toDateString()}</p>`,
+        description: `<p>${output.name} (${output.promoType})</p><p>From: ${
+          output.startDate!.toDateString()
+        } to ${output.endDate!.toDateString()}</p>`,
       });
     }
 
@@ -176,22 +180,6 @@ export class SteamGamesFreePromosProvider implements
     return outputListItem({
       output: this.fromPersistenceToOutput(row),
     });
-  }
-
-  fromOutputToJsonPatchPersistance(
-    row: DbInputsTable,
-    item: Output,
-  ): DbOutputsTable {
-    return {
-      id: String(item.id),
-      input_id: row.id,
-      provider: row.provider,
-      raw: JSON.stringify({
-        ...item,
-        startDate: undefined,
-        endDate: undefined,
-      }),
-    };
   }
 
   fromInputToPersistence(item: Input): DbInputsTable {

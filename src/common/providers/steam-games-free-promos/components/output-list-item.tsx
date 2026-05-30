@@ -16,10 +16,14 @@ export const OutputListItem: FunctionComponent<OutputListItemProps> = (
       <h3>{title}</h3>
       <img src={output.image} />
       <p>{output.promoType}</p>
-      <p>
-        From {output.startDate.toDateString()} to{" "}
-        {output.endDate.toDateString()}
-      </p>
+      {(output.endDate && output.startDate)
+        ? (
+          <p>
+            From {output.startDate.toDateString()} to{" "}
+            {output.endDate.toDateString()}
+          </p>
+        )
+        : null}
       <a target="_blank" href={output.link}>View on source</a>
       <details>
         <summary>Raw:</summary>

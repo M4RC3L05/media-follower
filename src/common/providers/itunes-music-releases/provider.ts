@@ -77,11 +77,7 @@ const usableOutput = (release: Output) => {
     release.collectionCensoredName?.toLowerCase?.()
       ?.includes?.("DJ Mix".toLowerCase());
 
-  const isStreamable = release.wrapperType === "track"
-    ? (release as ItunesMusicReleasesOutputSong).isStreamable
-    : true;
-
-  return !isCompilation && !isDjMix && isStreamable;
+  return !isCompilation && !isDjMix && !!release.releaseDate;
 };
 
 export type ItunesMusicReleasesProviderProps = {
@@ -220,6 +216,8 @@ export class ItunesMusicReleasesProvider
         and related_album.raw->>'collectionId' = outputs.raw->>'collectionId'
       )
       where outputs.provider = ${EInputProvider.ITUNES_MUSIC_RELEASE}
+      -- We only care for released outputs
+      and outputs.raw->>'releaseDate' is not null
       and outputs.raw->>'releaseDate' <= strftime('%Y-%m-%dT%H:%M:%fZ' , 'now')
       and (${type ?? null} is null or outputs.raw->>'wrapperType' = ${
       type === ITunesLookupEntityType.ALBUM ? "collection" : "track"
@@ -228,10 +226,11 @@ export class ItunesMusicReleasesProvider
         case
           when outputs.raw->>'wrapperType' = 'track'
             then
-              outputs.raw->>'isStreamable' = 1
-              and (
-                    related_album_raw is null
-                or  related_album_raw->>'releaseDate' > strftime('%Y-%m-%dT%H:%M:%fZ' , 'now')
+                  related_album_raw is null
+              or related_album_raw->>'releaseDate' is null
+              or (
+                    related_album_raw->>'releaseDate' is not null
+                and related_album_raw->>'releaseDate' > strftime('%Y-%m-%dT%H:%M:%fZ' , 'now')
               )
           else true
         end
@@ -259,7 +258,7 @@ export class ItunesMusicReleasesProvider
 
     for (const output of outputs) {
       feed.addItem({
-        date: output.releaseDate,
+        date: output.releaseDate!,
         link: output.wrapperType === "collection"
           ? output.collectionViewUrl
           : output.trackViewUrl,
@@ -311,22 +310,6 @@ export class ItunesMusicReleasesProvider
     const parsed = JSON.parse(row.raw);
 
     return itunesMusicReleasesInputWithExtraSchema.parse(parsed);
-  }
-
-  fromOutputToJsonPatchPersistance(
-    row: DbInputsTable,
-    item: Output,
-  ): DbOutputsTable {
-    const id = item.wrapperType === "collection"
-      ? item.collectionId
-      : item.trackId;
-
-    return {
-      id: String(id),
-      input_id: row.id,
-      provider: row.provider,
-      raw: JSON.stringify({ ...item, releaseDate: undefined }),
-    };
   }
 
   fromOutputToPersistence(row: DbInputsTable, item: Output): DbOutputsTable {

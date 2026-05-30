@@ -31,17 +31,21 @@ export const OutputListItem: FunctionComponent<OutputListItemProps> = (
       </h3>
       <div>
         <img src={image} />
-        <p>
-          {output.releaseDate.toDateString()}
-          {output.releaseDate > new Date()
-            ? (
-              <>
-                {" "}
-                <em>(To be released)</em>
-              </>
-            )
-            : undefined}
-        </p>
+        {output.releaseDate
+          ? (
+            <p>
+              {output.releaseDate.toDateString()}
+              {output.releaseDate > new Date()
+                ? (
+                  <>
+                    {" "}
+                    <em>(To be released)</em>
+                  </>
+                )
+                : undefined}
+            </p>
+          )
+          : null}
       </div>
       <a target="_blank" href={link}>View on source</a>
       <details>
