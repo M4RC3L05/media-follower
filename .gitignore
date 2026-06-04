@@ -1,0 +1,4 @@
+.bin
+.cache
+.gen
+*_templ.go
