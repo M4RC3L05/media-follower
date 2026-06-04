@@ -1,5 +1,7 @@
 {
   "editor.formatOnSave": true,
+  "files.insertFinalNewline": true,
+  "[json]": {},
   "[templ]": {
     "editor.defaultFormatter": "a-h.templ"
   },
