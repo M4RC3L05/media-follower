@@ -1,0 +1,10 @@
+[env]
+CGO_ENABLED = 0
+
+[tools]
+ginkgo = "2.29.0"
+go = "1.26.4"
+"go:github.com/a-h/templ/cmd/templ" = "0.3.1020"
+"go:github.com/mickamy/slog-pretty/cmd/spretty" = "0.0.1"
+golangci-lint = "2.12.2"
+sqlite = "3.53.1"
