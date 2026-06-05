@@ -9,3 +9,42 @@ go = "1.26.4"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1.3.0"
 golangci-lint = "2.12.2"
 sqlite = "3.53.1"
+
+[tasks."compile"]
+usage = "arg <cmd_name>"
+run = [
+  "rm --verbose -f .bin/${usage_cmd_name}",
+  "go build -ldflags \"-w -s\" -o .bin/${usage_cmd_name} cmd/${usage_cmd_name}/main.go",
+]
+
+[tasks."code:test"]
+run = "ginkgo -r -p --randomize-all --randomize-suites --fail-on-pending --fail-on-empty --keep-going --trace"
+
+[tasks."code:check"]
+run = [
+  "golangci-lint run ./...",
+  "golangci-lint fmt --diff-colored ./...",
+  "govulncheck -test ./...",
+]
+
+[tasks."cmd:admin_server"]
+run = [
+  "rm -rfv cmd/admin_server/.dist",
+  "go run scripts/bundle_assets/main.go -e cmd/admin_server/frontend/*.css -e cmd/admin_server/frontend/*.ts -o cmd/admin_server/.dist",
+  "cp --verbose -R cmd/admin_server/frontend/static cmd/admin_server/.dist",
+  "touch cmd/admin_server/.dist/.gitkeep",
+  "templ generate",
+  "mise run compile admin_server",
+  ".bin/admin_server",
+]
+
+[tasks."cmd:db_migrate"]
+run = [
+  "mise run compile db_migrate",
+  ".bin/db_migrate",
+  "go run scripts/gen_db_types/main.go",
+  "sqlite3 data/app.db \".schema\" > internal/store/schema.sql",
+]
+
+[tasks."cmd:fetch_outputs_job"]
+run = ["mise run compile fetch_outputs_job", ".bin/fetch_outputs_job"]

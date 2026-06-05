@@ -29,7 +29,7 @@ jobs:
         run: go mod verify
 
       - name: run code checks
-        run: tools/x code_check
+        run: mise run code:check
 
       - name: run tests
-        run: tools/x code_test
+        run: mise run code:test
