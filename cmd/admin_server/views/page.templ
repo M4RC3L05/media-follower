@@ -7,14 +7,28 @@ templ Page(title string) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ title }</title>
-			<link rel="stylesheet" href="main.css"/>
+			<link rel="stylesheet" href="/main.css"/>
 		</head>
 		<body>
 			<div class="container">
 				<div class="row">
+					{{ flashMessages, ok := ctx.Value(FlashMessagesContextKey).(*FlashMessages) }}
+					if flashMessages != nil && ok {
+						<div class="col-12 mt-4">
+							if len(flashMessages.Error) > 0 {
+								for _, item := range flashMessages.Error {
+									<div class="alert alert-danger alert-dismissible fade show" role="alert">
+										{ item }
+										<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+									</div>
+								}
+							}
+						</div>
+					}
 					{ children... }
 				</div>
 			</div>
+			<script type="module" src="/main.js"></script>
 		</body>
 	</html>
 }

@@ -44,14 +44,14 @@ func createJob(
 	return nil, fmt.Errorf("provider \"%s\" not valid", providerName)
 }
 
-func run(providerName string, ctx context.Context) (statusCode int) {
+func run(providerName string, ctx context.Context) (exitCode int) {
 	log := common.NewLogger("fetch-outputs-job")
 
 	db, err := store.New()
 	defer func() {
 		if err := db.Close(); err != nil {
 			log.Error("Error closing database", slog.Any("err", err))
-			statusCode = 1
+			exitCode = 1
 
 			return
 		}

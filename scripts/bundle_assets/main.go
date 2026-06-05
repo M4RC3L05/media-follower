@@ -60,6 +60,10 @@ var httpImportsPlugin = api.Plugin{
 				return api.LoaderCSS, nil
 			}
 
+			if strings.HasSuffix(path, ".js") {
+				return api.LoaderJS, nil
+			}
+
 			return api.LoaderEmpty, fmt.Errorf("could not resolve loader for \"%s\"", path)
 		}
 

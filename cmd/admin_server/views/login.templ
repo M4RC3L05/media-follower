@@ -1,0 +1,22 @@
+package views
+
+templ Login() {
+	@Page("Register") {
+		<div class="col-lg-6 offset-md-3 col-md-8 offset-md-2">
+			<h1 class="text-center">Login</h1>
+			<form method="post" action="/auth/login">
+				<div class="mb-3">
+					<label for="username" class="form-label">Username</label>
+					<input type="text" class="form-control" id="username" name="username"/>
+				</div>
+				<div class="mb-3">
+					<label for="password" class="form-label">Password</label>
+					<input type="password" name="password" class="form-control" id="password"/>
+				</div>
+				<button type="submit" class="btn btn-primary w-100">Submit</button>
+			</form>
+			<br/>
+			<a href="/auth/register">Go to register</a>
+		</div>
+	}
+}

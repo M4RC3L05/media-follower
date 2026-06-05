@@ -3,5 +3,8 @@ package views
 templ Hello(name string) {
 	@Page("Hello!") {
 		<h1>Olá { name }</h1>
+		<form action="/auth/logout" method="post">
+			<button type="submit" class="btn btn-danger">Logout</button>
+		</form>
 	}
 }
