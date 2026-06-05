@@ -2,11 +2,9 @@ package providers
 
 import (
 	"encoding/json"
-	"log/slog"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/m4rc3l05/media-follower/.gen/jetdb/model"
-	"github.com/m4rc3l05/media-follower/internal/common"
 )
 
 const ITUNES_ARTIST_PROVIDER_NAME = "ITUNES_ARTIST_PROVIDER"
@@ -24,7 +22,6 @@ type ItunesArtist struct {
 
 type ItunesArtistProvider struct {
 	validate *validator.Validate
-	log      *slog.Logger
 }
 
 // Compile time check that providers implement interface
@@ -35,7 +32,6 @@ var (
 func NewItunesArtistProvider(validator *validator.Validate) ItunesArtistProvider {
 	return ItunesArtistProvider{
 		validate: validator,
-		log:      common.NewLogger("itunes-album-releases-provider"),
 	}
 }
 

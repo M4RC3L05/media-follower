@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"slices"
 	"strconv"
@@ -13,7 +12,6 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/m4rc3l05/media-follower/.gen/jetdb/model"
-	"github.com/m4rc3l05/media-follower/internal/common"
 )
 
 const ITUNES_ALBUM_PROVIDER_NAME = "ITUNES_ALBUM_PROVIDER"
@@ -44,7 +42,6 @@ type ItunesAlbum struct {
 
 type ItunesAlbumProvider struct {
 	validate *validator.Validate
-	log      *slog.Logger
 }
 
 // Compile time check that providers implement interface
@@ -55,7 +52,6 @@ var (
 func NewItunesAlbumProvider(validator *validator.Validate) ItunesAlbumProvider {
 	return ItunesAlbumProvider{
 		validate: validator,
-		log:      common.NewLogger("itunes-album-releases-provider"),
 	}
 }
 
@@ -68,13 +64,15 @@ func fetchAlbums(id int64) (_ *ItunesResponseModel[ItunesAlbum], eOut error) {
 	)
 
 	defer func() {
-		if response != nil && response.Body != nil {
-			if err := response.Body.Close(); err != nil {
-				if eOut != nil {
-					eOut = errors.Join(eOut, err)
-				} else {
-					eOut = err
-				}
+		if response == nil || response.Body == nil {
+			return
+		}
+
+		if err := response.Body.Close(); err != nil {
+			if eOut != nil {
+				eOut = errors.Join(eOut, err)
+			} else {
+				eOut = err
 			}
 		}
 	}()
@@ -94,7 +92,9 @@ func fetchAlbums(id int64) (_ *ItunesResponseModel[ItunesAlbum], eOut error) {
 		return nil, err
 	}
 
-	data.Results = slices.Delete(data.Results, 0, 1)
+	if len(data.Results) > 0 {
+		data.Results = slices.Delete(data.Results, 0, 1)
+	}
 
 	return &data, nil
 }
@@ -106,21 +106,11 @@ func (i ItunesAlbumProvider) Name() string {
 func (i ItunesAlbumProvider) FetchOutputs(input ItunesArtist) (_ []ItunesAlbum, eOut error) {
 	albums, err := fetchAlbums(input.ArtistID)
 	if err != nil {
-		i.log.Warn(
-			"Error fetching album releases",
-			slog.Any("err", err),
-		)
-
 		return nil, err
 	}
 
 	err = i.validate.Struct(albums)
 	if err != nil {
-		i.log.Warn(
-			"Error validating album releases",
-			slog.Any("err", err),
-		)
-
 		return nil, err
 	}
 
@@ -147,6 +137,11 @@ func (i ItunesAlbumProvider) FromOutputToPersistance(
 	output ItunesAlbum,
 ) (*model.Outputs, error) {
 	encodedRaw, err := json.Marshal(output)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.validate.Struct(output)
 	if err != nil {
 		return nil, err
 	}

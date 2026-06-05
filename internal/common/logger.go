@@ -5,19 +5,26 @@ import (
 	"log/slog"
 	"os"
 	"strings"
+	"testing"
 )
 
 type Logger struct {
 	L *slog.Logger
 }
 
-func NewLogger(name string) *slog.Logger {
-	return slog.New(
-		slog.NewJSONHandler(
+func resolveHandler() slog.Handler {
+	if testing.Testing() {
+		return slog.DiscardHandler
+	} else {
+		return slog.NewJSONHandler(
 			os.Stdout,
 			&slog.HandlerOptions{Level: slog.LevelInfo},
-		),
-	).With(slog.String("name", name))
+		)
+	}
+}
+
+func NewLogger(name string) *slog.Logger {
+	return slog.New(resolveHandler()).With(slog.String("name", name))
 }
 
 func (s Logger) Printf(format string, v ...interface{}) {
