@@ -8,7 +8,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname -- "$0")" >/dev/null 2>&1 && pwd -P)"
 SCRIPT_PATH="$SCRIPT_DIR/$(basename -- "$0")"
-PS4='\033[35m$\033[0m '
+PS4="\033[35m$\033[0m "
 
 # =====================================
 # UTILS
@@ -54,9 +54,6 @@ __cmd_compile() {
 }
 
 task__code_test() {
-  task__cmd_db_migrate
-  __task__cmd_admin_server_assets
-
   __utils__print_and_exec ginkgo \
     -r \
     -p \
@@ -69,9 +66,6 @@ task__code_test() {
 }
 
 task__code_check() {
-  task__cmd_db_migrate
-  __task__cmd_admin_server_assets
-
   __utils__print_and_exec golangci-lint run ./...
   __utils__print_and_exec golangci-lint fmt --diff-colored ./...
 }

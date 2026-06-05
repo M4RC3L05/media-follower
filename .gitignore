@@ -1,7 +1,6 @@
 .bin
 .cache
-.gen
-*_templ.go
 data/*
 !data/.gitkeep
-.dist
+**/.dist/*
+!**/.dist/.gitkeep

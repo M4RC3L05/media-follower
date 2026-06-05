@@ -17,7 +17,7 @@ import (
 	"github.com/m4rc3l05/media-follower/internal/common"
 )
 
-//go:embed .dist
+//go:embed all:.dist
 var dist embed.FS
 
 func run(ctx context.Context) (exitCode int) {
