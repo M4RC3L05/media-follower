@@ -19,10 +19,14 @@ jobs:
           install: true
           cache: true
 
-      - name: install deps
-        run: |-
-          go mod tidy --diff
-          go mod verify
+      - name: go tidy
+        run: go mod tidy --diff
+
+      - name: go mod
+        run: go mod download
+
+      - name: go mod verify
+        run: go mod verify
 
       - name: run code checks
         run: tools/x code_check
