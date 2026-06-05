@@ -1,5 +1,7 @@
 package views
 
+import "github.com/m4rc3l05/media-follower/internal/common/middlewares"
+
 templ Page(title string) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -12,7 +14,7 @@ templ Page(title string) {
 		<body>
 			<div class="container">
 				<div class="row">
-					{{ flashMessages, ok := ctx.Value(FlashMessagesContextKey).(*FlashMessages) }}
+					{{ flashMessages, ok := ctx.Value(FlashMessagesContextViewKey).(*middlewares.FlashMessageData) }}
 					if flashMessages != nil && ok {
 						<div class="col-12 mt-4">
 							if len(flashMessages.Error) > 0 {

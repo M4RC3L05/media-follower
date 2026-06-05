@@ -25,6 +25,7 @@ import (
 	"github.com/m4rc3l05/media-follower/.gen/jetdb/table"
 	"github.com/m4rc3l05/media-follower/cmd/admin_server/views"
 	"github.com/m4rc3l05/media-follower/internal/common"
+	"github.com/m4rc3l05/media-follower/internal/common/middlewares"
 	passwordhashing "github.com/m4rc3l05/media-follower/internal/password_hashing"
 	"github.com/m4rc3l05/media-follower/internal/store"
 )
@@ -43,13 +44,10 @@ func (v *structValidator) Validate(out any) error {
 
 func authMiddleware(c fiber.Ctx) error {
 	sess := session.FromContext(c)
-
-	if sess == nil {
-		return errors.New("unable to get session")
-	}
+	fmp := middlewares.FlashMessageProviderFromContext(c)
 
 	if sess.Get("userId") == nil {
-		sess.Set("flash:error", "You MUST be authenticated to access")
+		fmp.Flash(c, middlewares.FlashMessageKeyError, "You MUST be authenticated to access")
 		return c.Redirect().Route("auth-login")
 	}
 
@@ -58,42 +56,19 @@ func authMiddleware(c fiber.Ctx) error {
 
 func notAuthMiddleware(c fiber.Ctx) error {
 	sess := session.FromContext(c)
-
-	if sess == nil {
-		return errors.New("unable to get session")
-	}
+	fmp := middlewares.FlashMessageProviderFromContext(c)
 
 	if sess.Get("userId") != nil {
-		sess.Set("flash:error", "You MUST NOT be authenticated to access")
+		fmp.Flash(c, middlewares.FlashMessageKeyError, "You MUST NOT be authenticated to access")
 		return c.Redirect().Route("home")
 	}
 
 	return c.Next()
 }
 
-func getFlashMessages(c fiber.Ctx) *views.FlashMessages {
-	res := views.FlashMessages{}
-
-	sess := session.FromContext(c)
-
-	{
-		if flashes := sess.Get("flash:error"); flashes != nil {
-			sess.Delete("flash:error")
-
-			res.Error = append(res.Error, flashes.(string))
-		}
-	}
-
-	if len(res.Error) <= 0 {
-		return nil
-	}
-
-	return &res
-}
-
 type RegisterBody struct {
-	Username string `form:"username"`
-	Password string `form:"password"`
+	Username string `form:"username" validate:"required,min=1,max=10"`
+	Password string `form:"password" validate:"required,min=8,max=26"`
 }
 
 func run(ctx context.Context) (exitCode int) {
@@ -166,11 +141,12 @@ func run(ctx context.Context) (exitCode int) {
 			log.Error("Error on session middleware", slog.Any("error", err))
 		},
 	}))
+	app.Use(middlewares.FlashMessages())
 
 	app.Get("/", authMiddleware, func(c fiber.Ctx) error {
 		c.Type("html", "utf-8")
 		return views.Hello("foo").
-			Render(context.WithValue(c.Context(), views.FlashMessagesContextKey, getFlashMessages(c)), c.Res())
+			Render(context.WithValue(c.RequestCtx(), views.FlashMessagesContextViewKey, middlewares.FlashMessageProviderFromContext(c).Flashes(c)), c.Res())
 	}).Name("home")
 
 	app.Get("/auth/register", notAuthMiddleware, func(c fiber.Ctx) error {
@@ -184,12 +160,14 @@ func run(ctx context.Context) (exitCode int) {
 		}
 
 		if len(user) > 0 {
+			middlewares.FlashMessageProviderFromContext(c).
+				Flash(c, middlewares.FlashMessageKeyError, "A user was already setup")
 			return c.Redirect().Route("auth-login")
 		}
 
 		c.Type("html", "utf-8")
 		return views.Register().
-			Render(context.WithValue(c.Context(), views.FlashMessagesContextKey, getFlashMessages(c)), c.Res())
+			Render(context.WithValue(c.RequestCtx(), views.FlashMessagesContextViewKey, middlewares.FlashMessageProviderFromContext(c).Flashes(c)), c.Res())
 	}).Name("auth-register")
 	app.Post("/auth/register", notAuthMiddleware, func(c fiber.Ctx) error {
 		body := RegisterBody{}
@@ -212,7 +190,7 @@ func run(ctx context.Context) (exitCode int) {
 	app.Get("/auth/login", notAuthMiddleware, func(c fiber.Ctx) error {
 		c.Type("html", "utf-8")
 		return views.Login().
-			Render(context.WithValue(c.Context(), views.FlashMessagesContextKey, getFlashMessages(c)), c.Res())
+			Render(context.WithValue(c.RequestCtx(), views.FlashMessagesContextViewKey, middlewares.FlashMessageProviderFromContext(c).Flashes(c)), c.Res())
 	}).Name("auth-login")
 	app.Post("/auth/login", notAuthMiddleware, func(c fiber.Ctx) error {
 		body := RegisterBody{}
