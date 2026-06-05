@@ -1,0 +1,29 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone repository
+        uses: actions/checkout@v4
+
+      - name: install mise
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - name: install deps
+        run: go mod download
+
+      - name: run code checks
+        run: tools/x code_check
+
+      - name: run tests
+        run: tools/x code_test
