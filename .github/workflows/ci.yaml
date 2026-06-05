@@ -20,7 +20,9 @@ jobs:
           cache: true
 
       - name: install deps
-        run: go mod download
+        run: |-
+          go mod tidy --diff
+          go mod verify
 
       - name: run code checks
         run: tools/x code_check
