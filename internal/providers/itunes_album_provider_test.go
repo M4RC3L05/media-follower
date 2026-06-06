@@ -8,7 +8,7 @@ import (
 	"github.com/jarcoal/httpmock"
 	"github.com/m4rc3l05/media-follower/.gen/jetdb/model"
 	"github.com/m4rc3l05/media-follower/internal/providers"
-	"github.com/m4rc3l05/media-follower/internal/testdata"
+	"github.com/m4rc3l05/media-follower/internal/test/testdata"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -115,8 +115,8 @@ var _ = Describe("ItunesAlbumProvider", func() {
 						"resultCount": 1,
 						"results": []map[string]any{
 							{"foo": "bar"},
-							testdata.OkItunesAlbumMap(),
-							testdata.BadItunesAlbumCompilationMap(),
+							testdata.OkItunesAlbumHttpResponse(),
+							testdata.BadItunesAlbumCompilationHttpResponse(),
 						},
 					},
 				),
@@ -139,9 +139,9 @@ var _ = Describe("ItunesAlbumProvider", func() {
 						"resultCount": 1,
 						"results": []map[string]any{
 							{"foo": "bar"},
-							testdata.OkItunesAlbumMap(),
-							testdata.BadItunesAlbumDJMixMap(),
-							testdata.BadItunesAlbumDJMix2Map(),
+							testdata.OkItunesAlbumHttpResponse(),
+							testdata.BadItunesAlbumDJMixHttpResponse(),
+							testdata.BadItunesAlbumDJMix2HttpResponse(),
 						},
 					},
 				),
@@ -165,8 +165,8 @@ var _ = Describe("ItunesAlbumProvider", func() {
 						"resultCount": 1,
 						"results": []map[string]any{
 							{"foo": "bar"},
-							testdata.OkItunesAlbumMap(),
-							testdata.BadItunesAlbumNoReleaseMap(),
+							testdata.OkItunesAlbumHttpResponse(),
+							testdata.BadItunesAlbumNoReleaseHttpResponse(),
 						},
 					},
 				),
@@ -189,11 +189,11 @@ var _ = Describe("ItunesAlbumProvider", func() {
 						"resultCount": 1,
 						"results": []map[string]any{
 							{"foo": "bar"},
-							testdata.OkItunesAlbumMap(),
-							testdata.BadItunesAlbumNoReleaseMap(),
-							testdata.BadItunesAlbumDJMixMap(),
-							testdata.BadItunesAlbumDJMix2Map(),
-							testdata.BadItunesAlbumCompilationMap(),
+							testdata.OkItunesAlbumHttpResponse(),
+							testdata.BadItunesAlbumNoReleaseHttpResponse(),
+							testdata.BadItunesAlbumDJMixHttpResponse(),
+							testdata.BadItunesAlbumDJMix2HttpResponse(),
+							testdata.BadItunesAlbumCompilationHttpResponse(),
 						},
 					},
 				),
@@ -202,7 +202,9 @@ var _ = Describe("ItunesAlbumProvider", func() {
 			outputs, _ := providers.NewItunesAlbumProvider(validator.New()).
 				FetchOutputs(providers.ItunesArtist{ArtistID: 1})
 			Expect(outputs).To(HaveLen(1))
-			Expect(outputs[0].CollectionID).To(Equal(testdata.OkItunesAlbumMap()["collectionId"]))
+			Expect(
+				outputs[0].CollectionID,
+			).To(Equal(testdata.OkItunesAlbumHttpResponse()["collectionId"]))
 			Expect(httpmock.GetTotalCallCount()).To(Equal(1))
 		})
 	})

@@ -11,6 +11,7 @@ import (
 	"github.com/m4rc3l05/media-follower/internal/providers"
 	"github.com/m4rc3l05/media-follower/internal/store"
 	"github.com/m4rc3l05/media-follower/internal/test"
+	"github.com/m4rc3l05/media-follower/internal/test/testdata"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -48,7 +49,7 @@ var _ = Describe("FetchOutputs", func() {
 			db := test.NewDB()
 			defer db.Close() //nolint:all
 
-			test.LoadInput(db)
+			testdata.LoadDBInput(db)
 
 			inputProvier := providers.MockInputProvider{
 				InterfaceMock: test.InterfaceMock{
@@ -77,7 +78,7 @@ var _ = Describe("FetchOutputs", func() {
 			db := test.NewDB()
 			defer db.Close() //nolint:all
 
-			inputDb := test.LoadInput(db)
+			inputDb := testdata.LoadDBInput(db)
 			callErr := errors.New("foo")
 			inputProvier := providers.MockInputProvider{
 				InterfaceMock: test.InterfaceMock{
@@ -113,7 +114,7 @@ var _ = Describe("FetchOutputs", func() {
 			db := test.NewDB()
 			defer db.Close() //nolint:all
 
-			inputDb := test.LoadInput(db)
+			inputDb := testdata.LoadDBInput(db)
 
 			input := any(struct{}{})
 			inputProvier := providers.MockInputProvider{
@@ -156,7 +157,7 @@ var _ = Describe("FetchOutputs", func() {
 			db := test.NewDB()
 			defer db.Close() //nolint:all
 
-			inputDb := test.LoadInput(db)
+			inputDb := testdata.LoadDBInput(db)
 			callErr := errors.New("foo")
 			input := any(struct{}{})
 			inputProvier := providers.MockInputProvider{
@@ -209,7 +210,7 @@ var _ = Describe("FetchOutputs", func() {
 			db := test.NewDB()
 			defer db.Close() //nolint:all
 
-			inputDb := test.LoadInput(db)
+			inputDb := testdata.LoadDBInput(db)
 			callErr := errors.New("foo")
 			input := any(struct{}{})
 			output := struct{}{}
@@ -268,7 +269,7 @@ var _ = Describe("FetchOutputs", func() {
 			db := test.NewDB()
 			defer db.Close() //nolint:all
 
-			inputDb := test.LoadInput(db)
+			inputDb := testdata.LoadDBInput(db)
 
 			input := any(struct{}{})
 			output := struct{}{}
