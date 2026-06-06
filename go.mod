@@ -4,6 +4,7 @@ go 1.26.4
 
 require (
 	github.com/a-h/templ v0.3.1020
+	github.com/caarlos0/env/v11 v11.4.1
 	github.com/evanw/esbuild v0.28.0
 	github.com/go-jet/jet/v2 v2.15.0
 	github.com/go-playground/validator/v10 v10.30.3
