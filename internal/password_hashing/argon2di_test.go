@@ -13,6 +13,9 @@ var _ = Describe("Argon2di", func() {
 	Describe("Hash()", func() {
 		It("should hash a plaintex", func() {
 			pm := passwordhashing.NewArgon2di()
+			pm.Memory = 1
+			pm.Threads = 1
+			pm.Time = 1
 			stringHash := pm.Hash("foo")
 			stringHash2 := pm.Hash("foo")
 			parts := strings.Split(stringHash, " ")
@@ -29,6 +32,9 @@ var _ = Describe("Argon2di", func() {
 	Describe("Compare()", func() {
 		It("should return false if plaintex and hash do not match", func() {
 			pm := passwordhashing.NewArgon2di()
+			pm.Memory = 1
+			pm.Threads = 1
+			pm.Time = 1
 			stringHash := pm.Hash("foo")
 
 			Expect(pm.Compare(stringHash, "bar")).To(BeFalse())
@@ -36,6 +42,9 @@ var _ = Describe("Argon2di", func() {
 
 		It("should return true if plaintex and hash match", func() {
 			pm := passwordhashing.NewArgon2di()
+			pm.Memory = 1
+			pm.Threads = 1
+			pm.Time = 1
 			stringHash := pm.Hash("foo")
 
 			Expect(pm.Compare(stringHash, "foo")).To(BeTrue())
@@ -45,6 +54,9 @@ var _ = Describe("Argon2di", func() {
 			"should return true if plaintex and hash match with hash encoded with different params",
 			func() {
 				pm := passwordhashing.NewArgon2di()
+				pm.Memory = 2
+				pm.Threads = 1
+				pm.Time = 1
 
 				Expect(
 					pm.Compare(
