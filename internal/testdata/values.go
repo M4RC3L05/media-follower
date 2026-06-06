@@ -1,4 +1,4 @@
-package test
+package testdata
 
 import "github.com/m4rc3l05/media-follower/internal/providers"
 

@@ -8,7 +8,7 @@ import (
 	"github.com/jarcoal/httpmock"
 	"github.com/m4rc3l05/media-follower/.gen/jetdb/model"
 	"github.com/m4rc3l05/media-follower/internal/providers"
-	"github.com/m4rc3l05/media-follower/internal/test"
+	"github.com/m4rc3l05/media-follower/internal/testdata"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -115,8 +115,8 @@ var _ = Describe("ItunesAlbumProvider", func() {
 						"resultCount": 1,
 						"results": []map[string]any{
 							{"foo": "bar"},
-							test.OkItunesAlbumMap(),
-							test.BadItunesAlbumCompilationMap(),
+							testdata.OkItunesAlbumMap(),
+							testdata.BadItunesAlbumCompilationMap(),
 						},
 					},
 				),
@@ -139,9 +139,9 @@ var _ = Describe("ItunesAlbumProvider", func() {
 						"resultCount": 1,
 						"results": []map[string]any{
 							{"foo": "bar"},
-							test.OkItunesAlbumMap(),
-							test.BadItunesAlbumDJMixMap(),
-							test.BadItunesAlbumDJMix2Map(),
+							testdata.OkItunesAlbumMap(),
+							testdata.BadItunesAlbumDJMixMap(),
+							testdata.BadItunesAlbumDJMix2Map(),
 						},
 					},
 				),
@@ -165,8 +165,8 @@ var _ = Describe("ItunesAlbumProvider", func() {
 						"resultCount": 1,
 						"results": []map[string]any{
 							{"foo": "bar"},
-							test.OkItunesAlbumMap(),
-							test.BadItunesAlbumNoReleaseMap(),
+							testdata.OkItunesAlbumMap(),
+							testdata.BadItunesAlbumNoReleaseMap(),
 						},
 					},
 				),
@@ -189,11 +189,11 @@ var _ = Describe("ItunesAlbumProvider", func() {
 						"resultCount": 1,
 						"results": []map[string]any{
 							{"foo": "bar"},
-							test.OkItunesAlbumMap(),
-							test.BadItunesAlbumNoReleaseMap(),
-							test.BadItunesAlbumDJMixMap(),
-							test.BadItunesAlbumDJMix2Map(),
-							test.BadItunesAlbumCompilationMap(),
+							testdata.OkItunesAlbumMap(),
+							testdata.BadItunesAlbumNoReleaseMap(),
+							testdata.BadItunesAlbumDJMixMap(),
+							testdata.BadItunesAlbumDJMix2Map(),
+							testdata.BadItunesAlbumCompilationMap(),
 						},
 					},
 				),
@@ -202,7 +202,7 @@ var _ = Describe("ItunesAlbumProvider", func() {
 			outputs, _ := providers.NewItunesAlbumProvider(validator.New()).
 				FetchOutputs(providers.ItunesArtist{ArtistID: 1})
 			Expect(outputs).To(HaveLen(1))
-			Expect(outputs[0].CollectionID).To(Equal(test.OkItunesAlbumMap()["collectionId"]))
+			Expect(outputs[0].CollectionID).To(Equal(testdata.OkItunesAlbumMap()["collectionId"]))
 			Expect(httpmock.GetTotalCallCount()).To(Equal(1))
 		})
 	})
@@ -220,7 +220,7 @@ var _ = Describe("ItunesAlbumProvider", func() {
 			Expect(ok).To(BeTrue())
 		})
 		It("should return a persistance from output", func() {
-			output := test.OkItunesAlbumStruct()
+			output := testdata.OkItunesAlbumStruct()
 			persistance, err := providers.NewItunesAlbumProvider(validator.New()).
 				FromOutputToPersistance(
 					model.Inputs{ID: "foo", Provider: "bar"},
