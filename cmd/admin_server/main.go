@@ -72,7 +72,7 @@ type RegisterBody struct {
 }
 
 func run(ctx context.Context) (exitCode int) {
-	ph := passwordhashing.NewArgon2diPasswordHashing()
+	ph := passwordhashing.NewArgon2di()
 	log := common.NewLogger("admin-server")
 
 	db, err := store.New()
