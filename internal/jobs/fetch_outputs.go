@@ -9,6 +9,7 @@ import (
 	qb "github.com/go-jet/jet/v2/sqlite"
 	"github.com/m4rc3l05/media-follower/.gen/jetdb/model"
 	"github.com/m4rc3l05/media-follower/.gen/jetdb/table"
+	"github.com/m4rc3l05/media-follower/internal/common"
 	"github.com/m4rc3l05/media-follower/internal/providers"
 	"github.com/m4rc3l05/media-follower/internal/store"
 )
@@ -54,8 +55,8 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 	}
 
 	for i, inputPersistance := range inputs {
-		if i < len(inputs)-1 {
-			SleepWithContext(ctx, 5*time.Second)
+		if i > 0 && i < len(inputs)-1 {
+			common.SleepWithContext(ctx, 5*time.Second)
 		}
 
 		f.Log.Info(
@@ -96,12 +97,14 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 					table.Outputs.ID,
 					table.Outputs.InputID,
 					table.Outputs.InputProvider,
+					table.Inputs.Provider,
 					table.Outputs.Raw,
 				).
 				VALUES(
 					persistance.ID,
 					persistance.InputID,
 					persistance.InputProvider,
+					persistance.Provider,
 					store.JSONB(persistance.Raw),
 				).
 				ON_CONFLICT(
@@ -111,6 +114,7 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 				).
 				DO_UPDATE(
 					qb.SET(
+						table.Outputs.Provider.SET(qb.String(persistance.Provider)),
 						table.Outputs.Raw.SET(
 							store.JSONB(persistance.Raw),
 						),

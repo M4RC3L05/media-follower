@@ -15,7 +15,12 @@ import (
 
 func run() (statusCode int) {
 	log := common.NewLogger("gen-db-types")
-	db, err := store.New()
+	config, err := common.NewConfig()
+	if err != nil {
+		log.Error("Unable to load config", slog.Any("error", err))
+		return 1
+	}
+	db, err := store.New(config.Database.Path)
 
 	defer func() {
 		if err := db.Close(); err != nil {

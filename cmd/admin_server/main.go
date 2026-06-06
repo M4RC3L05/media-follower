@@ -16,6 +16,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/extractors"
+	"github.com/gofiber/fiber/v3/log"
 	"github.com/gofiber/fiber/v3/middleware/favicon"
 	recoverer "github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/session"
@@ -72,10 +73,16 @@ type RegisterBody struct {
 }
 
 func run(ctx context.Context) (exitCode int) {
+	config, err := common.NewConfig()
+	if err != nil {
+		log.Error("Unable to load config", slog.Any("error", err))
+		return 1
+	}
+
 	ph := passwordhashing.NewArgon2di()
 	log := common.NewLogger("admin-server")
 
-	db, err := store.New()
+	db, err := store.New(config.Database.Path)
 	defer func() {
 		if err := db.Close(); err != nil {
 			log.Error("Error closing database", slog.Any("err", err))
