@@ -399,5 +399,83 @@ var _ = Describe("FetchOutputs", func() {
 			Expect(outputs[0]).NotTo(Equal(outputDb))
 			Expect(outputs[0]).To(Equal(updatedOutputDb))
 		})
+
+		It("should insert output in db and ignore the ones that error", func() {
+			db := test.NewDB()
+			defer db.Close() //nolint:all
+
+			inputDb := testdata.LoadDBInput(db)
+
+			input := any(struct{}{})
+			output := struct{}{}
+			outputDb1 := model.Outputs{
+				ID:            "1",
+				InputID:       inputDb.ID,
+				InputProvider: inputDb.Provider,
+				Provider:      "foo-out",
+				Raw:           []byte("{}"),
+			}
+			outputDb2 := model.Outputs{
+				ID:            "1",
+				InputID:       inputDb.ID,
+				InputProvider: inputDb.Provider,
+				Provider:      "foo-out",
+				Raw:           []byte("foo"),
+			}
+			inputProvier := providers.MockInputProvider{
+				InterfaceMock: test.InterfaceMock{
+					Calls: map[string][]test.CallInfo{},
+					MockReturns: map[string][][]any{
+						"Name":                   {{"foo"}},
+						"FromPersistanceToInput": {{&input, nil}},
+					},
+				},
+			}
+			outputProvider := providers.MockOutputProvider{
+				InterfaceMock: test.InterfaceMock{
+					Calls: map[string][]test.CallInfo{},
+					MockReturns: map[string][][]any{
+						"FetchOutputs":            {{[]any{output, output}, nil}},
+						"FromOutputToPersistance": {{&outputDb1, nil}, {&outputDb2, nil}},
+					},
+				},
+			}
+			job := jobs.NewFetchOutputsJob(
+				inputProvier,
+				outputProvider,
+				db,
+				common.NewLogger("foo"),
+			)
+
+			err := job.Run(context.Background())
+
+			Expect(err).To(BeNil())
+			Expect(inputProvier).To(test.HaveInterfaceBeenCalledTimes(2))
+			Expect(inputProvier).To(test.HaveMethodBeenCalledTimes("Name", 1))
+			Expect(inputProvier).To(test.HaveMethodBeenCalledTimes("FromPersistanceToInput", 1))
+			Expect(
+				inputProvier,
+			).To(test.HaveMethodBeenNthCalledWith("FromPersistanceToInput", 0, inputDb))
+			Expect(outputProvider).To(test.HaveInterfaceBeenCalledTimes(2))
+			Expect(outputProvider).To(test.HaveMethodBeenCalledTimes("FetchOutputs", 1))
+			Expect(outputProvider).To(test.HaveMethodBeenNthCalledWith("FetchOutputs", 0, input))
+			Expect(outputProvider).To(test.HaveMethodBeenCalledTimes("FromOutputToPersistance", 2))
+			Expect(
+				outputProvider,
+			).To(test.HaveMethodBeenNthCalledWith("FromOutputToPersistance", 0, inputDb, output))
+			Expect(
+				outputProvider,
+			).To(test.HaveMethodBeenNthCalledWith("FromOutputToPersistance", 1, inputDb, output))
+
+			var outputs []model.Outputs
+			table.Outputs.SELECT(table.Outputs.AllColumns, store.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
+
+				//nolint:all
+				Query(db.DB, &outputs)
+
+			Expect(outputs).To(HaveLen(1))
+			Expect(outputs[0]).To(Equal(outputDb1))
+			Expect(outputs[0]).NotTo(Equal(outputDb2))
+		})
 	})
 })
