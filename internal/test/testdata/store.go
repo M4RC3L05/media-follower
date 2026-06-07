@@ -1,6 +1,7 @@
 package testdata
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
@@ -21,4 +22,31 @@ func LoadDBInput(db *store.Db) model.Inputs {
 	}
 
 	return input
+}
+
+func LoadDBOutput(db *store.Db, input *model.Inputs) model.Outputs {
+	if input == nil {
+		i := LoadDBInput(db)
+		fmt.Printf("i: %v\n", i)
+		input = &i
+	}
+
+	var output model.Outputs
+
+	stmt := table.Outputs.
+		INSERT(
+			table.Outputs.ID,
+			table.Outputs.InputID,
+			table.Outputs.InputProvider,
+			table.Outputs.Provider,
+			table.Outputs.Raw,
+		).
+		VALUES(rand.Int(), input.ID, input.Provider, "bar", store.JSONB([]byte(`{}`))).
+		RETURNING(table.Outputs.AllColumns, store.JSONCol(table.Outputs.Raw).AS("outputs.raw"))
+
+	if err := stmt.Query(db.DB, &output); err != nil {
+		panic(err)
+	}
+
+	return output
 }
