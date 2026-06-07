@@ -111,10 +111,10 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 					table.Outputs.ID,
 					table.Outputs.InputID,
 					table.Outputs.InputProvider,
+					table.Outputs.Provider,
 				).
 				DO_UPDATE(
 					qb.SET(
-						table.Outputs.Provider.SET(qb.String(persistance.Provider)),
 						table.Outputs.Raw.SET(
 							store.JSONB(persistance.Raw),
 						),

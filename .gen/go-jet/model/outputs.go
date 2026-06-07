@@ -11,6 +11,6 @@ type Outputs struct {
 	ID            string `sql:"primary_key"`
 	InputID       string `sql:"primary_key"`
 	InputProvider string `sql:"primary_key"`
-	Provider      string
+	Provider      string `sql:"primary_key"`
 	Raw           []byte
 }

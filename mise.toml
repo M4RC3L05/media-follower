@@ -38,7 +38,7 @@ run = [
 [tasks."cmd:db_migrate"]
 run = [
   "dbmate -u 'sqlite:./data/app.db' -d ./internal/store/migrations -s ./internal/store/schema.sql up",
-  "jet -source=sqlite -dsn=./data/app.db -path=./.gen/go-jet",
+  "go run -ldflags \"-w -s\" cmd/gen_db_types/main.go",
 ]
 
 [tasks."cmd:fetch_outputs_job"]

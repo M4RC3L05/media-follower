@@ -69,7 +69,7 @@ func newOutputsTableImpl(schemaName, tableName, alias string) outputsTable {
 		ProviderColumn      = sqlite.StringColumn("provider")
 		RawColumn           = sqlite.BlobColumn("raw")
 		allColumns          = sqlite.ColumnList{IDColumn, InputIDColumn, InputProviderColumn, ProviderColumn, RawColumn}
-		mutableColumns      = sqlite.ColumnList{ProviderColumn, RawColumn}
+		mutableColumns      = sqlite.ColumnList{RawColumn}
 		defaultColumns      = sqlite.ColumnList{InputIDColumn, InputProviderColumn}
 	)
 
