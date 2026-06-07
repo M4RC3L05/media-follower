@@ -11,13 +11,13 @@ import (
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/table"
 	"github.com/m4rc3l05/media-follower/internal/common"
 	"github.com/m4rc3l05/media-follower/internal/providers"
-	"github.com/m4rc3l05/media-follower/internal/store"
+	"github.com/m4rc3l05/media-follower/internal/storage"
 )
 
 type FetchOutputsJob[I any, O any] struct {
 	InputProvider  providers.IInputProvider[I]
 	OutputProvider providers.IOutputProvider[I, O]
-	DB             *store.Db
+	DB             *storage.Db
 	Log            *slog.Logger
 }
 
@@ -29,7 +29,7 @@ var (
 func NewFetchOutputsJob[I any, O any](
 	inputProvider providers.IInputProvider[I],
 	outputProvider providers.IOutputProvider[I, O],
-	db *store.Db,
+	db *storage.Db,
 	log *slog.Logger,
 ) FetchOutputsJob[I, O] {
 	return FetchOutputsJob[I, O]{
@@ -45,7 +45,7 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 
 	stmt := qb.SELECT(
 		table.Inputs.AllColumns.Except(table.Inputs.Raw),
-		store.JSONCol(table.Inputs.Raw).AS("inputs.raw"),
+		storage.JSONCol(table.Inputs.Raw).AS("inputs.raw"),
 	).
 		FROM(table.Inputs).
 		WHERE(table.Inputs.Provider.EQ(qb.String(f.InputProvider.Name())))
@@ -105,7 +105,7 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 					persistance.InputID,
 					persistance.InputProvider,
 					persistance.Provider,
-					store.JSONB(persistance.Raw),
+					storage.JSONB(persistance.Raw),
 				).
 				ON_CONFLICT(
 					table.Outputs.ID,
@@ -116,7 +116,7 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 				DO_UPDATE(
 					qb.SET(
 						table.Outputs.Raw.SET(
-							store.JSONB(persistance.Raw),
+							storage.JSONB(persistance.Raw),
 						),
 					),
 				)

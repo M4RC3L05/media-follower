@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/m4rc3l05/media-follower/internal/common"
-	"github.com/m4rc3l05/media-follower/internal/store"
+	store "github.com/m4rc3l05/media-follower/internal/storage"
 )
 
 func dbFactory(ctx context.Context, cfg *common.Config) (*store.Db, error) {

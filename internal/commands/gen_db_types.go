@@ -5,11 +5,11 @@ import (
 	"github.com/go-jet/jet/v2/generator/sqlite"
 	"github.com/go-jet/jet/v2/generator/template"
 	sqlite2 "github.com/go-jet/jet/v2/sqlite"
-	"github.com/m4rc3l05/media-follower/internal/store"
+	"github.com/m4rc3l05/media-follower/internal/storage"
 	_ "modernc.org/sqlite"
 )
 
-func GenDbTypes(db *store.Db) error {
+func GenDbTypes(db *storage.Db) error {
 	template := template.Default(sqlite2.Dialect).
 		UseSchema(func(schemaMetaData metadata.Schema) template.Schema {
 			return template.DefaultSchema(schemaMetaData).

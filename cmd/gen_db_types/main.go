@@ -7,7 +7,7 @@ import (
 
 	"github.com/m4rc3l05/media-follower/internal/commands"
 	"github.com/m4rc3l05/media-follower/internal/common"
-	"github.com/m4rc3l05/media-follower/internal/store"
+	"github.com/m4rc3l05/media-follower/internal/storage"
 	_ "modernc.org/sqlite"
 )
 
@@ -18,7 +18,7 @@ func run() (statusCode int) {
 		log.Error("Unable to load config", slog.Any("error", err))
 		return 1
 	}
-	db, err := store.New(config.Database.Path)
+	db, err := storage.New(config.Database.Path)
 
 	defer func() {
 		if err := db.Close(context.Background()); err != nil {

@@ -1,16 +1,16 @@
 package test
 
 import (
-	"github.com/m4rc3l05/media-follower/internal/store"
+	"github.com/m4rc3l05/media-follower/internal/storage"
 )
 
-func NewDB() *store.Db {
-	db, err := store.New(":memory:")
+func NewDB() *storage.Db {
+	db, err := storage.New(":memory:")
 	if err != nil {
 		panic(err)
 	}
 
-	contents, err := store.Schema.ReadFile("schema.sql")
+	contents, err := storage.Schema.ReadFile("schema.sql")
 	if err != nil {
 		panic(err)
 	}

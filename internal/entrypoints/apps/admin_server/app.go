@@ -20,11 +20,11 @@ import (
 	"github.com/m4rc3l05/media-follower/internal/common/middlewares"
 	passwordhashing "github.com/m4rc3l05/media-follower/internal/common/password_hashing"
 	"github.com/m4rc3l05/media-follower/internal/entrypoints/apps/admin_server/handlers"
-	"github.com/m4rc3l05/media-follower/internal/store"
+	"github.com/m4rc3l05/media-follower/internal/storage"
 )
 
 type AdminServerApp struct {
-	Db  *store.Db
+	Db  *storage.Db
 	app *fiber.App
 }
 

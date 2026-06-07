@@ -7,9 +7,9 @@ import (
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/table"
 	"github.com/m4rc3l05/media-follower/internal/common"
-	"github.com/m4rc3l05/media-follower/internal/jobs"
+	"github.com/m4rc3l05/media-follower/internal/entrypoints/jobs"
 	"github.com/m4rc3l05/media-follower/internal/providers"
-	"github.com/m4rc3l05/media-follower/internal/store"
+	"github.com/m4rc3l05/media-follower/internal/storage"
 	"github.com/m4rc3l05/media-follower/internal/test"
 	"github.com/m4rc3l05/media-follower/internal/test/testdata"
 	. "github.com/onsi/ginkgo/v2"
@@ -198,7 +198,7 @@ var _ = Describe("FetchOutputs", func() {
 			Expect(outputProvider).To(test.HaveMethodBeenNthCalledWith("FetchOutputs", 0, input))
 
 			var outputs []model.Outputs
-			table.Outputs.SELECT(table.Outputs.AllColumns, store.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
+			table.Outputs.SELECT(table.Outputs.AllColumns, storage.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
 
 				//nolint:all
 				Query(db.DB, &outputs)
@@ -257,7 +257,7 @@ var _ = Describe("FetchOutputs", func() {
 			).To(test.HaveMethodBeenNthCalledWith("FromOutputToPersistance", 0, inputDb, output))
 
 			var outputs []model.Outputs
-			table.Outputs.SELECT(table.Outputs.AllColumns, store.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
+			table.Outputs.SELECT(table.Outputs.AllColumns, storage.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
 
 				//nolint:all
 				Query(db.DB, &outputs)
@@ -323,7 +323,7 @@ var _ = Describe("FetchOutputs", func() {
 			).To(test.HaveMethodBeenNthCalledWith("FromOutputToPersistance", 0, inputDb, output))
 
 			var outputs []model.Outputs
-			table.Outputs.SELECT(table.Outputs.AllColumns, store.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
+			table.Outputs.SELECT(table.Outputs.AllColumns, storage.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
 
 				//nolint:all
 				Query(db.DB, &outputs)
@@ -390,7 +390,7 @@ var _ = Describe("FetchOutputs", func() {
 			).To(test.HaveMethodBeenNthCalledWith("FromOutputToPersistance", 0, inputDb, output))
 
 			var outputs []model.Outputs
-			table.Outputs.SELECT(table.Outputs.AllColumns, store.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
+			table.Outputs.SELECT(table.Outputs.AllColumns, storage.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
 
 				//nolint:all
 				Query(db.DB, &outputs)
@@ -468,7 +468,7 @@ var _ = Describe("FetchOutputs", func() {
 			).To(test.HaveMethodBeenNthCalledWith("FromOutputToPersistance", 1, inputDb, output))
 
 			var outputs []model.Outputs
-			table.Outputs.SELECT(table.Outputs.AllColumns, store.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
+			table.Outputs.SELECT(table.Outputs.AllColumns, storage.JSONCol(table.Outputs.Raw).AS("outputs.raw")).
 
 				//nolint:all
 				Query(db.DB, &outputs)
