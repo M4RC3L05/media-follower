@@ -1,8 +1,6 @@
 package test
 
 import (
-	"github.com/m4rc3l05/media-follower/internal/commands"
-	"github.com/m4rc3l05/media-follower/internal/common"
 	"github.com/m4rc3l05/media-follower/internal/store"
 )
 
@@ -12,7 +10,13 @@ func NewDB() *store.Db {
 		panic(err)
 	}
 
-	if err := commands.DBMigrate(db.DB, common.NewLogger("foo")); err != nil {
+	contents, err := store.Schema.ReadFile("schema.sql")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = db.DB.Exec(string(contents))
+	if err != nil {
 		panic(err)
 	}
 

@@ -2,9 +2,11 @@
 CGO_ENABLED = 0
 
 [tools]
+dbmate = "2.33.0"
 ginkgo = "2.29.0"
+"github:a-h/templ" = "0.3.1020"
 go = "1.26.4"
-"go:github.com/a-h/templ/cmd/templ" = "0.3.1020"
+"go:github.com/go-jet/jet/v2/cmd/jet" = "2.15.0"
 "go:github.com/mickamy/slog-pretty/cmd/spretty" = "0.0.1"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1.3.0"
 golangci-lint = "2.12.2"
@@ -32,9 +34,8 @@ run = [
 
 [tasks."cmd:db_migrate"]
 run = [
-  "go run -ldflags \"-w -s\" cmd/db_migrate/main.go",
-  "go run -ldflags \"-w -s\" cmd/gen_db_types/main.go",
-  "sqlite3 data/app.db \".schema\" > internal/store/schema.sql",
+  "dbmate -u 'sqlite:./data/app.db' -d ./internal/store/migrations -s ./internal/store/schema.sql up",
+  "jet -source=sqlite -dsn=./data/app.db -path=./.gen/go-jet",
 ]
 
 [tasks."cmd:fetch_outputs_job"]

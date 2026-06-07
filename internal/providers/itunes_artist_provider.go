@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/m4rc3l05/media-follower/.gen/jetdb/model"
+	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
 )
 
 const ITUNES_ARTIST_PROVIDER_NAME = "ITUNES_ARTIST_PROVIDER"

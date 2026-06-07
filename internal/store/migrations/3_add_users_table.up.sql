@@ -1,3 +1,5 @@
+-- migrate:up
+
 create table users (
   -- User id.
   id text not null primary key,
@@ -8,3 +10,5 @@ create table users (
 
 -- Strict table, no rowid.
 ) strict, without rowid;
+
+-- migrate:down

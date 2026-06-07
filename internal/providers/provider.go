@@ -1,6 +1,6 @@
 package providers
 
-import "github.com/m4rc3l05/media-follower/.gen/jetdb/model"
+import "github.com/m4rc3l05/media-follower/.gen/go-jet/model"
 
 type EProviders string
 

@@ -1,5 +1,4 @@
-CREATE TABLE schema_migrations (version uint64,dirty bool);
-CREATE UNIQUE INDEX version_unique ON schema_migrations (version);
+CREATE TABLE "schema_migrations" (version varchar(128) primary key);
 CREATE TABLE inputs (
   -- Input id.
   id text not null,
@@ -40,3 +39,9 @@ CREATE TABLE users (
 
 -- Strict table, no rowid.
 ) strict, without rowid;
+-- Dbmate schema migrations
+INSERT INTO "schema_migrations" (version) VALUES
+  ('0'),
+  ('1'),
+  ('2'),
+  ('3');

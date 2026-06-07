@@ -1,3 +1,5 @@
+-- migrate:up
+
 create table inputs (
   -- Input id.
   id text not null,
@@ -9,3 +11,5 @@ create table inputs (
   primary key(id, provider)
 -- Strict table, maintain rowid to untie during sorting.
 ) strict;
+
+-- migrate:down

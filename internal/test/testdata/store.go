@@ -3,8 +3,8 @@ package testdata
 import (
 	"math/rand"
 
-	"github.com/m4rc3l05/media-follower/.gen/jetdb/model"
-	"github.com/m4rc3l05/media-follower/.gen/jetdb/table"
+	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
+	"github.com/m4rc3l05/media-follower/.gen/go-jet/table"
 	"github.com/m4rc3l05/media-follower/internal/store"
 )
 

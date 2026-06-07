@@ -12,5 +12,6 @@ package table
 func UseSchema(schema string) {
 	Inputs = Inputs.FromSchema(schema)
 	Outputs = Outputs.FromSchema(schema)
+	SchemaMigrations = SchemaMigrations.FromSchema(schema)
 	Users = Users.FromSchema(schema)
 }

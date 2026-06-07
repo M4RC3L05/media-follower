@@ -2,7 +2,7 @@ package providers_test
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/m4rc3l05/media-follower/.gen/jetdb/model"
+	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
 	"github.com/m4rc3l05/media-follower/internal/providers"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
