@@ -27,7 +27,7 @@ import (
 	"github.com/m4rc3l05/media-follower/cmd/admin_server/views"
 	"github.com/m4rc3l05/media-follower/internal/common"
 	"github.com/m4rc3l05/media-follower/internal/common/middlewares"
-	passwordhashing "github.com/m4rc3l05/media-follower/internal/password_hashing"
+	passwordhashing "github.com/m4rc3l05/media-follower/internal/common/password_hashing"
 	"github.com/m4rc3l05/media-follower/internal/store"
 )
 

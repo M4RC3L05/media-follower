@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	passwordhashing "github.com/m4rc3l05/media-follower/internal/password_hashing"
+	passwordhashing "github.com/m4rc3l05/media-follower/internal/common/password_hashing"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
