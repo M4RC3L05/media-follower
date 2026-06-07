@@ -20,7 +20,7 @@ var _ = Describe("FetchOutputs", func() {
 	Describe("Run()", func() {
 		It("should do nothing if no inputs exist", func() {
 			db := test.NewDB()
-			defer db.Close() //nolint:all
+			defer db.Close(context.Background()) //nolint:all
 
 			inputProvier := providers.MockInputProvider{
 				InterfaceMock: test.InterfaceMock{
@@ -47,7 +47,7 @@ var _ = Describe("FetchOutputs", func() {
 
 		It("should do nothing if no inputs exist for provider name", func() {
 			db := test.NewDB()
-			defer db.Close() //nolint:all
+			defer db.Close(context.Background()) //nolint:all
 
 			testdata.LoadDBInput(db)
 
@@ -76,7 +76,7 @@ var _ = Describe("FetchOutputs", func() {
 
 		It("should do nothing if `FromPersistanceToInput()` returns error", func() {
 			db := test.NewDB()
-			defer db.Close() //nolint:all
+			defer db.Close(context.Background()) //nolint:all
 
 			inputDb := testdata.LoadDBInput(db)
 			callErr := errors.New("foo")
@@ -112,7 +112,7 @@ var _ = Describe("FetchOutputs", func() {
 
 		It("should do nothing if no outputs are generated", func() {
 			db := test.NewDB()
-			defer db.Close() //nolint:all
+			defer db.Close(context.Background()) //nolint:all
 
 			inputDb := testdata.LoadDBInput(db)
 
@@ -155,7 +155,7 @@ var _ = Describe("FetchOutputs", func() {
 
 		It("should do nothing if `FetchOutputs()` returns error", func() {
 			db := test.NewDB()
-			defer db.Close() //nolint:all
+			defer db.Close(context.Background()) //nolint:all
 
 			inputDb := testdata.LoadDBInput(db)
 			callErr := errors.New("foo")
@@ -208,7 +208,7 @@ var _ = Describe("FetchOutputs", func() {
 
 		It("should do nothing if `FromOutputToPersistance` returns error", func() {
 			db := test.NewDB()
-			defer db.Close() //nolint:all
+			defer db.Close(context.Background()) //nolint:all
 
 			inputDb := testdata.LoadDBInput(db)
 			callErr := errors.New("foo")
@@ -267,7 +267,7 @@ var _ = Describe("FetchOutputs", func() {
 
 		It("should insert output in db", func() {
 			db := test.NewDB()
-			defer db.Close() //nolint:all
+			defer db.Close(context.Background()) //nolint:all
 
 			inputDb := testdata.LoadDBInput(db)
 
@@ -334,7 +334,7 @@ var _ = Describe("FetchOutputs", func() {
 
 		It("should update existsing output", func() {
 			db := test.NewDB()
-			defer db.Close() //nolint:all
+			defer db.Close(context.Background()) //nolint:all
 
 			input := any(struct{}{})
 			output := struct{}{}
@@ -402,7 +402,7 @@ var _ = Describe("FetchOutputs", func() {
 
 		It("should insert output in db and ignore the ones that error", func() {
 			db := test.NewDB()
-			defer db.Close() //nolint:all
+			defer db.Close(context.Background()) //nolint:all
 
 			inputDb := testdata.LoadDBInput(db)
 

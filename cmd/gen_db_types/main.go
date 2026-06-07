@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"os"
 
@@ -20,7 +21,7 @@ func run() (statusCode int) {
 	db, err := store.New(config.Database.Path)
 
 	defer func() {
-		if err := db.Close(); err != nil {
+		if err := db.Close(context.Background()); err != nil {
 			log.Error("Error closing database", slog.Any("err", err))
 			statusCode = 1
 

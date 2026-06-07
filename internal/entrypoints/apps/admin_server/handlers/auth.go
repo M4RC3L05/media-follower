@@ -10,9 +10,9 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/session"
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/table"
-	"github.com/m4rc3l05/media-follower/internal/apps/admin_server/views"
 	"github.com/m4rc3l05/media-follower/internal/common/middlewares"
 	passwordhashing "github.com/m4rc3l05/media-follower/internal/common/password_hashing"
+	"github.com/m4rc3l05/media-follower/internal/entrypoints/apps/admin_server/views"
 	"github.com/m4rc3l05/media-follower/internal/store"
 )
 

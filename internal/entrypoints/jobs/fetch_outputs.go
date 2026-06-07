@@ -23,7 +23,7 @@ type FetchOutputsJob[I any, O any] struct {
 
 // Compile time check that providers implement interface
 var (
-	_ IJob = FetchOutputsJob[any, any]{}
+	_ common.IEntrypoint = FetchOutputsJob[any, any]{}
 )
 
 func NewFetchOutputsJob[I any, O any](
@@ -154,4 +154,12 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (f FetchOutputsJob[I, O]) Close(ctx context.Context) error {
+	f.Log.Info("Closing database")
+
+	defer f.Log.Info("Closed database")
+
+	return f.DB.Close(ctx)
 }

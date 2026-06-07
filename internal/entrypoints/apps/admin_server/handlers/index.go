@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/m4rc3l05/media-follower/internal/apps/admin_server/views"
 	"github.com/m4rc3l05/media-follower/internal/common/middlewares"
+	"github.com/m4rc3l05/media-follower/internal/entrypoints/apps/admin_server/views"
 )
 
 type IndexHandler struct{}

@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -37,7 +38,7 @@ func New(path string) (*Db, error) {
 	return &Db{DB: db}, nil
 }
 
-func (db *Db) Close() error {
+func (db *Db) Close(ctx context.Context) error {
 	var errAgg []error
 
 	if db.DB == nil {
@@ -45,7 +46,7 @@ func (db *Db) Close() error {
 	}
 
 	if !testing.Testing() {
-		if _, err := db.DB.Exec("pragma optimise"); err != nil {
+		if _, err := db.DB.ExecContext(ctx, "pragma optimise"); err != nil {
 			errAgg = append(errAgg, err)
 		}
 	}

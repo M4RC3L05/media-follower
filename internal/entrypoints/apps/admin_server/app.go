@@ -3,6 +3,7 @@ package adminserver
 import (
 	"context"
 	"embed"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -15,11 +16,10 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/session"
 	"github.com/gofiber/fiber/v3/middleware/static"
 	"github.com/gofiber/utils/v2"
-	"github.com/m4rc3l05/media-follower/internal/apps"
-	"github.com/m4rc3l05/media-follower/internal/apps/admin_server/handlers"
 	"github.com/m4rc3l05/media-follower/internal/common"
 	"github.com/m4rc3l05/media-follower/internal/common/middlewares"
 	passwordhashing "github.com/m4rc3l05/media-follower/internal/common/password_hashing"
+	"github.com/m4rc3l05/media-follower/internal/entrypoints/apps/admin_server/handlers"
 	"github.com/m4rc3l05/media-follower/internal/store"
 )
 
@@ -36,7 +36,7 @@ type structValidator struct {
 var dist embed.FS
 var log = common.NewLogger("admin-server-app")
 var (
-	_ apps.IApp             = &AdminServerApp{}
+	_ common.IEntrypoint    = &AdminServerApp{}
 	_ fiber.StructValidator = structValidator{}
 )
 
@@ -44,7 +44,7 @@ func (v structValidator) Validate(out any) error {
 	return v.validate.Struct(out)
 }
 
-func (a *AdminServerApp) Start(ctx context.Context) error {
+func (a *AdminServerApp) Run(ctx context.Context) error {
 	a.app = fiber.New(fiber.Config{
 		StructValidator: &structValidator{
 			validate: validator.New(validator.WithRequiredStructEnabled()),
@@ -102,14 +102,28 @@ func (a *AdminServerApp) Start(ctx context.Context) error {
 	)
 }
 
-func (a AdminServerApp) Stop(ctx context.Context) error {
+func (a AdminServerApp) Close(ctx context.Context) error {
+	var errAgg []error
+
 	log.Info("Server is shuting down")
 
 	if err := a.app.ShutdownWithContext(ctx); err != nil {
-		return err
+		errAgg = append(errAgg, err)
 	}
 
 	log.Info("Server shutdown")
 
-	return nil
+	log.Info("Database is shuting down")
+
+	if err := a.Db.Close(ctx); err != nil {
+		errAgg = append(errAgg, err)
+	}
+
+	log.Info("Database shutdown")
+
+	if len(errAgg) <= 0 {
+		return nil
+	}
+
+	return errors.Join(errAgg...)
 }

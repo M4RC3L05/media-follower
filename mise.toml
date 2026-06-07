@@ -25,14 +25,14 @@ run = [
   "govulncheck -test ./...",
 ]
 
-[tasks."cmd:admin_server"]
+[tasks."cmd:admin-server"]
 run = [
-  "rm -rfv internal/apps/admin_server/.dist",
-  "go run -ldflags \"-w -s\" cmd/bundle_assets/main.go -e internal/apps/admin_server/frontend/*.css -e internal/apps/admin_server/frontend/*.ts -o internal/apps/admin_server/.dist",
-  "cp --verbose -R internal/apps/admin_server/frontend/static internal/apps/admin_server/.dist",
-  "touch internal/apps/admin_server/.dist/.gitkeep",
+  "rm -rfv internal/entrypoints/apps/admin_server/.dist",
+  "go run -ldflags \"-w -s\" cmd/bundle_assets/main.go -e internal/entrypoints/apps/admin_server/frontend/*.css -e internal/entrypoints/apps/admin_server/frontend/*.ts -o internal/entrypoints/apps/admin_server/.dist",
+  "cp --verbose -R internal/entrypoints/apps/admin_server/frontend/static internal/entrypoints/apps/admin_server/.dist",
+  "touch internal/entrypoints/apps/admin_server/.dist/.gitkeep",
   "templ generate",
-  "go run -ldflags \"-w -s\" cmd/admin_server/main.go",
+  "go run -ldflags \"-w -s\" cmd/main/main.go app admin-server",
 ]
 
 [tasks."cmd:db_migrate"]
@@ -41,5 +41,5 @@ run = [
   "go run -ldflags \"-w -s\" cmd/gen_db_types/main.go",
 ]
 
-[tasks."cmd:fetch_outputs_job"]
-run = ["go run -ldflags \"-w -s\" cmd/fetch_outputs_job/main.go"]
+[tasks."cmd:fetch-outputs"]
+run = ["go run -ldflags \"-w -s\" cmd/main/main.go job fetch-outputs"]
