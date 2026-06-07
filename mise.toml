@@ -27,10 +27,10 @@ run = [
 
 [tasks."cmd:admin_server"]
 run = [
-  "rm -rfv cmd/admin_server/.dist",
-  "go run -ldflags \"-w -s\" cmd/bundle_assets/main.go -e cmd/admin_server/frontend/*.css -e cmd/admin_server/frontend/*.ts -o cmd/admin_server/.dist",
-  "cp --verbose -R cmd/admin_server/frontend/static cmd/admin_server/.dist",
-  "touch cmd/admin_server/.dist/.gitkeep",
+  "rm -rfv internal/apps/admin_server/.dist",
+  "go run -ldflags \"-w -s\" cmd/bundle_assets/main.go -e internal/apps/admin_server/frontend/*.css -e internal/apps/admin_server/frontend/*.ts -o internal/apps/admin_server/.dist",
+  "cp --verbose -R internal/apps/admin_server/frontend/static internal/apps/admin_server/.dist",
+  "touch internal/apps/admin_server/.dist/.gitkeep",
   "templ generate",
   "go run -ldflags \"-w -s\" cmd/admin_server/main.go",
 ]
