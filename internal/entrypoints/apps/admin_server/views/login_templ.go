@@ -29,6 +29,7 @@ func Login() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		csrfToken, _ := ctx.Value(CSRFTokenCOntextViewKey).(string)
 		templ_7745c5c3_Var2 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -41,7 +42,20 @@ func Login() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"col-lg-6 offset-md-3 col-md-8 offset-md-2\"><h1 class=\"text-center\">Login</h1><form method=\"post\" action=\"/auth/login\"><div class=\"mb-3\"><label for=\"username\" class=\"form-label\">Username</label> <input type=\"text\" class=\"form-control\" id=\"username\" name=\"username\"></div><div class=\"mb-3\"><label for=\"password\" class=\"form-label\">Password</label> <input type=\"password\" name=\"password\" class=\"form-control\" id=\"password\"></div><button type=\"submit\" class=\"btn btn-primary w-100\">Submit</button></form><br><a href=\"/auth/register\">Go to register</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"col-lg-6 offset-md-3 col-md-8 offset-md-2\"><h1 class=\"text-center\">Login</h1><form method=\"post\" action=\"/auth/login\"><input type=\"hidden\" name=\"_csrf\" value=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var3 string
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfToken)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/entrypoints/apps/admin_server/views/login.templ`, Line: 9, Col: 55}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"><div class=\"mb-3\"><label for=\"username\" class=\"form-label\">Username</label> <input type=\"text\" class=\"form-control\" id=\"username\" name=\"username\"></div><div class=\"mb-3\"><label for=\"password\" class=\"form-label\">Password</label> <input type=\"password\" name=\"password\" class=\"form-control\" id=\"password\"></div><button type=\"submit\" class=\"btn btn-primary w-100\">Submit</button></form><br><a href=\"/auth/register\">Go to register</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

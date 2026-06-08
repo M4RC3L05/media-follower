@@ -7,6 +7,7 @@ import (
 	"github.com/go-jet/jet/v2/qrm"
 	qb "github.com/go-jet/jet/v2/sqlite"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/csrf"
 	"github.com/gofiber/fiber/v3/middleware/session"
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/table"
@@ -32,12 +33,18 @@ type AuthHandler struct {
 }
 
 func (h AuthHandler) GetLogin(c fiber.Ctx) error {
+	csrfToken := csrf.TokenFromContext(c)
+
 	return views.Login().
 		Render(
 			context.WithValue(
-				c.Type("html", "utf-8").RequestCtx(),
-				views.FlashMessagesContextViewKey,
-				middlewares.FlashMessageProviderFromContext(c).Flashes(c),
+				context.WithValue(
+					c.Type("html", "utf-8").RequestCtx(),
+					views.FlashMessagesContextViewKey,
+					middlewares.FlashMessageProviderFromContext(c).Flashes(c),
+				),
+				views.CSRFTokenCOntextViewKey,
+				csrfToken,
 			),
 			c.Res(),
 		)
@@ -96,12 +103,18 @@ func (h AuthHandler) GetRegister(c fiber.Ctx) error {
 		return c.Redirect().Route("auth-login")
 	}
 
+	csrfToken := csrf.TokenFromContext(c)
+
 	return views.Register().
 		Render(
 			context.WithValue(
-				c.Type("html", "utf-8").RequestCtx(),
-				views.FlashMessagesContextViewKey,
-				middlewares.FlashMessageProviderFromContext(c).Flashes(c),
+				context.WithValue(
+					c.Type("html", "utf-8").RequestCtx(),
+					views.FlashMessagesContextViewKey,
+					middlewares.FlashMessageProviderFromContext(c).Flashes(c),
+				),
+				views.CSRFTokenCOntextViewKey,
+				csrfToken,
 			),
 			c.Res(),
 		)
@@ -127,6 +140,11 @@ func (h AuthHandler) PostRegister(c fiber.Ctx) error {
 }
 
 func (h AuthHandler) PostLogout(c fiber.Ctx) error {
+	handler := csrf.HandlerFromContext(c)
+	if err := handler.DeleteToken(c); err != nil {
+		return err
+	}
+
 	sess := session.FromContext(c)
 	if err := sess.Destroy(); err != nil {
 		return err

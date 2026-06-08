@@ -1,0 +1,12 @@
+package views
+
+templ Index(name string) {
+	{{ csrfToken, _ := ctx.Value(CSRFTokenCOntextViewKey).(string) }}
+	@Page("Home") {
+		<h1>Olá { name }</h1>
+		<form action="/auth/logout" method="post">
+			<input type="hidden" name="_csrf" value={ csrfToken }/>
+			<button type="submit" class="btn btn-danger">Logout</button>
+		</form>
+	}
+}

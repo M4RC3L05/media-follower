@@ -28,7 +28,7 @@ run = [
 [tasks."cmd:admin-server"]
 run = [
   "rm -rfv internal/entrypoints/apps/admin_server/.dist",
-  "go run -ldflags \"-w -s\" cmd/bundle_assets/main.go -e internal/entrypoints/apps/admin_server/frontend/*.css -e internal/entrypoints/apps/admin_server/frontend/*.ts -o internal/entrypoints/apps/admin_server/.dist",
+  "go run -ldflags \"-w -s\" cmd/bundle_assets/main.go -e internal/entrypoints/apps/admin_server/frontend/*.css,internal/entrypoints/apps/admin_server/frontend/*.ts -o internal/entrypoints/apps/admin_server/.dist",
   "cp --verbose -R internal/entrypoints/apps/admin_server/frontend/static internal/entrypoints/apps/admin_server/.dist",
   "touch internal/entrypoints/apps/admin_server/.dist/.gitkeep",
   "templ generate",

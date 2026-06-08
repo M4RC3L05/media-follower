@@ -1,10 +1,12 @@
 package views
 
 templ Register() {
+	{{ csrfToken, _ := ctx.Value(CSRFTokenCOntextViewKey).(string) }}
 	@Page("Register") {
 		<div class="col-lg-6 offset-md-3 col-md-8 offset-md-2">
 			<h1 class="text-center">Register</h1>
 			<form method="post" action="/auth/register">
+				<input type="hidden" name="_csrf" value={ csrfToken }/>
 				<div class="mb-3">
 					<label for="username" class="form-label">Username</label>
 					<input type="text" class="form-control" id="username" name="username"/>

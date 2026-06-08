@@ -11,6 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/extractors"
+	"github.com/gofiber/fiber/v3/middleware/csrf"
 	"github.com/gofiber/fiber/v3/middleware/favicon"
 	recoverer "github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/session"
@@ -65,7 +66,8 @@ func (a *AdminServerApp) Run(ctx context.Context) error {
 	a.app.Use(recoverer.New())
 	a.app.Use("/", static.New(".dist", static.Config{FS: dist}))
 	a.app.Use("/", favicon.New(favicon.Config{FileSystem: dist, File: ".dist/static/favicon.ico"}))
-	a.app.Use(session.New(session.Config{
+
+	sessConfig := session.Config{
 		CookieSecure:      true,
 		CookieHTTPOnly:    true,
 		CookieSameSite:    "Strict",
@@ -78,8 +80,20 @@ func (a *AdminServerApp) Run(ctx context.Context) error {
 		ErrorHandler: func(c fiber.Ctx, err error) {
 			log.Error("Error on session middleware", slog.Any("error", err))
 		},
-	}))
+	}
+	sessMiddleware, sessStore := session.NewWithStore(sessConfig)
+	a.app.Use(sessMiddleware)
 	a.app.Use(middlewares.FlashMessages())
+	a.app.Use(csrf.New(csrf.Config{
+		CookieName:        "__Host-csrf_",
+		CookieSecure:      true,
+		CookieHTTPOnly:    true,
+		SingleUseToken:    true,
+		CookieSameSite:    "Strict",
+		CookieSessionOnly: true,
+		Session:           sessStore,
+		Extractor:         extractors.FromForm("_csrf"),
+	}))
 
 	indexHandler := handlers.IndexHandler{}
 	authHandler := handlers.AuthHandler{Db: a.Db, Ph: passwordhashing.NewArgon2di()}
