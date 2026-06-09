@@ -35,11 +35,11 @@ run = [
   "go run -ldflags \"-w -s\" cmd/main/main.go app admin-server",
 ]
 
-[tasks."cmd:db_migrate"]
+[tasks."cmd:db-migrate"]
 run = [
-  "dbmate -u 'sqlite:./data/app.db' -d ./internal/store/migrations -s ./internal/store/schema.sql up",
+  "dbmate -u 'sqlite:./data/app.db' -d ./internal/storage/migrations -s ./internal/storage/schema.sql up",
   "go run -ldflags \"-w -s\" cmd/gen_db_types/main.go",
 ]
 
-[tasks."cmd:fetch-outputs"]
-run = ["go run -ldflags \"-w -s\" cmd/main/main.go job fetch-outputs"]
+[tasks."cmd:fetch-releases"]
+run = ["go run -ldflags \"-w -s\" cmd/main/main.go job fetch-releases"]

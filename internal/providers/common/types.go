@@ -1,4 +1,4 @@
-package providers
+package common
 
 type ItunesResponseModel[T any] struct {
 	ResultCount int64 `json:"resultCount" validate:"required,gte=0"`

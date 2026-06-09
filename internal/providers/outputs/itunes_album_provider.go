@@ -1,4 +1,4 @@
-package providers
+package outputs
 
 import (
 	"encoding/json"
@@ -7,14 +7,11 @@ import (
 	"io"
 	"net/http"
 	"slices"
-	"strconv"
-	"strings"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
+	"github.com/m4rc3l05/media-follower/internal/providers/common"
+	"github.com/m4rc3l05/media-follower/internal/providers/inputs"
 )
-
-const ITUNES_ALBUM_PROVIDER_NAME = "ITUNES_ALBUM_PROVIDER"
 
 type ItunesAlbum struct {
 	AmgArtistID            *int64   `json:"amgArtistId,omitempty"           validate:"omitempty,number"`
@@ -46,7 +43,7 @@ type ItunesAlbumProvider struct {
 
 // Compile time check that providers implement interface
 var (
-	_ IOutputProvider[ItunesArtist, ItunesAlbum] = ItunesAlbumProvider{}
+	_ IOutputProvider[inputs.ItunesArtist, ItunesAlbum] = ItunesAlbumProvider{}
 )
 
 func NewItunesAlbumProvider(validator *validator.Validate) ItunesAlbumProvider {
@@ -55,7 +52,9 @@ func NewItunesAlbumProvider(validator *validator.Validate) ItunesAlbumProvider {
 	}
 }
 
-func fetchAlbums(id int64) (_ *ItunesResponseModel[ItunesAlbum], eOut error) {
+func (i ItunesAlbumProvider) fetchAlbums(
+	id int64,
+) (_ *common.ItunesResponseModel[ItunesAlbum], eOut error) {
 	response, err := http.Get(
 		fmt.Sprintf(
 			"https://itunes.apple.com/lookup?id=%d&entity=album&media=music&sort=recent&limit=60",
@@ -86,7 +85,7 @@ func fetchAlbums(id int64) (_ *ItunesResponseModel[ItunesAlbum], eOut error) {
 		return nil, err
 	}
 
-	var data ItunesResponseModel[ItunesAlbum]
+	var data common.ItunesResponseModel[ItunesAlbum]
 	err = json.Unmarshal(responseData, &data)
 	if err != nil {
 		return nil, err
@@ -96,61 +95,31 @@ func fetchAlbums(id int64) (_ *ItunesResponseModel[ItunesAlbum], eOut error) {
 		data.Results = slices.Delete(data.Results, 0, 1)
 	}
 
+	err = i.validate.Struct(data)
+	if err != nil {
+		return nil, err
+	}
+
 	return &data, nil
 }
 
-func (i ItunesAlbumProvider) Name() string {
-	return ITUNES_ALBUM_PROVIDER_NAME
-}
-
-func (i ItunesAlbumProvider) FetchOutputs(input ItunesArtist) (_ []ItunesAlbum, eOut error) {
-	albums, err := fetchAlbums(input.ArtistID)
+func (i ItunesAlbumProvider) FetchOutputs(input inputs.ItunesArtist) (_ []ItunesAlbum, eOut error) {
+	albums, err := i.fetchAlbums(input.ArtistID)
 	if err != nil {
 		return nil, err
 	}
-
-	err = i.validate.Struct(albums)
-	if err != nil {
-		return nil, err
-	}
-
-	albums.Results = slices.DeleteFunc(albums.Results, func(output ItunesAlbum) bool {
-		isCompilation := strings.Contains(
-			strings.ToLower(output.ArtistName),
-			"various artists",
-		)
-		isDjMix := strings.Contains(
-			strings.ToLower(output.CollectionCensoredName),
-			"various artists",
-		) ||
-			strings.Contains(strings.ToLower(output.CollectionName), "various artists")
-		noReleaseDate := output.ReleaseDate == nil
-
-		return isCompilation || isDjMix || noReleaseDate
-	})
 
 	return albums.Results, nil
 }
 
-func (i ItunesAlbumProvider) FromOutputToPersistance(
-	inputPersistance model.Inputs,
-	output ItunesAlbum,
-) (*model.Outputs, error) {
-	encodedRaw, err := json.Marshal(output)
-	if err != nil {
+func (i ItunesAlbumProvider) Validate(output ItunesAlbum) error {
+	return i.validate.Struct(output)
+}
+
+func (i ItunesAlbumProvider) JSONEncode(output ItunesAlbum) ([]byte, error) {
+	if err := i.validate.Struct(output); err != nil {
 		return nil, err
 	}
 
-	err = i.validate.Struct(output)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.Outputs{
-		ID:            strconv.FormatInt(output.CollectionID, 10),
-		InputID:       inputPersistance.ID,
-		InputProvider: inputPersistance.Provider,
-		Provider:      i.Name(),
-		Raw:           encodedRaw,
-	}, nil
+	return json.Marshal(output)
 }

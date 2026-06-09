@@ -20,7 +20,7 @@ func HaveMethodBeenCalledTimes(mName string, times int) types.GomegaMatcher {
 	}).WithTemplate(fmt.Sprintf("Expected method \"%s\" {{ .To }} have been called %d time(s), but was called {{ len (index .Actual.Calls \"%s\") }} time(s)", mName, times, mName))
 }
 
-func HaveMethodBeenNthCalledWith(mName string, nth int, args ...any) types.GomegaMatcher {
+func HaveNthMethodBeenCalledWith(mName string, nth int, args ...any) types.GomegaMatcher {
 	return gcustom.MakeMatcher(func(m struct{ InterfaceMock }) (bool, error) {
 		callInfo := m.InterfaceMock.Calls[mName][nth]
 

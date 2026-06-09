@@ -14,33 +14,30 @@ import (
 	"github.com/m4rc3l05/media-follower/internal/storage"
 )
 
-type FetchOutputsJob[I any, O any] struct {
-	InputProvider  providers.IInputProvider[I]
-	OutputProvider providers.IOutputProvider[I, O]
-	DB             *storage.Db
-	Log            *slog.Logger
+type FetchReleasesJob[I any, O any] struct {
+	ReleaseProvider providers.IReleaseProvider[I, O]
+	DB              *storage.Db
+	Log             *slog.Logger
 }
 
 // Compile time check that providers implement interface
 var (
-	_ common.IEntrypoint = FetchOutputsJob[any, any]{}
+	_ common.IEntrypoint = FetchReleasesJob[any, any]{}
 )
 
-func NewFetchOutputsJob[I any, O any](
-	inputProvider providers.IInputProvider[I],
-	outputProvider providers.IOutputProvider[I, O],
+func NewFetchReleasesJob[I any, O any](
+	releaseProvider providers.IReleaseProvider[I, O],
 	db *storage.Db,
 	log *slog.Logger,
-) FetchOutputsJob[I, O] {
-	return FetchOutputsJob[I, O]{
-		InputProvider:  inputProvider,
-		OutputProvider: outputProvider,
-		DB:             db,
-		Log:            log,
+) FetchReleasesJob[I, O] {
+	return FetchReleasesJob[I, O]{
+		ReleaseProvider: releaseProvider,
+		DB:              db,
+		Log:             log,
 	}
 }
 
-func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
+func (f FetchReleasesJob[I, O]) Run(ctx context.Context) error {
 	var inputs []model.Inputs
 
 	stmt := qb.SELECT(
@@ -48,7 +45,7 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 		storage.JSONCol(table.Inputs.Raw).AS("inputs.raw"),
 	).
 		FROM(table.Inputs).
-		WHERE(table.Inputs.Provider.EQ(qb.String(f.InputProvider.Name())))
+		WHERE(table.Inputs.Provider.EQ(qb.String(f.ReleaseProvider.Name())))
 
 	if err := stmt.QueryContext(ctx, f.DB.DB, &inputs); err != nil {
 		return err
@@ -68,54 +65,62 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 			),
 		)
 
-		input, err := f.InputProvider.FromPersistanceToInput(inputPersistance)
+		input, err := f.ReleaseProvider.FromPersistanceToInput(inputPersistance)
 		if err != nil {
 			f.Log.Error("Error getting input from input persistance", slog.Any("err", err))
 
 			continue
 		}
 
-		outputs, err := f.OutputProvider.FetchOutputs(*input)
+		releases, err := f.ReleaseProvider.FetchReleases(*input)
 		if err != nil {
 			f.Log.Error("Error fetching outputs", slog.Any("err", err))
 
 			continue
 		}
 
-		f.Log.Info(fmt.Sprintf("Processing %d outputs for input", len(outputs)))
+		f.Log.Info(fmt.Sprintf("Processing %d releases for input", len(releases)))
 
-		for _, output := range outputs {
-			persistance, err := f.OutputProvider.FromOutputToPersistance(inputPersistance, output)
+		for _, release := range releases {
+			persistance, err := f.ReleaseProvider.FromReleaseToPersistance(
+				inputPersistance,
+				release,
+			)
 			if err != nil {
 
 				f.Log.Error("Error converting output to persistance", slog.Any("err", err))
 				continue
 			}
 
-			stmt2 := table.Outputs.
+			stmt2 := table.Releases.
 				INSERT(
-					table.Outputs.ID,
-					table.Outputs.InputID,
-					table.Outputs.InputProvider,
-					table.Inputs.Provider,
-					table.Outputs.Raw,
+					table.Releases.ID,
+					table.Releases.InputID,
+					table.Releases.InputProvider,
+					table.Releases.Provider,
+					table.Releases.ReleasedAt,
+					table.Releases.Raw,
 				).
 				VALUES(
 					persistance.ID,
 					persistance.InputID,
 					persistance.InputProvider,
 					persistance.Provider,
+					persistance.ReleasedAt,
 					storage.JSONB(persistance.Raw),
 				).
 				ON_CONFLICT(
-					table.Outputs.ID,
-					table.Outputs.InputID,
-					table.Outputs.InputProvider,
-					table.Outputs.Provider,
+					table.Releases.ID,
+					table.Releases.InputID,
+					table.Releases.InputProvider,
+					table.Releases.Provider,
 				).
 				DO_UPDATE(
 					qb.SET(
-						table.Outputs.Raw.SET(
+						table.Releases.ReleasedAt.SET(
+							qb.String(persistance.ReleasedAt),
+						),
+						table.Releases.Raw.SET(
 							storage.JSONB(persistance.Raw),
 						),
 					),
@@ -124,14 +129,14 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 			_, err = stmt2.ExecContext(ctx, f.DB.DB)
 			if err != nil {
 				f.Log.Error(
-					"Error storing output persistance in database",
+					"Error storing release persistance in database",
 					slog.Group(
 						"inputPersistance",
 						slog.String("id", inputPersistance.ID),
 						slog.String("provider", inputPersistance.Provider),
 					),
 					slog.Group(
-						"outputPersistance",
+						"releasePersistance",
 						slog.String("id", persistance.ID),
 						slog.String("inputId", persistance.InputID),
 						slog.String("inputProvider", persistance.InputProvider),
@@ -144,7 +149,7 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 		}
 
 		f.Log.Info(
-			fmt.Sprintf("Processed %d outputs for input", len(outputs)),
+			fmt.Sprintf("Processed %d outputs for input", len(releases)),
 			slog.Group(
 				"inputPersistance",
 				slog.String("id", inputPersistance.ID),
@@ -156,7 +161,7 @@ func (f FetchOutputsJob[I, O]) Run(ctx context.Context) error {
 	return nil
 }
 
-func (f FetchOutputsJob[I, O]) Close(ctx context.Context) error {
+func (f FetchReleasesJob[I, O]) Close(ctx context.Context) error {
 	f.Log.Info("Closing database")
 
 	defer f.Log.Info("Closed database")

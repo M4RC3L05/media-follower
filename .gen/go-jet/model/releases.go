@@ -7,10 +7,11 @@
 
 package model
 
-type Outputs struct {
+type Releases struct {
 	ID            string `sql:"primary_key"`
 	InputID       string `sql:"primary_key"`
 	InputProvider string `sql:"primary_key"`
 	Provider      string `sql:"primary_key"`
+	ReleasedAt    string
 	Raw           []byte
 }

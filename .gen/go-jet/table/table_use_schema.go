@@ -11,6 +11,6 @@ package table
 // this method only once at the beginning of the program.
 func UseSchema(schema string) {
 	Inputs = Inputs.FromSchema(schema)
-	Outputs = Outputs.FromSchema(schema)
+	Releases = Releases.FromSchema(schema)
 	Users = Users.FromSchema(schema)
 }

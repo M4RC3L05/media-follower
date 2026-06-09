@@ -1,8 +1,8 @@
 package testdata
 
 import (
-	"fmt"
 	"math/rand"
+	"time"
 
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
 	"github.com/m4rc3l05/media-follower/.gen/go-jet/table"
@@ -24,25 +24,33 @@ func LoadDBInput(db *storage.Db) model.Inputs {
 	return input
 }
 
-func LoadDBOutput(db *storage.Db, input *model.Inputs) model.Outputs {
+func LoadDBRelease(db *storage.Db, input *model.Inputs) model.Releases {
 	if input == nil {
 		i := LoadDBInput(db)
-		fmt.Printf("i: %v\n", i)
+
 		input = &i
 	}
 
-	var output model.Outputs
+	var output model.Releases
 
-	stmt := table.Outputs.
+	stmt := table.Releases.
 		INSERT(
-			table.Outputs.ID,
-			table.Outputs.InputID,
-			table.Outputs.InputProvider,
-			table.Outputs.Provider,
-			table.Outputs.Raw,
+			table.Releases.ID,
+			table.Releases.InputID,
+			table.Releases.InputProvider,
+			table.Releases.Provider,
+			table.Releases.ReleasedAt,
+			table.Releases.Raw,
 		).
-		VALUES(rand.Int(), input.ID, input.Provider, "bar", storage.JSONB([]byte(`{}`))).
-		RETURNING(table.Outputs.AllColumns, storage.JSONCol(table.Outputs.Raw).AS("outputs.raw"))
+		VALUES(
+			rand.Int(),
+			input.ID,
+			input.Provider,
+			"bar",
+			time.Now().UTC().Format("2006-01-02T15:04:05.000Z07:00"),
+			storage.JSONB([]byte(`{}`)),
+		).
+		RETURNING(table.Releases.AllColumns, storage.JSONCol(table.Releases.Raw).AS("releases.raw"))
 
 	if err := stmt.Query(db.DB, &output); err != nil {
 		panic(err)

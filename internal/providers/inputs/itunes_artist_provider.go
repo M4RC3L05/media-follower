@@ -1,13 +1,8 @@
-package providers
+package inputs
 
 import (
-	"encoding/json"
-
 	"github.com/go-playground/validator/v10"
-	"github.com/m4rc3l05/media-follower/.gen/go-jet/model"
 )
-
-const ITUNES_ARTIST_PROVIDER_NAME = "ITUNES_ARTIST_PROVIDER"
 
 type ItunesArtist struct {
 	WrapperType      string `json:"wrapperType"           validate:"required,eq=artist"`
@@ -35,23 +30,6 @@ func NewItunesArtistProvider(validator *validator.Validate) ItunesArtistProvider
 	}
 }
 
-func (i ItunesArtistProvider) Name() string {
-	return ITUNES_ARTIST_PROVIDER_NAME
-}
-
-func (i ItunesArtistProvider) FromPersistanceToInput(
-	inputPersistance model.Inputs,
-) (*ItunesArtist, error) {
-	var itunesArtist ItunesArtist
-	err := json.Unmarshal(inputPersistance.Raw, &itunesArtist)
-	if err != nil {
-		return nil, err
-	}
-
-	err = i.validate.Struct(itunesArtist)
-	if err != nil {
-		return nil, err
-	}
-
-	return &itunesArtist, nil
+func (i ItunesArtistProvider) Validate(input ItunesArtist) error {
+	return i.validate.Struct(input)
 }
