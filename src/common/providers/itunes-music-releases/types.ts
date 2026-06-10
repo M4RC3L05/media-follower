@@ -47,7 +47,7 @@ export const itunesMusicReleasesOutputAlbumSchema = z.object({
   releaseDate: z.union([
     z.date(),
     z.string().pipe(z.coerce.date()).pipe(z.date()),
-  ]).optional(),
+  ]).transform((date) => new Date(date.toISOString())),
   primaryGenreName: z.string(),
   contentAdvisoryRating: z.string().optional(),
 });
@@ -78,7 +78,7 @@ export const itunesMusicReleasesOutputSongSchema = z.object({
   releaseDate: z.union([
     z.date(),
     z.string().pipe(z.coerce.date()).pipe(z.date()),
-  ]).optional(),
+  ]).transform((date) => new Date(date.toISOString())),
   collectionExplicitness: z.string(),
   trackExplicitness: z.string(),
   discCount: z.number(),

@@ -22,6 +22,9 @@ import { DOMParser } from "@b-fuze/deno-dom";
 import { distinctBy } from "@std/collections";
 import type { IDatabase } from "#src/common/database/database.ts";
 import { inputListItem, outputListItem } from "./components/mod.tsx";
+import { makeLogger } from "#src/common/logger/mod.ts";
+
+const log = makeLogger("steam-games-free-promos-provider");
 
 type SteamGamesFreePromosProps = {
   httpClient: IHttpFetch;
@@ -76,38 +79,48 @@ export class SteamGamesFreePromosProvider implements
     return distinctBy(
       Array.from(
         dom.querySelectorAll("#main .container .row .panel-sale"),
-      ).filter((e) => e.getAttribute("data-appid")?.trim() !== "730").map(
-        (ele) => {
-          const catElement = ele.querySelector("div.cat");
-          const promoType = catElement?.className.includes("cat-free-to-keep")
-            ? SteamGamesFreePromoTypes.FREE_TO_KEEP
-            : catElement?.className.includes("cat-play-for-free")
-            ? SteamGamesFreePromoTypes.FREE_TO_PLAY
-            : undefined;
+      )
+        .filter((e) => e.getAttribute("data-appid")?.trim() !== "730")
+        .map(
+          (ele) => {
+            const catElement = ele.querySelector("div.cat");
+            const promoType = catElement?.className.includes("cat-free-to-keep")
+              ? SteamGamesFreePromoTypes.FREE_TO_KEEP
+              : catElement?.className.includes("cat-play-for-free")
+              ? SteamGamesFreePromoTypes.FREE_TO_PLAY
+              : undefined;
 
-          const [startDate, endDate] = Array.from(
-            ele.querySelectorAll("div.panel-sale-time"),
-          ).map(
-            (ele) =>
-              ele.querySelector("relative-time")?.getAttribute("datetime"),
-          ).filter((item) => !!item).toSorted();
+            const [startDate, endDate] = Array.from(
+              ele.querySelectorAll("div.panel-sale-time"),
+            ).map(
+              (ele) =>
+                ele.querySelector("relative-time")?.getAttribute("datetime"),
+            ).filter((item) => !!item).toSorted();
 
-          return steamGamesFreePromosOutputSchema.parse({
-            id: ele.getAttribute("data-appid")?.trim(),
-            image: ele.querySelector("img.sale-image")?.getAttribute("src")
-              ?.trim(),
-            link: Array.from(
-              ele.querySelector("div.app-history-type")?.children ?? [],
-            ).map((x) => x.getAttribute("href")?.trim()).find((link) =>
-              link?.startsWith("https://store.steampowered.com/app")
-            ),
-            name: ele.querySelector("h4.panel-sale-name a")?.textContent.trim(),
-            promoType,
-            startDate,
-            endDate,
-          });
-        },
-      ),
+            try {
+              return steamGamesFreePromosOutputSchema.parse({
+                id: ele.getAttribute("data-appid")?.trim(),
+                image: ele.querySelector("img.sale-image")?.getAttribute("src")
+                  ?.trim(),
+                link: Array.from(
+                  ele.querySelector("div.app-history-type")?.children ?? [],
+                ).map((x) => x.getAttribute("href")?.trim()).find((link) =>
+                  link?.startsWith("https://store.steampowered.com/app")
+                ),
+                name: ele.querySelector("h4.panel-sale-name a")?.textContent
+                  .trim(),
+                promoType,
+                startDate,
+                endDate,
+              });
+            } catch (error) {
+              log.warn({ error }, "Skipping malformed release");
+
+              return;
+            }
+          },
+        )
+        .filter((item) => item !== null && item !== undefined),
       (item) => item.id,
     );
   }
@@ -131,9 +144,6 @@ export class SteamGamesFreePromosProvider implements
       select id, input_id, provider, json(raw) as raw
       from outputs
       where provider = ${EInputProvider.STEAM_GAMES_FREE_PROMOS}
-      -- Only released items
-      and raw->>'startDate' is not null
-      and raw->>'endDate' is not null
       order by raw->>'startDate' desc
       limit 200
     ` as DbOutputsTable[];
@@ -163,9 +173,8 @@ export class SteamGamesFreePromosProvider implements
         id:
           `${EInputProvider.STEAM_GAMES_FREE_PROMOS}@${output.promoType}@${output.id}`,
         image: output.image,
-        description: `<p>${output.name} (${output.promoType})</p><p>From: ${
-          output.startDate!.toDateString()
-        } to ${output.endDate!.toDateString()}</p>`,
+        description:
+          `<p>${output.name} (${output.promoType})</p><p>From: ${output.startDate.toDateString()} to ${output.endDate.toDateString()}</p>`,
       });
     }
 

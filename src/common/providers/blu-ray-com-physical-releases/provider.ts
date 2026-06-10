@@ -24,6 +24,9 @@ import { inputListItem, outputListItem } from "./components/mod.tsx";
 import type { VNode } from "preact";
 import z from "@zod/zod";
 import { Feed } from "feed";
+import { makeLogger } from "#src/common/logger/mod.ts";
+
+const log = makeLogger("blu-ray-com-physical-releases-provider");
 
 type BluRayComPhysicalReleasesProviderProps = {
   httpClient: IHttpFetch;
@@ -103,16 +106,23 @@ export class BluRayComPhysicalReleasesProvider
       const release = bluRayComPhysicalReleaseOutputSchema.parse(
         eval(`(${match[1]!.trim()})`),
       );
-      items.push(bluRayComPhysicalReleaseOutputWithExtraSchema.parse({
-        ...release,
-        extra: {
-          type: releaseType,
-          link:
-            `https://www.blu-ray.com/movies/${release.title_keywords}-Blu-ray/${release.id}/`,
-          artworkUrl: release.artworkurl ??
-            `https://images.blu-ray.com/movies/covers/${release.id}_medium.jpg`,
-        },
-      }));
+
+      try {
+        const parsed = bluRayComPhysicalReleaseOutputWithExtraSchema.parse({
+          ...release,
+          extra: {
+            type: releaseType,
+            link:
+              `https://www.blu-ray.com/movies/${release.title_keywords}-Blu-ray/${release.id}/`,
+            artworkUrl: release.artworkurl ??
+              `https://images.blu-ray.com/movies/covers/${release.id}_medium.jpg`,
+          },
+        });
+
+        items.push(parsed);
+      } catch (error) {
+        log.warn({ error }, "Skipping malformed release");
+      }
     }
 
     return items;
@@ -238,7 +248,7 @@ export class BluRayComPhysicalReleasesProvider
     return {
       id: item.code,
       provider: EInputProvider.BLU_RAY_COM_PHYSICAL_RELEASE,
-      raw: JSON.stringify(item),
+      raw: JSON.stringify(bluRayComPhysicalReleaseInputSchema.parse(item)),
     };
   }
 
@@ -260,7 +270,9 @@ export class BluRayComPhysicalReleasesProvider
       id: String(item.id),
       input_id: row.id,
       provider: row.provider,
-      raw: JSON.stringify(item),
+      raw: JSON.stringify(
+        bluRayComPhysicalReleaseOutputWithExtraSchema.parse(item),
+      ),
     };
   }
 

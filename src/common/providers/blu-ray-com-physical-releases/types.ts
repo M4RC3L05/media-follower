@@ -26,7 +26,7 @@ export const bluRayComPhysicalReleaseOutputSchema = z.object({
   releasedate: z.union([
     z.date(),
     z.string().trim().pipe(z.coerce.date()).pipe(z.date()),
-  ]),
+  ]).transform((date) => new Date(date.toISOString())),
   popularity: z.number(),
   width: z.number(),
   height: z.number(),

@@ -27,6 +27,9 @@ import { inputListItem, outputListItem } from "./components/mod.tsx";
 import type { VNode } from "preact";
 import z from "@zod/zod";
 import { Feed } from "feed";
+import { makeLogger } from "#src/common/logger/mod.ts";
+
+const log = makeLogger("itunes-music-releases-provider");
 
 const resolveArtistImage = async (httpClient: IHttpFetch, url: string) => {
   const textDecoder = new TextDecoder();
@@ -154,13 +157,26 @@ export class ItunesMusicReleasesProvider
       .map((item) => {
         switch (entity) {
           case ITunesLookupEntityType.ALBUM: {
-            return itunesMusicReleasesOutputAlbumSchema.parse(item);
+            try {
+              return itunesMusicReleasesOutputAlbumSchema.parse(item);
+            } catch (error) {
+              log.warn({ error }, "Skipping malformed release");
+
+              return;
+            }
           }
           case ITunesLookupEntityType.SONG: {
-            return itunesMusicReleasesOutputSongSchema.parse(item);
+            try {
+              return itunesMusicReleasesOutputSongSchema.parse(item);
+            } catch (error) {
+              log.warn({ error }, "Skipping malformed release");
+
+              return;
+            }
           }
         }
-      });
+      })
+      .filter((item) => item !== null && item !== undefined);
   }
 
   async fetchOutputs(input: Input): Promise<Output[]> {
@@ -216,8 +232,6 @@ export class ItunesMusicReleasesProvider
         and related_album.raw->>'collectionId' = outputs.raw->>'collectionId'
       )
       where outputs.provider = ${EInputProvider.ITUNES_MUSIC_RELEASE}
-      -- We only care for released outputs
-      and outputs.raw->>'releaseDate' is not null
       and outputs.raw->>'releaseDate' <= strftime('%Y-%m-%dT%H:%M:%fZ' , 'now')
       and (${type ?? null} is null or outputs.raw->>'wrapperType' = ${
       type === ITunesLookupEntityType.ALBUM ? "collection" : "track"
@@ -227,11 +241,7 @@ export class ItunesMusicReleasesProvider
           when outputs.raw->>'wrapperType' = 'track'
             then
                   related_album_raw is null
-              or related_album_raw->>'releaseDate' is null
-              or (
-                    related_album_raw->>'releaseDate' is not null
-                and related_album_raw->>'releaseDate' > strftime('%Y-%m-%dT%H:%M:%fZ' , 'now')
-              )
+              or  related_album_raw->>'releaseDate' > strftime('%Y-%m-%dT%H:%M:%fZ' , 'now')
           else true
         end
       )
@@ -258,7 +268,7 @@ export class ItunesMusicReleasesProvider
 
     for (const output of outputs) {
       feed.addItem({
-        date: output.releaseDate!,
+        date: output.releaseDate,
         link: output.wrapperType === "collection"
           ? output.collectionViewUrl
           : output.trackViewUrl,
@@ -302,7 +312,9 @@ export class ItunesMusicReleasesProvider
     return {
       id: String(item.artistId),
       provider: EInputProvider.ITUNES_MUSIC_RELEASE,
-      raw: JSON.stringify(item),
+      raw: JSON.stringify(
+        itunesMusicReleasesInputWithExtraSchema.parse(item),
+      ),
     };
   }
 
@@ -321,7 +333,11 @@ export class ItunesMusicReleasesProvider
       id: String(id),
       input_id: row.id,
       provider: row.provider,
-      raw: JSON.stringify(item),
+      raw: JSON.stringify(
+        item.wrapperType === "collection"
+          ? itunesMusicReleasesOutputAlbumSchema.parse(item)
+          : itunesMusicReleasesOutputSongSchema.parse(item),
+      ),
     };
   }
 
