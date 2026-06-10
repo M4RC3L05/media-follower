@@ -8,7 +8,7 @@
       "command": "deno run -A src/entrypoints/apps/rss-feed/main.ts"
     },
     "apps:admin": {
-      "description": "Run rss feed app",
+      "description": "Run admin app",
       "command": "deno run -A src/entrypoints/apps/admin/main.ts"
     },
     "jobs:sync-inputs": {

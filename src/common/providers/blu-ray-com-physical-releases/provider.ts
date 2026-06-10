@@ -24,9 +24,6 @@ import { inputListItem, outputListItem } from "./components/mod.tsx";
 import type { VNode } from "preact";
 import z from "@zod/zod";
 import { Feed } from "feed";
-import { makeLogger } from "#src/common/logger/mod.ts";
-
-const log = makeLogger("blu-ray-com-physical-releases-provider");
 
 type BluRayComPhysicalReleasesProviderProps = {
   httpClient: IHttpFetch;
@@ -103,26 +100,30 @@ export class BluRayComPhysicalReleasesProvider
 
     // TODO: Replace with matchAll and for of.
     while ((match = regexp.exec(movieListScript)) !== null) {
-      const release = bluRayComPhysicalReleaseOutputSchema.parse(
+      const release = bluRayComPhysicalReleaseOutputSchema.safeParse(
         eval(`(${match[1]!.trim()})`),
-      );
+      ).data;
 
-      try {
-        const parsed = bluRayComPhysicalReleaseOutputWithExtraSchema.parse({
-          ...release,
-          extra: {
-            type: releaseType,
-            link:
-              `https://www.blu-ray.com/movies/${release.title_keywords}-Blu-ray/${release.id}/`,
-            artworkUrl: release.artworkurl ??
-              `https://images.blu-ray.com/movies/covers/${release.id}_medium.jpg`,
-          },
-        });
-
-        items.push(parsed);
-      } catch (error) {
-        log.warn({ error }, "Skipping malformed release");
+      if (!release) {
+        continue;
       }
+
+      const final = bluRayComPhysicalReleaseOutputWithExtraSchema.safeParse({
+        ...release,
+        extra: {
+          type: releaseType,
+          link:
+            `https://www.blu-ray.com/movies/${release.title_keywords}-Blu-ray/${release.id}/`,
+          artworkUrl: release.artworkurl ??
+            `https://images.blu-ray.com/movies/covers/${release.id}_medium.jpg`,
+        },
+      }).data;
+
+      if (!final) {
+        continue;
+      }
+
+      items.push(final);
     }
 
     return items;

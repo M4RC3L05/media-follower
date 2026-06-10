@@ -45,6 +45,8 @@ export class App {
         const releases = await this.#props.provider.fetchOutputs(input);
 
         if (releases.length <= 0) {
+          log.info({ input: dbInput }, "No outputs for input");
+
           await delayIf(
             () => index < (dbInputs.length - 1),
             this.#props.signal,
@@ -52,23 +54,26 @@ export class App {
           continue;
         }
 
-        const toDb = releases.map((item) => ({
-          toDb: this.#props.provider.fromOutputToPersistence(dbInput, item),
-        }));
+        for (const release of releases) {
+          try {
+            const persistance = this.#props.provider.fromOutputToPersistence(
+              dbInput,
+              release,
+            );
 
-        await this.#props.database.transaction(() => {
-          toDb.map(({ toDb: item }) =>
             this.#props.database.sql.run`
               insert into outputs
                 (id,         input_id,      provider,            raw)
               values
-                (${item.id}, ${item.input_id}, ${item.provider}, jsonb(${item.raw}))
+                (${persistance.id}, ${persistance.input_id}, ${persistance.provider}, jsonb(${persistance.raw}))
               on conflict (id, input_id, provider)
                 do update
-                  set raw = jsonb(${item.raw})
-            `
-          );
-        });
+                  set raw = jsonb(${persistance.raw})
+            `;
+          } catch (error) {
+            log.error({ error }, "Error persisting output, will be ignored");
+          }
+        }
 
         log.info(`Synced ${releases.length} outputs`);
 

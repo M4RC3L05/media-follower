@@ -22,9 +22,6 @@ import { DOMParser } from "@b-fuze/deno-dom";
 import { distinctBy } from "@std/collections";
 import type { IDatabase } from "#src/common/database/database.ts";
 import { inputListItem, outputListItem } from "./components/mod.tsx";
-import { makeLogger } from "#src/common/logger/mod.ts";
-
-const log = makeLogger("steam-games-free-promos-provider");
 
 type SteamGamesFreePromosProps = {
   httpClient: IHttpFetch;
@@ -97,27 +94,21 @@ export class SteamGamesFreePromosProvider implements
                 ele.querySelector("relative-time")?.getAttribute("datetime"),
             ).filter((item) => !!item).toSorted();
 
-            try {
-              return steamGamesFreePromosOutputSchema.parse({
-                id: ele.getAttribute("data-appid")?.trim(),
-                image: ele.querySelector("img.sale-image")?.getAttribute("src")
-                  ?.trim(),
-                link: Array.from(
-                  ele.querySelector("div.app-history-type")?.children ?? [],
-                ).map((x) => x.getAttribute("href")?.trim()).find((link) =>
-                  link?.startsWith("https://store.steampowered.com/app")
-                ),
-                name: ele.querySelector("h4.panel-sale-name a")?.textContent
-                  .trim(),
-                promoType,
-                startDate,
-                endDate,
-              });
-            } catch (error) {
-              log.warn({ error }, "Skipping malformed release");
-
-              return;
-            }
+            return steamGamesFreePromosOutputSchema.safeParse({
+              id: ele.getAttribute("data-appid")?.trim(),
+              image: ele.querySelector("img.sale-image")?.getAttribute("src")
+                ?.trim(),
+              link: Array.from(
+                ele.querySelector("div.app-history-type")?.children ?? [],
+              ).map((x) => x.getAttribute("href")?.trim()).find((link) =>
+                link?.startsWith("https://store.steampowered.com/app")
+              ),
+              name: ele.querySelector("h4.panel-sale-name a")?.textContent
+                .trim(),
+              promoType,
+              startDate,
+              endDate,
+            }).data;
           },
         )
         .filter((item) => item !== null && item !== undefined),

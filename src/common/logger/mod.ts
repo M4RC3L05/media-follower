@@ -3,6 +3,7 @@ import { memoize } from "@std/cache";
 
 export const makeLogger = memoize((namespace: string) => {
   return logger({
+    enabled: Deno.env.get("ENV") !== "test",
     name: namespace,
     serializers: {
       error: (value) => stdSerializers.errWithCause(value),

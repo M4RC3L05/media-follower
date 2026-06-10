@@ -27,9 +27,6 @@ import { inputListItem, outputListItem } from "./components/mod.tsx";
 import type { VNode } from "preact";
 import z from "@zod/zod";
 import { Feed } from "feed";
-import { makeLogger } from "#src/common/logger/mod.ts";
-
-const log = makeLogger("itunes-music-releases-provider");
 
 const resolveArtistImage = async (httpClient: IHttpFetch, url: string) => {
   const textDecoder = new TextDecoder();
@@ -157,22 +154,10 @@ export class ItunesMusicReleasesProvider
       .map((item) => {
         switch (entity) {
           case ITunesLookupEntityType.ALBUM: {
-            try {
-              return itunesMusicReleasesOutputAlbumSchema.parse(item);
-            } catch (error) {
-              log.warn({ error }, "Skipping malformed release");
-
-              return;
-            }
+            return itunesMusicReleasesOutputAlbumSchema.safeParse(item).data;
           }
           case ITunesLookupEntityType.SONG: {
-            try {
-              return itunesMusicReleasesOutputSongSchema.parse(item);
-            } catch (error) {
-              log.warn({ error }, "Skipping malformed release");
-
-              return;
-            }
+            return itunesMusicReleasesOutputSongSchema.safeParse(item).data;
           }
         }
       })
