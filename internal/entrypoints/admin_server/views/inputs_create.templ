@@ -1,0 +1,28 @@
+package views
+
+import "github.com/m4rc3l05/media-follower/internal/common/providers"
+
+type InputsCreatePageArgs struct {
+	ProviderNames []providers.ProviderName
+}
+
+templ InputsCreate(args InputsCreatePageArgs) {
+	{{ data, ok := ctx.Value(GlobalViewVarsContentViewKey).(GlobalViewVars) }}
+	@Page("Create input", true) {
+		<div class="col-md-8 offset-md-2">
+			<h1>Create input</h1>
+			<form method="post" action="/inputs/create">
+				if ok && data.CSRFToken != nil {
+					<input type="hidden" name="_csrf" value={ *data.CSRFToken }/>
+				}
+				<select name="provider" class="input-sm">
+					for _, provider := range args.ProviderNames {
+						<option value={ provider }>{ provider }</option>
+					}
+				</select>
+				<input type="text" class="input-sm" name="term"/>
+				<button type="submit" class="btn btn-primary btn-sm">Create</button>
+			</form>
+		</div>
+	}
+}

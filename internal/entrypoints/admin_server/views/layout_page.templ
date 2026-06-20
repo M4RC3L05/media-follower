@@ -1,0 +1,66 @@
+package views
+
+templ Page(title string, isAuth bool) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>{ title }</title>
+			<link rel="stylesheet" href="/main.css"/>
+		</head>
+		<body>
+			<header class="sticky-top" style="padding: 0;">
+				<nav class="sticky-top container-fluid" style="background-color: var(--mu-background-color);">
+					<ul><li><strong>Media Follower</strong></li></ul>
+					<input type="checkbox" id="header-nav" class="navbar-toggle" hidden/>
+					<label for="header-nav" class="navbar-burger">&#9776;</label>
+					<ul class="navbar-menu">
+						if isAuth {
+							{{ data, ok := ctx.Value(GlobalViewVarsContentViewKey).(GlobalViewVars) }}
+							<li><a href="/inputs">Inputs</a></li>
+							<li><a href="/releases">Releases</a></li>
+							<li>
+								<form method="post" action="/auth/logout">
+									if ok && data.CSRFToken != nil {
+										<input type="hidden" name="_csrf" value={ *data.CSRFToken }/>
+									}
+									<button type="submit" class="btn btn-link btn-sm" style="margin-bottom: 0;">Logout</button>
+								</form>
+							</li>
+						} else {
+							<li><a href="/auth/login">Login</a></li>
+							<li><a href="/auth/register">Register</a></li>
+						}
+					</ul>
+				</nav>
+			</header>
+			<div class="container">
+				<div class="row">
+					{{ data, ok := ctx.Value(GlobalViewVarsContentViewKey).(GlobalViewVars) }}
+					if ok && data.FlashMessages != nil {
+						<div class="col-12" style="margin-top: 20px;">
+							if len(data.FlashMessages.Error) > 0 {
+								for _, item := range data.FlashMessages.Error {
+									<div class="alert alert-error" role="alert">
+										{ item.(string) }
+										<button class="alert-close" aria-label="Close" onclick="this.parentElement.remove()">&times;</button>
+									</div>
+								}
+							}
+							if len(data.FlashMessages.Success) > 0 {
+								for _, item := range data.FlashMessages.Success {
+									<div class="alert alert-success" role="alert">
+										{ item.(string) }
+										<button class="alert-close" aria-label="Close" onclick="this.parentElement.remove()">&times;</button>
+									</div>
+								}
+							}
+						</div>
+					}
+					{ children... }
+				</div>
+			</div>
+		</body>
+	</html>
+}

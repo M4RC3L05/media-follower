@@ -1,0 +1,55 @@
+package views
+
+import "github.com/m4rc3l05/media-follower/.gen/go-jet/model"
+import "github.com/m4rc3l05/media-follower/internal/common/providers"
+import "fmt"
+
+type InputsPageArgs struct {
+	Inputs        []model.Inputs
+	ProviderNames []providers.ProviderName
+	Links         struct {
+		NextPage     string
+		PreviousPage string
+	}
+}
+
+templ Inputs(args InputsPageArgs) {
+	@Page("Inputs", true) {
+		<div class="col-12">
+			<h1>Inputs</h1>
+			<a href="/inputs/create">Create input</a>
+			<h3>Providers</h3>
+			<a href="/inputs">All</a>
+			<br/>
+			for _, provider := range args.ProviderNames {
+				<a href={ fmt.Sprintf("/inputs?provider=%s", provider) }>{ provider }</a>
+			}
+			<h3>Inputs</h3>
+			<div class="row">
+				for _, input := range args.Inputs {
+					<div class="col-md-6" style="text-align: center;">
+						if input.ImageURL != nil {
+							<img src={ *input.ImageURL } style="aspect-ratio: 1/1; height: 300px;"/>
+						}
+						<p>{ input.Name }</p>
+						<p>Provider: { input.Provider }</p>
+						if input.Description != nil {
+							<p>{ *input.Description }</p>
+						}
+						if input.ExternalLink != nil {
+							<a href={ *input.ExternalLink } target="_blank">View input</a>
+						}
+					</div>
+				}
+			</div>
+			<div class="col-12">
+				<nav aria-label="Pagination" style="justify-content: center;">
+					<ul class="pagination">
+						<li><a class="pagination-prev" href={ args.Links.PreviousPage }>Prev</a></li>
+						<li><a class="pagination-next" href={ args.Links.NextPage }>Next</a></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	}
+}

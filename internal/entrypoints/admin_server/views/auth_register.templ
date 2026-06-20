@@ -1,0 +1,26 @@
+package views
+
+templ Register() {
+	{{ data, ok := ctx.Value(GlobalViewVarsContentViewKey).(GlobalViewVars) }}
+	@Page("Register", false) {
+		<div class="col-md-8 offset-md-2">
+			<h1>Register</h1>
+			<form method="post" action="/auth/register">
+				if ok && data.CSRFToken != nil {
+					<input type="hidden" name="_csrf" value={ *data.CSRFToken }/>
+				}
+				<div>
+					<label for="username">Username</label>
+					<input type="text" class="input-sm" id="username" name="username"/>
+				</div>
+				<div>
+					<label for="password">Password</label>
+					<input type="password" name="password" class="input-sm" id="password"/>
+				</div>
+				<button type="submit" class="btn btn-primary btn-sm">Submit</button>
+			</form>
+			<br/>
+			<a href="/auth/login">Go to login</a>
+		</div>
+	}
+}
