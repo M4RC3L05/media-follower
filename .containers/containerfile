@@ -1,0 +1,37 @@
+FROM golang:1.26.4 AS builder
+
+ENV CGO_ENABLED=0
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY ./.gen ./.gen
+COPY ./cmd ./cmd
+COPY ./internal ./internal
+
+RUN go run -trimpath -ldflags="-w -s" cmd/build_frontend/main.go \
+  ./internal/entrypoints/admin_server/frontend/main.css \
+  ./internal/entrypoints/admin_server/frontend/favicon.ico \
+  ./internal/entrypoints/admin_server/frontend/.gitkeep \
+  ./internal/entrypoints/admin_server/dist
+RUN go build -trimpath -ldflags="-w -s" -o ./main ./cmd/main/main.go
+
+RUN addgroup --gid 1000 main
+RUN adduser --uid 1000 --disabled-password main --ingroup main
+
+FROM scratch AS release
+
+ENV ENV=production
+ENV CGO_ENABLED=0
+
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/group /etc/group
+
+USER main
+
+WORKDIR /app
+
+COPY --from=builder --chown=main:main /app/main ./main
+
+ENTRYPOINT ["/app/main"]
